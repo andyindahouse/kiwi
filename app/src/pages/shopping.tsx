@@ -14,26 +14,22 @@ const Shopping: React.FC = () => {
 
     return (
         <IonPage>
-            <IonHeader>
+            <IonHeader collapse="condense">
                 <IonToolbar>
-                    <IonTitle>Shopping</IonTitle>
+                    <IonTitle size="large">Shopping</IonTitle>
+                </IonToolbar>
+                <IonToolbar>
+                    <IonSearchbar
+                        value={searchText}
+                        onIonChange={(e) => setSearchText(e.detail.value!)}
+                        debounce={1000}
+                        animated
+                        placeholder="Busca tus productos aquí"
+                        showCancelButton="focus"
+                    ></IonSearchbar>
                 </IonToolbar>
             </IonHeader>
-            <IonContent>
-                <IonHeader collapse="condense">
-                    <IonToolbar>
-                        <IonSearchbar
-                            value={searchText}
-                            onIonChange={(e) => setSearchText(e.detail.value!)}
-                            debounce={1000}
-                            animated
-                            placeholder="Busca tus productos aquí"
-                            showCancelButton="focus"
-                        ></IonSearchbar>
-                    </IonToolbar>
-                </IonHeader>
-                {searchText}
-            </IonContent>
+            <IonContent>{searchText}</IonContent>
         </IonPage>
     );
 };
