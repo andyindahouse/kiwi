@@ -8,15 +8,16 @@ import {
     IonToolbar,
     IonSearchbar,
     IonModal,
-    IonGrid,
-    IonCol,
-    IonRow,
     IonButtons,
     IonButton,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonProgressBar,
 } from '@ionic/react';
-import kiwiApi, {Product} from '../api';
+import kiwiApi, {Product, getProductsQueryParams} from '../api';
 import ProductCard from '../components/product-card';
-import {relative} from 'path';
+import ProductDetail from '../components/product-detail';
+import {search} from 'ionicons/icons';
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -60,34 +61,34 @@ const useStyles = createUseStyles((theme) => ({
 const ShoppingContent = ({
     isLoading,
     products,
+    disableInfiniteScroll,
+    handleScrollEvent,
 }: {
     isLoading: boolean;
-    products: ReadonlyArray<Product> | null;
+    products: ReadonlyArray<Product>;
+    disableInfiniteScroll: boolean;
+    handleScrollEvent: () => void;
 }) => {
     const classes = useStyles();
     const [showModal, setShowModal] = React.useState(false);
     const [selected, setSelected] = React.useState<Product | null>(null);
+    const infiniteScrollRef = React.useRef<HTMLIonInfiniteScrollElement | null>(
+        document.getElementById('infiniteScroll') as HTMLIonInfiniteScrollElement
+    );
 
-    if (isLoading) {
-        return (
-            <IonContent>
-                <h2 className={classes.center}>Cargando...</h2>
-            </IonContent>
-        );
-    }
+    React.useEffect(() => {
+        if (!isLoading) {
+            if (!infiniteScrollRef.current) {
+                infiniteScrollRef.current = document.getElementById(
+                    'infiniteScroll'
+                ) as HTMLIonInfiniteScrollElement;
+            }
+            infiniteScrollRef.current?.complete();
+        }
+    }, [isLoading]);
 
-    if (!products) {
-        return (
-            <IonContent>
-                <h2 className={classes.center}>
-                    Busca tus productos <br />
-                    directamente en el buscador
-                </h2>
-            </IonContent>
-        );
-    }
-
-    if (products.length === 0) {
+    if (products.length === 0 && !isLoading) {
+        console.log('zeroooo');
         return <IonContent>No hemos encontrado productos para esa busqueda</IonContent>;
     }
 
@@ -108,6 +109,14 @@ const ShoppingContent = ({
                         />
                     ))}
                 </div>
+                <IonInfiniteScroll
+                    threshold="100px"
+                    id="infiniteScroll"
+                    disabled={disableInfiniteScroll}
+                    onIonInfinite={() => handleScrollEvent()}
+                >
+                    <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
+                </IonInfiniteScroll>
             </IonContent>
             <IonModal isOpen={showModal}>
                 <IonHeader translucent>
@@ -119,12 +128,7 @@ const ShoppingContent = ({
                     </IonToolbar>
                 </IonHeader>
                 <IonContent>
-                    <div className={classes.modal}>
-                        <div className={classes.image} style={{backgroundImage: `url(${selected?.img})`}}>
-                            <h3 className={classes.price}>{selected?.price.final}€</h3>
-                        </div>
-                        <h2>{selected?.name}</h2>
-                    </div>
+                    {selected && <ProductDetail units={0} handleUpdateUnits={() => {}} {...selected} />}
                 </IonContent>
             </IonModal>
         </>
@@ -133,39 +137,76 @@ const ShoppingContent = ({
 
 const Shopping: React.FC = () => {
     const classes = useStyles();
-    const [searchText, setSearchText] = React.useState('');
+    const [filter, setFilter] = React.useState<getProductsQueryParams>({
+        searchText: 'ace',
+        pageNumber: 0,
+    });
     const [products, setProducts] = React.useState<ReadonlyArray<Product> | null>(null);
     const [isLoading, setLoading] = React.useState(false);
+    const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
 
     React.useEffect(() => {
-        if (searchText) {
+        if (filter.searchText) {
             setLoading(true);
-            kiwiApi.searchProducts(searchText).then((res) => {
+            kiwiApi.getProducts(filter).then((res) => {
                 setLoading(false);
-                setProducts(res.content);
+                if (products && products.length + res.content.length === res.totalSize) {
+                    setDisableInfiniteScroll(true);
+                } else {
+                    setProducts((products ?? []).concat(res.content));
+                }
             });
         }
-    }, [searchText]);
+    }, [filter]);
 
     return (
         <IonPage>
-            <IonHeader collapse="condense">
-                <IonToolbar>
-                    <IonTitle size="large">Shopping</IonTitle>
-                </IonToolbar>
-                <IonToolbar>
-                    <IonSearchbar
-                        value={searchText}
-                        onIonChange={(e) => setSearchText(e.detail.value!)}
-                        debounce={1000}
-                        animated
-                        placeholder="Busca tus productos aquí"
-                        showCancelButton="focus"
-                        cancelButtonText="Borrar"
-                    ></IonSearchbar>
-                </IonToolbar>
-            </IonHeader>
-            <ShoppingContent products={products} isLoading={isLoading} />
+            <IonContent>
+                <IonHeader collapse="condense">
+                    <IonToolbar>
+                        <IonTitle size="large">Shopping</IonTitle>
+                    </IonToolbar>
+                    <IonToolbar>
+                        <IonSearchbar
+                            value={filter.searchText}
+                            onIonChange={(e) => {
+                                if (products && products.length > 0) {
+                                    setProducts(null);
+                                }
+                                setDisableInfiniteScroll(false);
+                                setFilter({
+                                    pageNumber: 0,
+                                    searchText: e.detail.value ?? null,
+                                });
+                            }}
+                            debounce={1000}
+                            animated
+                            placeholder="Busca tus productos aquí"
+                            showCancelButton="focus"
+                            cancelButtonText="Borrar"
+                        ></IonSearchbar>
+                    </IonToolbar>
+                </IonHeader>
+
+                {products ? (
+                    <ShoppingContent
+                        products={products}
+                        isLoading={isLoading}
+                        handleScrollEvent={() => {
+                            setFilter({
+                                ...filter,
+                                pageNumber: filter.pageNumber + 1,
+                            });
+                        }}
+                        disableInfiniteScroll={disableInfiniteScroll}
+                    />
+                ) : (
+                    <h2 className={classes.center}>
+                        Busca tus productos <br />
+                        directamente en el buscador
+                    </h2>
+                )}
+            </IonContent>
         </IonPage>
     );
 };

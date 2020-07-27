@@ -1,8 +1,9 @@
-import {addCircleSharp} from 'ionicons/icons';
+import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {IonIcon} from '@ionic/react';
+import {IonIcon, IonButton} from '@ionic/react';
 import {Product} from '../api';
+import {IonSpinner} from '@ionic/react';
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -13,21 +14,30 @@ const useStyles = createUseStyles((theme) => ({
         overflow: 'hidden',
         position: 'relative',
     },
+    containerUnits: {
+        position: 'absolute',
+    },
     units: {
-        width: 32,
         height: 32,
+        position: 'absolute',
         top: 0,
         right: 0,
-        color: '#EC445A',
-        position: 'absolute',
+        left: 0,
+        backgroundColor: '#EC445A',
         borderRadius: 32,
-        fontSize: 11,
-        fontWeight: 500,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
         marginTop: 4,
-        marginRight: 4,
+    },
+    unitsText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: 500,
+    },
+    icon: {
+        width: 32,
+        height: 32,
+        color: 'white',
     },
     content: {
         padding: 8,
@@ -42,20 +52,17 @@ const useStyles = createUseStyles((theme) => ({
         lineClamp: 3,
         display: 'box',
         boxOrient: 'vertical',
-        fontSize: 14,
-        margin: 0,
+        fontSize: 11,
         marginTop: 4,
         marginBottom: 4,
     },
     price: {
-        margin: 0,
         fontWeight: 500,
         '& > small': {
             color: '#92949C',
         },
     },
     subtitle: {
-        margin: 0,
         color: '#92949C',
         fontSize: 11,
         fontWeight: 500,
@@ -64,6 +71,11 @@ const useStyles = createUseStyles((theme) => ({
         lineClamp: 1,
         display: 'box',
         boxOrient: 'vertical',
+    },
+    spinner: {
+        width: 24,
+        height: 24,
+        color: 'white',
     },
 }));
 
@@ -85,13 +97,73 @@ const ProductCard = ({
     handleClickCart,
 }: Props & Product) => {
     const classes = useStyles();
+    const [unitx, setUnitx] = React.useState(0);
+    const [openUnits, setOpenUnits] = React.useState(false);
+    const [showSpinner, setShowSpinner] = React.useState(false);
+
+    React.useEffect(() => {
+        let timer: any;
+        let spinner: any;
+        if (openUnits) {
+            spinner = window.setTimeout(() => {
+                setShowSpinner(true);
+            }, 3000);
+            timer = window.setTimeout(() => {
+                setShowSpinner(false);
+                setOpenUnits(false);
+            }, 5000);
+        }
+
+        return () => {
+            clearTimeout(timer);
+            clearTimeout(spinner);
+        };
+    }, [openUnits]);
 
     return (
         <div className={classes.container}>
-            <IonIcon className={classes.units} icon={addCircleSharp} />
-            {/* <div role="button" onClick={() => handleClickCart(units + 1)} className={classes.units}>
-                23ud
-            </div> */}
+            <div
+                className={classes.units}
+                style={{
+                    left: openUnits ? '0' : 'unset',
+                    width: !openUnits ? 32 : 'unset',
+                    justifyContent: !openUnits ? 'center' : 'space-between',
+                }}
+            >
+                {openUnits && (
+                    <IonIcon
+                        role="button"
+                        className={classes.icon}
+                        icon={removeCircleSharp}
+                        onClick={() => {
+                            if (unitx > 0) {
+                                setUnitx(unitx - 1);
+                            }
+                        }}
+                    />
+                )}
+                {(unitx > 0 || openUnits) &&
+                    (showSpinner ? (
+                        <IonSpinner className={classes.spinner} name="crescent" />
+                    ) : (
+                        <p
+                            className={classes.unitsText}
+                            onClick={() => {
+                                setOpenUnits(true);
+                            }}
+                        >{`${unitx}ud`}</p>
+                    ))}
+                {(unitx === 0 || openUnits) && (
+                    <IonIcon
+                        className={classes.icon}
+                        icon={addCircleSharp}
+                        onClick={() => {
+                            setOpenUnits(true);
+                            setUnitx(unitx + 1);
+                        }}
+                    />
+                )}
+            </div>
             <div role="button" onClick={handleClickDetail}>
                 <div className={classes.image} style={{backgroundImage: `url(${img})`}}></div>
                 <div className={classes.content}>
