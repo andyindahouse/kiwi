@@ -47,8 +47,10 @@ const getProductsPage = async (url) => {
 };
 
 (async () => {
+    console.log('Starting scraping list...');
     const url = config.scrapingUrl.url;
     const pages = await getTotalPages(url);
+    console.log(`Scraping category ${config.scrapingUrl.collection}...`);
     let urlWithPage = `${url}`;
     let client;
     try {
@@ -57,9 +59,29 @@ const getProductsPage = async (url) => {
         for (let i = 1; i <= pages; i++) {
             urlWithPage = `${url}${i}`;
             const prods = await getProductsPage(urlWithPage);
-
-            await collection.insertMany(prods);
+            prods.forEach(async (product) => {
+                const productData = {
+                    ...product,
+                    updateDate: '$$NOW',
+                };
+                await collection.findOne({id: productData.id});
+                const result = await collection.updateOne(
+                    {id: productData.id},
+                    {
+                        $set: {...productData},
+                    }
+                );
+                console.log(result.matchedCount);
+                if (result.matchedCount === 0) {
+                    await collection.insertOne({
+                        ...productData,
+                        createDate: '$$NOW',
+                    });
+                }
+            });
+            console.log(`${pages - i} pages left.`);
         }
+        console.log(`Scraper finished.`);
     } catch (e) {
         console.log(e);
     } finally {
