@@ -71,7 +71,6 @@ const getProductsPage = async (url) => {
                         $set: {...productData},
                     }
                 );
-                console.log(result.matchedCount);
                 if (result.matchedCount === 0) {
                     await collection.insertOne({
                         ...productData,
