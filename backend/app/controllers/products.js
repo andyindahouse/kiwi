@@ -1,5 +1,5 @@
 const mongodb = require('mongodb');
-const config = require('./config');
+const config = require('../../config');
 
 async function getProducts(query) {
     console.log(query);
