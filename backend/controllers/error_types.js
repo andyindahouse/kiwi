@@ -1,6 +1,13 @@
 'use strict';
 
 const error_types = {
+    Error400: function (msg) {
+        const err = Error.apply(this, [msg]);
+        this.name = err.name = 'Error400';
+        this.message = err.message;
+        this.stack = err.stack;
+        return this;
+    },
     Error401: function (msg) {
         const err = Error.apply(this, [msg]);
         this.name = err.name = 'Error401';
