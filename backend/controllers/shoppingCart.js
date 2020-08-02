@@ -39,7 +39,7 @@ const controller = {
                     useFindAndModify: true,
                 }
             );
-            if (shopppingCart.products) {
+            if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
                 const shoppingCartWithProducts = products.map((product, index) => {
