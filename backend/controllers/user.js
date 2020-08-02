@@ -5,7 +5,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const {PASSPORT_CONFIG} = require('../config');
 const User = require('../models/user');
-const error_types = require('./error_types');
+const errorTypes = require('./errorTypes');
 
 const controller = {
     register: (req, res, next) => {
@@ -13,7 +13,7 @@ const controller = {
         User.findOne({username: req.body.username})
             .then((data) => {
                 if (data) {
-                    throw new error_types.InfoError('User already exists');
+                    throw new errorTypes.InfoError('User already exists');
                 } else {
                     const hash = bcrypt.hashSync(req.body.password, parseInt(PASSPORT_CONFIG.BCRYPT_ROUNDS));
                     const document = new User({
@@ -35,7 +35,7 @@ const controller = {
     login: (req, res, next) => {
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
-                next(new error_types.Error401('Username or password not correct.'));
+                next(new errorTypes.Error401('Username or password not correct.'));
             } else {
                 const payload = {
                     sub: user._id,

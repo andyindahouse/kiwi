@@ -1,6 +1,6 @@
 'use strict';
 
-const error_types = {
+const errorTypes = {
     Error400: function (msg) {
         const err = Error.apply(this, [msg]);
         this.name = err.name = 'Error400';
@@ -38,4 +38,4 @@ const error_types = {
     },
 };
 
-module.exports = error_types;
+module.exports = errorTypes;
