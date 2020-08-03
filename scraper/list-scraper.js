@@ -21,22 +21,42 @@ const getProductsPage = async (url) => {
     const getProducts = async (url) => {
         await page.goto(url);
         await page.waitFor(config.timeout);
-        const data = await page.evaluate(() =>
-            [...document.querySelectorAll('.grid-item')]
+        const data = await page.evaluate(() => {
+            const getDiscountType = (specialOffer) => {
+                if (/(\d+).* unidad al (\d+).* de descuento/.test(specialOffer)) {
+                    const [text, valueOne, valueTwo] = /(\d+).* unidad al (\d+).* de descuento/.exec(
+                        specialOffer
+                    );
+                    return {
+                        specialOffer: 'offerDisscount',
+                        specialOfferValue: [valueOne, valueTwo],
+                    };
+                }
+                if (/Lleva (\d+) y paga (\d+)/.test(specialOffer)) {
+                    const [text, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
+                    return {
+                        specialOffer: 'quantityDisscount',
+                        specialOfferValue: [valueOne, valueTwo],
+                    };
+                }
+            };
+            return [...document.querySelectorAll('.grid-item')]
                 .filter((elem) => !!elem)
                 .map((elem) => {
                     const jsonData = elem.getAttribute('data-json');
+                    const offerData = elem.querySelector('.offer-description');
                     if (jsonData) {
                         return {
                             ...JSON.parse(elem.getAttribute('data-json')),
                             img: 'https:' + elem.querySelector(' * > img').getAttribute('src'),
                             url: elem.querySelector('a').getAttribute('href'),
+                            ...(offerData && {...getDiscountType(offerData.textContent)}),
                         };
                     }
                     return null;
                 })
-                .filter(Boolean)
-        );
+                .filter(Boolean);
+        });
         return data;
     };
     const browser = await puppeteer.launch(config.pupetterOptions);
@@ -54,7 +74,10 @@ const getProductsPage = async (url) => {
     let urlWithPage = `${url}`;
     let client;
     try {
-        client = await mongodb.MongoClient.connect(config.configMongo.url, {useNewUrlParser: true});
+        client = await mongodb.MongoClient.connect(config.configMongo.url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         const collection = await client.db(config.configMongo.db).collection(config.scrapingUrl.collection);
         for (let i = 1; i <= pages; i++) {
             urlWithPage = `${url}${i}`;
@@ -62,7 +85,7 @@ const getProductsPage = async (url) => {
             prods.forEach(async (product) => {
                 const productData = {
                     ...product,
-                    updateDate: '$$NOW',
+                    updateDate: new Date(),
                 };
                 await collection.findOne({id: productData.id});
                 const result = await collection.updateOne(
@@ -74,7 +97,7 @@ const getProductsPage = async (url) => {
                 if (result.matchedCount === 0) {
                     await collection.insertOne({
                         ...productData,
-                        createDate: '$$NOW',
+                        createDate: new Date(),
                     });
                 }
             });

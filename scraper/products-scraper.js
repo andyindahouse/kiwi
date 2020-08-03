@@ -60,7 +60,7 @@ const getOpenFoodDataByEan = async (ean) => {
                     $set: {
                         ean: productData.ean,
                         ...openFoodData,
-                        updatedDate: '$$NOW',
+                        updatedDate: new Date(),
                     },
                 }
             );
