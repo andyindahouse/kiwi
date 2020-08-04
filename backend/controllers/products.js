@@ -8,10 +8,10 @@ const Product = require('../models/product');
 const errorTypes = require('./errorTypes');
 
 const controller = {
-    products: async ({params}, res, next) => {
-        const pageNumber = parseInt(params.pageNumber || 0);
-        const pageSize = parseInt(params.pageSize || 20);
-        const searchText = params.searchText;
+    products: async ({query}, res, next) => {
+        const pageNumber = parseInt(query.pageNumber || 0);
+        const pageSize = parseInt(query.pageSize || 20);
+        const searchText = query.searchText;
 
         const limit = pageSize;
         const skip = pageNumber * pageSize;
