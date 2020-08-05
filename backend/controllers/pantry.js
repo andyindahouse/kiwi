@@ -9,16 +9,7 @@ const controller = {
         try {
             const pantry = await Pantry.findOne({email: req.user.email});
             if (pantry && pantry.products) {
-                const productsId = pantry.products.map((product) => product.ean);
-                const products = await Product.find({ean: {$in: productsId}});
-                const pantryWithProducts = products.map((product, index) => {
-                    return {
-                        ...product._doc,
-                        quantity: pantry.products[index].quantity,
-                        date: pantry.products[index].date,
-                    };
-                });
-                res.json({data: pantryWithProducts});
+                res.json({data: pantry.products});
             } else {
                 res.json({data: []});
             }
@@ -41,16 +32,7 @@ const controller = {
                 }
             );
             if (pantry && pantry.products) {
-                const productsId = pantry.products.map((product) => product.ean);
-                const products = await Product.find({ean: {$in: productsId}});
-                const pantryWithProducts = products.map((product, index) => {
-                    return {
-                        ...product._doc,
-                        quantity: pantry.products[index].quantity,
-                        date: pantry.products[index].date,
-                    };
-                });
-                res.json({data: pantryWithProducts});
+                res.json({data: pantry.products});
             } else {
                 res.json({data: []});
             }

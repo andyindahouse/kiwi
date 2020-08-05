@@ -5,11 +5,11 @@ const PORT = 3000;
 
 //Mongo config
 const CONFIG_MONGO = {
-    URL: 'mongodb://root:example@localhost/test?authSource=admin&w=1',
-    DB: 'test',
+    URL: 'mongodb://root:example@localhost/kiwi?authSource=admin&w=1',
+    DB: 'kiwi',
 };
 
-const PRODUCTS_COLLECTION = 'alimentacion-general';
+const PRODUCTS_COLLECTION = 'products';
 
 // Passport config
 const PASSPORT_CONFIG = {
