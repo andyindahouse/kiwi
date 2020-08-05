@@ -40,7 +40,6 @@ const getOpenFoodDataByEan = async (ean) => {
 
 (async () => {
     console.log('Starting scraping products...');
-    console.log(`Scraping category ${config.scrapingUrl.collection}...`);
     let client;
     try {
         client = await mongodb.MongoClient.connect(config.configMongo.url, {
