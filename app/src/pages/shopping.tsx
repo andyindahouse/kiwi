@@ -61,6 +61,33 @@ const useStyles = createUseStyles((theme) => ({
     },
 }));
 
+const ShoppingHeader = ({
+    searchText,
+    handleSearchChange,
+}: {
+    searchText: string | null;
+    handleSearchChange: (value: string | null) => void;
+}) => (
+    <>
+        <IonToolbar>
+            <IonTitle size="large">Comprar</IonTitle>
+        </IonToolbar>
+        <IonToolbar>
+            <IonSearchbar
+                value={searchText}
+                onIonChange={(e) => {
+                    handleSearchChange(e.detail.value || null);
+                }}
+                debounce={1000}
+                animated
+                placeholder="Busca tus productos aquí"
+                showCancelButton="focus"
+                cancelButtonText="Borrar"
+            ></IonSearchbar>
+        </IonToolbar>
+    </>
+);
+
 const ShoppingContent = ({
     isLoading,
     products,
@@ -182,33 +209,37 @@ const Shopping: React.FC = () => {
 
     return (
         <IonPage>
+            <IonHeader translucent>
+                <ShoppingHeader
+                    searchText={filter.searchText}
+                    handleSearchChange={(value) => {
+                        if (products && products.length > 0) {
+                            setProducts(null);
+                        }
+                        setDisableInfiniteScroll(false);
+                        setFilter({
+                            pageNumber: 0,
+                            searchText: value,
+                        });
+                    }}
+                />
+            </IonHeader>
             <IonContent>
                 <IonHeader collapse="condense">
-                    <IonToolbar>
-                        <IonTitle size="large">Comprar</IonTitle>
-                    </IonToolbar>
-                    <IonToolbar>
-                        <IonSearchbar
-                            value={filter.searchText}
-                            onIonChange={(e) => {
-                                if (products && products.length > 0) {
-                                    setProducts(null);
-                                }
-                                setDisableInfiniteScroll(false);
-                                setFilter({
-                                    pageNumber: 0,
-                                    searchText: e.detail.value ?? null,
-                                });
-                            }}
-                            debounce={1000}
-                            animated
-                            placeholder="Busca tus productos aquí"
-                            showCancelButton="focus"
-                            cancelButtonText="Borrar"
-                        ></IonSearchbar>
-                    </IonToolbar>
+                    <ShoppingHeader
+                        searchText={filter.searchText}
+                        handleSearchChange={(value) => {
+                            if (products && products.length > 0) {
+                                setProducts(null);
+                            }
+                            setDisableInfiniteScroll(false);
+                            setFilter({
+                                pageNumber: 0,
+                                searchText: value,
+                            });
+                        }}
+                    />
                 </IonHeader>
-
                 <Container>
                     {products ? (
                         <ShoppingContent
