@@ -70,9 +70,6 @@ const ShoppingHeader = ({
 }) => (
     <>
         <IonToolbar>
-            <IonTitle size="large">Comprar</IonTitle>
-        </IonToolbar>
-        <IonToolbar>
             <IonSearchbar
                 value={searchText}
                 onIonChange={(e) => {

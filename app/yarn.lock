@@ -1136,6 +1136,11 @@
   dependencies:
     tslib "^1.9.0"
 
+"@capacitor/ios@^2.3.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-2.4.0.tgz#41302eee5c0b232755b61f7a978550f191e2a030"
+  integrity sha512-G4WcQHS4RuK94Ncoi5K+r12DWPqkB8yZKupQrJaGT1S/Zyc3mcA9m1f4HwRPlYCwyxQ6lCd8+N9GYxLu7Kv+SA==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -1719,7 +1724,7 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.9.17":
+"@types/react@^16.9.44":
   version "16.9.44"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.44.tgz#da84b179c031aef67dc92c33bd3401f1da2fa3bc"
   integrity sha512-BtLoJrXdW8DVZauKP+bY4Kmiq7ubcJq+H/aCpRfvPF7RAT3RwR73Sg8szdc2YasbAlWBDrQ6Q+AFM0KwtQY+WQ==
