@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {restaurantOutline} from 'ionicons/icons';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import Fragment from '../components/fragment';
 import Container from '../components/container';
+import {restaurantOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
     test: {
@@ -11,14 +11,14 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const Nutrition: React.FC = () => {
+const Others: React.FC = () => {
     const classes = useStyles();
 
     return (
         <IonPage>
             <IonHeader collapse="condense">
                 <IonToolbar>
-                    <IonTitle size="large">Nutrition</IonTitle>
+                    <IonTitle size="large">Otros</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -30,4 +30,4 @@ const Nutrition: React.FC = () => {
     );
 };
 
-export default Nutrition;
+export default Others;

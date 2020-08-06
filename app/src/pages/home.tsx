@@ -1,12 +1,13 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import Fragment from '../components/fragment';
+import {rocketOutline, warningOutline} from 'ionicons/icons';
+import Container from '../components/container';
+import Typography from '../components/typography';
+import FoodToExpire from '../components/food-to-expire';
 
-const useStyles = createUseStyles((theme) => ({
-    test: {
-        color: 'red',
-    },
-}));
+const useStyles = createUseStyles(() => ({}));
 
 const Home: React.FC = () => {
     const classes = useStyles();
@@ -14,17 +15,24 @@ const Home: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Home</IonTitle>
+                    <IonTitle>Inicio</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large" className={classes.test}>
-                            Home
-                        </IonTitle>
+                        <IonTitle size="large">Inicio</IonTitle>
                     </IonToolbar>
                 </IonHeader>
+                <Container>
+                    <Fragment
+                        icon={rocketOutline}
+                        color="secondary"
+                        text="Ver pedido en curso"
+                        link="/others/orders"
+                    ></Fragment>
+                    <FoodToExpire />
+                </Container>
             </IonContent>
         </IonPage>
     );

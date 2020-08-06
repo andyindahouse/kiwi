@@ -1,15 +1,16 @@
 import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
-import {IonIcon, IonButton} from '@ionic/react';
-import {Product} from '../api';
+import {createUseStyles, useTheme} from 'react-jss';
+import {IonIcon} from '@ionic/react';
+import {Product} from '../models';
 import {IonSpinner} from '@ionic/react';
+import Typography from './typography';
 
-const useStyles = createUseStyles((theme) => ({
+const useStyles = createUseStyles(() => ({
     container: {
         background: '#FFFFFF',
         height: 210,
-        boxShadow: '0px 2px 9px rgba(0, 0, 0, 0.25)',
+        boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.25)',
         borderRadius: 8,
         overflow: 'hidden',
         position: 'relative',
@@ -23,7 +24,7 @@ const useStyles = createUseStyles((theme) => ({
         top: 0,
         right: 0,
         left: 0,
-        backgroundColor: '#EC445A',
+        backgroundColor: ({theme}) => theme.palette.primary.main,
         borderRadius: 32,
         display: 'flex',
         alignItems: 'center',
@@ -52,20 +53,11 @@ const useStyles = createUseStyles((theme) => ({
         lineClamp: 3,
         display: 'box',
         boxOrient: 'vertical',
-        fontSize: 11,
-        marginTop: 4,
-        marginBottom: 4,
     },
     price: {
-        fontWeight: 500,
-        '& > small': {
-            color: '#92949C',
-        },
+        fontWeight: 600,
     },
     subtitle: {
-        color: '#92949C',
-        fontSize: 11,
-        fontWeight: 500,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         lineClamp: 1,
@@ -81,7 +73,7 @@ const useStyles = createUseStyles((theme) => ({
 
 interface Props {
     handleClickDetail: () => void;
-    handleClickCart: (units: number) => void;
+    updateShopping: (type: 'addProduct' | 'removeProduct') => void;
     units: number;
 }
 
@@ -92,12 +84,12 @@ const ProductCard = ({
     id,
     ean,
     discount,
-    units = 0,
     handleClickDetail,
-    handleClickCart,
+    updateShopping,
 }: Props & Product) => {
-    const classes = useStyles();
-    const [unitx, setUnitx] = React.useState(0);
+    const theme = useTheme();
+    const classes = useStyles({theme});
+    const [units, setUnits] = React.useState(0);
     const [openUnits, setOpenUnits] = React.useState(false);
     const [showSpinner, setShowSpinner] = React.useState(false);
 
@@ -136,13 +128,14 @@ const ProductCard = ({
                         className={classes.icon}
                         icon={removeCircleSharp}
                         onClick={() => {
-                            if (unitx > 0) {
-                                setUnitx(unitx - 1);
+                            if (units > 0) {
+                                setUnits(units - 1);
+                                updateShopping('removeProduct');
                             }
                         }}
                     />
                 )}
-                {(unitx > 0 || openUnits) &&
+                {(units > 0 || openUnits) &&
                     (showSpinner ? (
                         <IonSpinner className={classes.spinner} name="crescent" />
                     ) : (
@@ -151,15 +144,16 @@ const ProductCard = ({
                             onClick={() => {
                                 setOpenUnits(true);
                             }}
-                        >{`${unitx}ud`}</p>
+                        >{`${units}ud`}</p>
                     ))}
-                {(unitx === 0 || openUnits) && (
+                {(units === 0 || openUnits) && (
                     <IonIcon
                         className={classes.icon}
                         icon={addCircleSharp}
                         onClick={() => {
                             setOpenUnits(true);
-                            setUnitx(unitx + 1);
+                            setUnits(units + 1);
+                            updateShopping('addProduct');
                         }}
                     />
                 )}
@@ -167,11 +161,15 @@ const ProductCard = ({
             <div role="button" onClick={handleClickDetail}>
                 <div className={classes.image} style={{backgroundImage: `url(${img})`}}></div>
                 <div className={classes.content}>
-                    <p className={classes.price}>
-                        {price.final}€<small> / ud</small>
-                    </p>
-                    <p className={classes.name}>{name}</p>
-                    <p className={classes.subtitle}>Ud 100 gramos</p>
+                    <Typography className={classes.price}>
+                        {price.final}€ <Typography variant="subtitle2"> / ud</Typography>
+                    </Typography>
+                    <Typography variant="body2" gutterBottom={4} className={classes.name}>
+                        {name}
+                    </Typography>
+                    <Typography variant="subtitle2" className={classes.subtitle}>
+                        Ud 100 gramos
+                    </Typography>
                 </div>
             </div>
         </div>

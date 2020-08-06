@@ -12,19 +12,22 @@ import {
     IonButton,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
-    IonProgressBar,
 } from '@ionic/react';
-import kiwiApi, {Product, getProductsQueryParams} from '../api';
+import kiwiApi, {GetProductsQueryParams} from '../api';
+import {Product} from '../models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import {search} from 'ionicons/icons';
+import Container from '../components/container';
+import {useShoppingCart} from '../contexts/shopping-cart';
+import {cartOutline} from 'ionicons/icons';
+import Typography from '../components/typography';
+import Fragment from '../components/fragment';
 
 const useStyles = createUseStyles((theme) => ({
     container: {
         display: 'grid',
         gridGap: 8,
         gridTemplateColumns: '1fr 1fr 1fr',
-        padding: 16,
     },
     center: {
         marginTop: 100,
@@ -75,6 +78,16 @@ const ShoppingContent = ({
     const infiniteScrollRef = React.useRef<HTMLIonInfiniteScrollElement | null>(
         document.getElementById('infiniteScroll') as HTMLIonInfiniteScrollElement
     );
+    const {products: contextProducts, dispatch} = useShoppingCart();
+
+    React.useEffect(() => {
+        console.log('asdf');
+        kiwiApi.setCart({products: contextProducts}).then((res) => {
+            if (!res) {
+                throw new Error('Carrito desactualizado');
+            }
+        });
+    }, [contextProducts]);
 
     React.useEffect(() => {
         if (!isLoading) {
@@ -88,36 +101,40 @@ const ShoppingContent = ({
     }, [isLoading]);
 
     if (products.length === 0 && !isLoading) {
-        console.log('zeroooo');
-        return <IonContent>No hemos encontrado productos para esa busqueda</IonContent>;
+        return <div>No hemos encontrado productos para esa busqueda</div>;
     }
 
     return (
         <>
-            <IonContent>
-                <div className={classes.container}>
-                    {products.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            units={0}
-                            handleClickCart={() => {}}
-                            handleClickDetail={() => {
-                                setSelected(product);
-                                setShowModal(true);
-                            }}
-                            {...product}
-                        />
-                    ))}
-                </div>
-                <IonInfiniteScroll
-                    threshold="100px"
-                    id="infiniteScroll"
-                    disabled={disableInfiniteScroll}
-                    onIonInfinite={() => handleScrollEvent()}
-                >
-                    <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
-                </IonInfiniteScroll>
-            </IonContent>
+            <div className={classes.container}>
+                {products.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        units={0}
+                        updateShopping={(type) => {
+                            console.log(type, product);
+                            dispatch({
+                                type,
+                                product,
+                            });
+                        }}
+                        handleClickDetail={() => {
+                            setSelected(product);
+                            setShowModal(true);
+                        }}
+                        {...product}
+                    />
+                ))}
+            </div>
+            <IonInfiniteScroll
+                threshold="100px"
+                id="infiniteScroll"
+                disabled={disableInfiniteScroll}
+                onIonInfinite={() => handleScrollEvent()}
+            >
+                <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
+            </IonInfiniteScroll>
+
             <IonModal isOpen={showModal}>
                 <IonHeader translucent>
                     <IonToolbar>
@@ -137,24 +154,28 @@ const ShoppingContent = ({
 
 const Shopping: React.FC = () => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState<getProductsQueryParams>({
-        searchText: 'ace',
+    const [filter, setFilter] = React.useState<GetProductsQueryParams>({
+        searchText: '',
         pageNumber: 0,
     });
     const [products, setProducts] = React.useState<ReadonlyArray<Product> | null>(null);
     const [isLoading, setLoading] = React.useState(false);
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
+    const [totalSize, setTotalSize] = React.useState<number | null>(null);
+
+    React.useEffect(() => {
+        if (products && products.length === totalSize) {
+            setDisableInfiniteScroll(true);
+        }
+    }, [products, totalSize]);
 
     React.useEffect(() => {
         if (filter.searchText) {
             setLoading(true);
             kiwiApi.getProducts(filter).then((res) => {
                 setLoading(false);
-                if (products && products.length + res.content.length === res.totalSize) {
-                    setDisableInfiniteScroll(true);
-                } else {
-                    setProducts((products ?? []).concat(res.content));
-                }
+                setTotalSize(res.totalSize);
+                setProducts((products) => (products ?? []).concat(res.content));
             });
         }
     }, [filter]);
@@ -164,7 +185,7 @@ const Shopping: React.FC = () => {
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">Shopping</IonTitle>
+                        <IonTitle size="large">Comprar</IonTitle>
                     </IonToolbar>
                     <IonToolbar>
                         <IonSearchbar
@@ -188,24 +209,29 @@ const Shopping: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
-                {products ? (
-                    <ShoppingContent
-                        products={products}
-                        isLoading={isLoading}
-                        handleScrollEvent={() => {
-                            setFilter({
-                                ...filter,
-                                pageNumber: filter.pageNumber + 1,
-                            });
-                        }}
-                        disableInfiniteScroll={disableInfiniteScroll}
-                    />
-                ) : (
-                    <h2 className={classes.center}>
-                        Busca tus productos <br />
-                        directamente en el buscador
-                    </h2>
-                )}
+                <Container>
+                    {products ? (
+                        <ShoppingContent
+                            products={products}
+                            isLoading={isLoading}
+                            handleScrollEvent={() => {
+                                setFilter({
+                                    ...filter,
+                                    pageNumber: filter.pageNumber + 1,
+                                });
+                            }}
+                            disableInfiniteScroll={disableInfiniteScroll}
+                        />
+                    ) : (
+                        <>
+                            <Fragment icon={cartOutline} text="Tu compra actual" link="/shopping/cart" />
+                            <Typography variant="h2" gutterBottom={16} className={classes.center}>
+                                Busca tus productos <br />
+                                directamente en el buscador
+                            </Typography>
+                        </>
+                    )}
+                </Container>
             </IonContent>
         </IonPage>
     );

@@ -1,11 +1,17 @@
 import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
-import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
+import {IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {ellipse, square, triangle, homeSharp, cartSharp, nutritionSharp, menuSharp} from 'ionicons/icons';
+import {homeSharp, cartSharp, nutritionSharp, menuSharp} from 'ionicons/icons';
 import Home from './pages/home';
 import Shopping from './pages/shopping';
+import ShoppingCart from './pages/shopping-cart';
 import Nutrition from './pages/nutrition';
+import Others from './pages/others';
+import YourPantry from './pages/your-pantry';
+import {ThemeProvider} from 'react-jss';
+import palette from './theme/palette';
+import {ShoppingProvider} from './contexts/shopping-cart';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -28,30 +34,37 @@ import './theme/variables.css';
 
 const App: React.FC = () => (
     <IonApp>
-        <IonReactRouter>
-            <IonTabs>
-                <IonRouterOutlet>
-                    <Route path="/tab1" component={Home} exact={true} />
-                    <Route path="/tab2" component={Shopping} exact={true} />
-                    <Route path="/tab3" component={Nutrition} exact={true} />
-                    <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-                </IonRouterOutlet>
-                <IonTabBar slot="bottom">
-                    <IonTabButton tab="tab1" href="/tab1">
-                        <IonIcon icon={homeSharp} />
-                    </IonTabButton>
-                    <IonTabButton tab="tab2" href="/tab2">
-                        <IonIcon icon={cartSharp} />
-                    </IonTabButton>
-                    <IonTabButton tab="tab3" href="/tab3">
-                        <IonIcon icon={nutritionSharp} />
-                    </IonTabButton>
-                    <IonTabButton tab="tab3" href="/tab3">
-                        <IonIcon icon={menuSharp} />
-                    </IonTabButton>
-                </IonTabBar>
-            </IonTabs>
-        </IonReactRouter>
+        <ThemeProvider theme={{palette}}>
+            <ShoppingProvider>
+                <IonReactRouter>
+                    <IonTabs>
+                        <IonRouterOutlet>
+                            <Route path="/home" component={Home} exact={true} />
+                            <Route path="/shopping" component={Shopping} exact={true} />
+                            <Route path="/shopping/cart" component={ShoppingCart} exact={true} />
+                            <Route path="/nutrition" component={Nutrition} exact={true} />
+                            <Route path="/others" component={Others} exact={true} />
+                            <Route path="/others/your-pantry" component={YourPantry} exact={true} />
+                            <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
+                        </IonRouterOutlet>
+                        <IonTabBar slot="bottom">
+                            <IonTabButton tab="home" href="/home">
+                                <IonIcon icon={homeSharp} />
+                            </IonTabButton>
+                            <IonTabButton tab="shopping" href="/shopping">
+                                <IonIcon icon={cartSharp} />
+                            </IonTabButton>
+                            <IonTabButton tab="nutrition" href="/nutrition">
+                                <IonIcon icon={nutritionSharp} />
+                            </IonTabButton>
+                            <IonTabButton tab="others" href="/others">
+                                <IonIcon icon={menuSharp} />
+                            </IonTabButton>
+                        </IonTabBar>
+                    </IonTabs>
+                </IonReactRouter>
+            </ShoppingProvider>
+        </ThemeProvider>
     </IonApp>
 );
 
