@@ -1,7 +1,18 @@
-import {IonSpinner} from '@ionic/react';
+import {
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonSpinner,
+    IonButtons,
+    IonButton,
+    IonFooter,
+    IonIcon,
+} from '@ionic/react';
+import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
+import {initial} from 'lodash';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import kiwApi from '../api';
 import {Product} from '../models';
 import palette from '../theme/palette';
 import Typography from './typography';
@@ -40,71 +51,121 @@ const useStyles = createUseStyles(() => ({
     ml: {
         marginLeft: 16,
     },
+    icon: {},
+    footer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 }));
 
 interface Props {
-    units: number;
-    handleUpdateUnits: (units: number) => void;
+    product: Product;
+    updateShoppingCartProduct?: (product: Product) => void;
+    closeModal: () => void;
 }
 
-const ProductDetail = ({name, price, img, id, ean, discount, brand, units = 0}: Props & Product) => {
+const ProductDetail = ({product, closeModal, updateShoppingCartProduct}: Props) => {
     const classes = useStyles();
-    const [product, setProduct] = React.useState<Product | null>(null);
-    const [isLoading, setLoading] = React.useState(false);
-
-    React.useEffect(() => {
-        setLoading(true);
-        kiwApi.getProductDetail(ean).then((res) => {
-            setLoading(false);
-            setProduct(res);
-        });
-    }, [ean]);
+    const {name, price, img, id, ean, discount, brand, units: initialUnits, nutriments} = product;
+    const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
 
     return (
-        <div className={classes.container}>
-            <div className={classes.image} style={{backgroundImage: `url(${img})`}}>
-                <Typography variant="h2" className={classes.price}>
-                    {price.final}€
-                </Typography>
-            </div>
-            <Typography variant="subtitle1" gutterBottom={8}>
-                {brand}
-            </Typography>
-            <Typography variant="h2" gutterBottom={16}>
-                {name}
-            </Typography>
-            {isLoading ? (
-                <div>
-                    <IonSpinner name="crescent"></IonSpinner>
-                </div>
-            ) : (
-                <>
+        <>
+            <IonHeader translucent>
+                <IonToolbar>
+                    <IonTitle>Detalle</IonTitle>
+                    <IonButtons slot="end">
+                        <IonButton onClick={() => closeModal()}>Cerrar</IonButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent>
+                <div className={classes.container}>
+                    <div className={classes.image} style={{backgroundImage: `url(${img})`}}>
+                        <Typography variant="h2" className={classes.price}>
+                            {price.final}€
+                        </Typography>
+                    </div>
+                    <Typography variant="subtitle1" gutterBottom={8}>
+                        {brand}
+                    </Typography>
+                    <Typography variant="h2" gutterBottom={16}>
+                        {name}
+                    </Typography>
+
                     <Typography gutterBottom={16}>
-                        Información nutricional: (por {product?.nutriments.nutritionDataPer})
+                        Información nutricional: (por {nutriments.nutritionDataPer})
                     </Typography>
                     <div className={classes.nutriments}>
                         <Typography variant="subtitle1">Valor energético</Typography>
-                        <Typography>{product?.nutriments.energyKcal100g}</Typography>
+                        <Typography>{nutriments.energyKcal100g}</Typography>
                         <Typography variant="subtitle1">Grasas</Typography>
-                        <Typography>{product?.nutriments.fat100g}</Typography>
+                        <Typography>{nutriments.fat100g}</Typography>
                         <Typography variant="subtitle1" className={classes.ml}>
                             de las cuales saturadas
                         </Typography>
-                        <Typography>{product?.nutriments.saturedFat100g}</Typography>
+                        <Typography>{nutriments.saturedFat100g}</Typography>
                         <Typography variant="subtitle1">Hidratos de carbono</Typography>
-                        <Typography>{product?.nutriments.carbohydrates100g}</Typography>
+                        <Typography>{nutriments.carbohydrates100g}</Typography>
                         <Typography variant="subtitle1" className={classes.ml}>
                             de los cuales azúcares
                         </Typography>
-                        <Typography>{product?.nutriments.sugar100g}</Typography>
+                        <Typography>{nutriments.sugar100g}</Typography>
                         <Typography variant="subtitle1">Proteínas</Typography>
-                        <Typography>{product?.nutriments.proteins100g}</Typography>
+                        <Typography>{nutriments.proteins100g}</Typography>
                         <Typography variant="subtitle1">Sal</Typography>
-                        <Typography>{product?.nutriments.salt100g}</Typography>
+                        <Typography>{nutriments.salt100g}</Typography>
                     </div>
-                </>
+                </div>
+            </IonContent>
+            {updateShoppingCartProduct && (
+                <IonFooter>
+                    <IonToolbar>
+                        <div className={classes.footer}>
+                            <IonIcon
+                                size="large"
+                                role="button"
+                                className={classes.icon}
+                                icon={removeCircleSharp}
+                                onClick={() => {
+                                    if (units > 0) {
+                                        setUnits(units - 1);
+                                    }
+                                }}
+                            />
+                            <IonButton
+                                expand="full"
+                                onClick={() => {
+                                    updateShoppingCartProduct({
+                                        ...product,
+                                        units,
+                                    });
+                                    closeModal();
+                                }}
+                            >
+                                {initialUnits === 0
+                                    ? units === 0
+                                        ? 'Añadir unidad'
+                                        : `Añadir ${units} unidades`
+                                    : units === 0
+                                    ? 'Borrar producto'
+                                    : `Actualizar unidades (${units})`}
+                            </IonButton>
+                            <IonIcon
+                                size="large"
+                                role="button"
+                                className={classes.icon}
+                                icon={addCircleSharp}
+                                onClick={() => {
+                                    setUnits(units + 1);
+                                }}
+                            />
+                        </div>
+                    </IonToolbar>
+                </IonFooter>
             )}
-        </div>
+        </>
     );
 };
 

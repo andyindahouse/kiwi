@@ -17,10 +17,18 @@ const useStyles = createUseStyles(() => ({
     button: typos.button,
     caption: typos.caption,
     overline: typos.overline,
+    ellipsis: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        display: 'box',
+        boxOrient: 'vertical',
+    },
 }));
 
 interface Props {
     gutterBottom?: 0 | 4 | 8 | 16;
+    ellipsis?: boolean;
+    lineClamp?: number;
     variant?:
         | 'h1'
         | 'h2'
@@ -40,6 +48,8 @@ interface Props {
 const Typography = ({
     variant = 'body1',
     gutterBottom = 0,
+    ellipsis = false,
+    lineClamp = 1,
     className,
     children,
     ...props
@@ -49,8 +59,8 @@ const Typography = ({
         case 'h1':
             return (
                 <h1
-                    className={classnames(classes.h1, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h1, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -59,8 +69,8 @@ const Typography = ({
         case 'h2':
             return (
                 <h2
-                    className={classnames(classes.h2, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h2, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -69,8 +79,8 @@ const Typography = ({
         case 'h3':
             return (
                 <h3
-                    className={classnames(classes.h3, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h3, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -79,8 +89,8 @@ const Typography = ({
         case 'h4':
             return (
                 <h4
-                    className={classnames(classes.h4, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h4, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -89,8 +99,8 @@ const Typography = ({
         case 'h5':
             return (
                 <h5
-                    className={classnames(classes.h5, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h5, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -99,8 +109,8 @@ const Typography = ({
         case 'h6':
             return (
                 <h6
-                    className={classnames(classes.h6, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.h6, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -109,8 +119,8 @@ const Typography = ({
         case 'body1':
             return (
                 <p
-                    className={classnames(classes.body1, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.body1, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -119,8 +129,8 @@ const Typography = ({
         case 'body2':
             return (
                 <p
-                    className={classnames(classes.body2, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.body2, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -129,8 +139,8 @@ const Typography = ({
         case 'subtitle1':
             return (
                 <span
-                    className={classnames(classes.subtitle1, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.subtitle1, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -139,8 +149,8 @@ const Typography = ({
         case 'subtitle2':
             return (
                 <span
-                    className={classnames(classes.subtitle2, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.subtitle2, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -149,8 +159,8 @@ const Typography = ({
         case 'button':
             return (
                 <p
-                    className={classnames(classes.button, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.button, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -159,8 +169,8 @@ const Typography = ({
         case 'caption':
             return (
                 <p
-                    className={classnames(classes.caption, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.caption, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -169,8 +179,8 @@ const Typography = ({
         case 'overline':
             return (
                 <p
-                    className={classnames(classes.overline, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.overline, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}
@@ -179,8 +189,8 @@ const Typography = ({
         default:
             return (
                 <p
-                    className={classnames(classes.body1, className)}
-                    style={{marginBottom: gutterBottom}}
+                    className={classnames(classes.body1, {[classes.ellipsis]: ellipsis}, className)}
+                    style={{marginBottom: gutterBottom, ...(ellipsis ? {WebkitLineClamp: lineClamp} : {})}}
                     {...props}
                 >
                     {children}

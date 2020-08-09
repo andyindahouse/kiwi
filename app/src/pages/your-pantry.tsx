@@ -161,17 +161,7 @@ const ProductList = ({
             </IonInfiniteScroll>
 
             <IonModal isOpen={!!selected}>
-                <IonHeader translucent>
-                    <IonToolbar>
-                        <IonTitle>Detalle</IonTitle>
-                        <IonButtons slot="end">
-                            <IonButton onClick={() => setShowModal(false)}>Cerrar</IonButton>
-                        </IonButtons>
-                    </IonToolbar>
-                </IonHeader>
-                <IonContent>
-                    {selected && <ProductDetail units={0} handleUpdateUnits={() => {}} {...selected} />}
-                </IonContent>
+                {selected && <ProductDetail closeModal={() => setSelected(null)} product={selected} />}
             </IonModal>
         </>
     );

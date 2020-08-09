@@ -4,7 +4,7 @@ import {IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from
 import {IonReactRouter} from '@ionic/react-router';
 import {homeSharp, cartSharp, nutritionSharp, menuSharp} from 'ionicons/icons';
 import Home from './pages/home';
-import Shopping from './pages/shopping';
+import SearchProducts from './pages/search-products';
 import ShoppingCart from './pages/shopping-cart';
 import Nutrition from './pages/nutrition';
 import Others from './pages/others';
@@ -40,7 +40,7 @@ const App: React.FC = () => (
                     <IonTabs>
                         <IonRouterOutlet>
                             <Route path="/home" component={Home} exact={true} />
-                            <Route path="/shopping" component={Shopping} exact={true} />
+                            <Route path="/search" component={SearchProducts} exact={true} />
                             <Route path="/shopping/cart" component={ShoppingCart} exact={true} />
                             <Route path="/nutrition" component={Nutrition} exact={true} />
                             <Route path="/others" component={Others} exact={true} />
@@ -51,7 +51,7 @@ const App: React.FC = () => (
                             <IonTabButton tab="home" href="/home">
                                 <IonIcon icon={homeSharp} />
                             </IonTabButton>
-                            <IonTabButton tab="shopping" href="/shopping">
+                            <IonTabButton tab="shopping" href="/search">
                                 <IonIcon icon={cartSharp} />
                             </IonTabButton>
                             <IonTabButton tab="nutrition" href="/nutrition">
