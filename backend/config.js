@@ -19,4 +19,9 @@ const PASSPORT_CONFIG = {
     JWT_ALGORITHM: 'HS256',
 };
 
-module.exports = {PORT, CONFIG_MONGO, PRODUCTS_COLLECTION, PASSPORT_CONFIG};
+const FEES = {
+    deliverFee: 1.95,
+    shopperFee: 3.95,
+};
+
+module.exports = {PORT, CONFIG_MONGO, PRODUCTS_COLLECTION, PASSPORT_CONFIG, FEES};

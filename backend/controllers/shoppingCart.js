@@ -3,6 +3,7 @@
 const ShoppingCart = require('../models/shoppingCart');
 const Product = require('../models/product');
 const errorTypes = require('./errorTypes');
+const {FEES} = require('../config');
 
 const controller = {
     get: async (req, res, next) => {
@@ -11,12 +12,12 @@ const controller = {
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
-                let totalCost = 0;
+                let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalCost += parseFloat(costProduct.toFixed(2));
+                    totalShoppingCart += parseFloat(costProduct.toFixed(2));
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
@@ -24,9 +25,15 @@ const controller = {
                         cost: costProduct,
                     };
                 });
+                const totalCost = parseFloat(
+                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
+                );
                 res.json({
                     data: {
                         products: shoppingCartWithProducts,
+                        totalShoppingCart,
+                        deliverFee: FEES.deliverFee,
+                        shopperFee: FEES.shopperFee,
                         totalCost,
                     },
                 });
@@ -59,12 +66,12 @@ const controller = {
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
-                let totalCost = 0;
+                let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalCost += parseFloat(costProduct.toFixed(2));
+                    totalShoppingCart += parseFloat(costProduct.toFixed(2));
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
@@ -72,9 +79,15 @@ const controller = {
                         cost: costProduct,
                     };
                 });
+                const totalCost = parseFloat(
+                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
+                );
                 res.json({
                     data: {
                         products: shoppingCartWithProducts,
+                        totalShoppingCart,
+                        deliverFee: FEES.deliverFee,
+                        shopperFee: FEES.shopperFee,
                         totalCost,
                     },
                 });

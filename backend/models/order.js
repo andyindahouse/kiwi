@@ -7,10 +7,13 @@ const OrderSchema = Schema({
     _id: mongoose.ObjectId,
     email: String,
     createdDate: Date,
-    totalCost: Number,
     status: String,
     note: String,
     products: [],
+    deliverFee: Number,
+    shopperFee: Number,
+    totalShoppingCart: Number,
+    totalCost: Number,
 });
 
 module.exports = mongoose.model('Order', OrderSchema, 'orders');

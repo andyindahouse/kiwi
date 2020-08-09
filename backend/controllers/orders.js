@@ -6,6 +6,7 @@ const Product = require('../models/product');
 const Pantry = require('../models/pantry');
 const errorTypes = require('./errorTypes');
 const ObjectID = require('mongodb').ObjectID;
+const {FEES} = require('../config');
 
 const controller = {
     getAll: async ({query, user}, res, next) => {
@@ -60,12 +61,12 @@ const controller = {
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
-                let totalCost = 0;
+                let totalShoppingCart = 0;
                 const orderWithProducts = products.map((product, index) => {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalCost += parseFloat(costProduct.toFixed(2));
+                    totalShoppingCart += parseFloat(costProduct.toFixed(2));
                     return {
                         ...product._doc,
                         items: new Array(shopppingCart.products[index].units).fill({date: null}),
@@ -73,11 +74,17 @@ const controller = {
                         cost: costProduct,
                     };
                 });
+                const totalCost = parseFloat(
+                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
+                );
                 const order = {
                     _id: new ObjectID(),
                     email: user.email,
                     createdDate: new Date(),
                     products: orderWithProducts,
+                    totalShoppingCart,
+                    deliverFee: FEES.deliverFee,
+                    shopperFee: FEES.shopperFee,
                     totalCost,
                     status: 'pending',
                     note: body.note,
