@@ -11,15 +11,31 @@ const controller = {
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
+                let totalCost = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
+                    const costProduct = parseFloat(
+                        (shopppingCart.products[index].quantity * product._doc.price.final).toFixed(2)
+                    );
+                    totalCost += costProduct;
                     return {
                         ...product._doc,
                         quantity: shopppingCart.products[index].quantity,
+                        cost: costProduct,
                     };
                 });
-                res.json({data: shoppingCartWithProducts});
+                res.json({
+                    data: {
+                        products: shoppingCartWithProducts,
+                        totalCost,
+                    },
+                });
             } else {
-                res.json({data: []});
+                res.json({
+                    data: {
+                        products: [],
+                        totalCost: 0,
+                    },
+                });
             }
         } catch (err) {
             next(err);
