@@ -20,6 +20,7 @@ const controller = {
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
+                        note: shopppingCart.products[index].note,
                         cost: costProduct,
                     };
                 });
@@ -58,14 +59,25 @@ const controller = {
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
+                let totalCost = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
+                    const costProduct = parseFloat(
+                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
+                    );
+                    totalCost += costProduct;
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
                         note: shopppingCart.products[index].note,
+                        cost: costProduct,
                     };
                 });
-                res.json({data: shoppingCartWithProducts});
+                res.json({
+                    data: {
+                        products: shoppingCartWithProducts,
+                        totalCost,
+                    },
+                });
             } else {
                 res.json({data: []});
             }
