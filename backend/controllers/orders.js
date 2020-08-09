@@ -66,9 +66,6 @@ const controller = {
                         (shopppingCart.products[index].quantity * product._doc.price.final).toFixed(2)
                     );
                     totalCost += costProduct;
-                    const prod = body.products
-                        ? body.products.find((prod) => prod.ean === product.ean)
-                        : null;
                     return {
                         ...product._doc,
                         items: new Array(shopppingCart.products[index].quantity).fill({date: null}),
@@ -77,7 +74,7 @@ const controller = {
                     };
                 });
                 const order = {
-                    _id: new ObjectID(body.id),
+                    _id: new ObjectID(),
                     email: user.email,
                     createdDate: new Date(),
                     products: orderWithProducts,
