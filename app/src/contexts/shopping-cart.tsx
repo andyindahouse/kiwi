@@ -1,61 +1,50 @@
 import * as React from 'react';
 import {Product, ShoppingCart} from '../models';
 
-type Action =
-    | {
-          type: 'addProduct';
-          product: Product;
-      }
-    | {
-          type: 'removeProduct';
-          product: Product;
-      };
+export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
+export type UpdateShoppingCartProduct = {
+    type: 'UPDATE_SHOPPING_CART_PRODUCT';
+    product: Product;
+};
+
+export const SYNC_SHOPPING_CART = 'SYNC_SHOPPING_CART';
+export type SyncShoppingCart = {
+    type: 'SYNC_SHOPPING_CART';
+    shoppingCart: ShoppingCart;
+};
+
+type Actions = UpdateShoppingCartProduct | SyncShoppingCart;
 
 const initialState = {
     products: [],
 };
 
-const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<any>}>({
+const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<Actions>}>({
     ...initialState,
-    dispatch: () => null,
+    dispatch: (action: Actions) => null,
 });
 
-function reducer(state: ShoppingCart, action: Action) {
+function reducer(state: ShoppingCart, action: Actions) {
+    console.log('ACTION:', action, state);
     switch (action.type) {
-        case 'addProduct': {
-            const productIndex = state.products.findIndex((e) => e.id === action.product.id);
-
-            return {
-                ...state,
-                products:
-                    productIndex !== -1
-                        ? [
-                              ...state.products.slice(0, productIndex),
-                              {
-                                  ...state.products[productIndex],
-                                  units: state.products[productIndex].units + 1,
-                              },
-                              ...state.products.slice(productIndex + 1),
-                          ]
-                        : state.products.concat([{...action.product, units: 1}]),
-            };
+        case SYNC_SHOPPING_CART: {
+            return action.shoppingCart;
         }
-        case 'removeProduct': {
+        case UPDATE_SHOPPING_CART_PRODUCT: {
             const productIndex = state.products.findIndex((e) => e.id === action.product.id);
 
             if (productIndex === -1) {
-                return state;
+                return {
+                    products: [...state.products, action.product],
+                };
             }
 
-            const product = state.products[productIndex];
-
-            if (product.units === 1) {
+            if (action.product.units === 0) {
                 return {
                     ...state,
-                    products: [
-                        ...state.products.slice(0, productIndex),
-                        ...state.products.slice(productIndex + 1),
-                    ],
+                    products: state.products
+                        .slice(0, productIndex)
+                        .concat(state.products.slice(productIndex + 1)),
                 };
             }
 
@@ -64,8 +53,7 @@ function reducer(state: ShoppingCart, action: Action) {
                 products: [
                     ...state.products.slice(0, productIndex),
                     {
-                        ...state.products[productIndex],
-                        units: state.products[productIndex].units - 1,
+                        ...action.product,
                     },
                     ...state.products.slice(productIndex + 1),
                 ],
@@ -78,7 +66,11 @@ function reducer(state: ShoppingCart, action: Action) {
 }
 
 export const ShoppingProvider = ({children}: {children: React.ReactNode}) => {
-    const [shoppingCart, dispatch] = React.useReducer(reducer, initialState);
+    const [shoppingCart, dispatch] = React.useReducer((state: ShoppingCart, action: Actions) => {
+        const newState = reducer(state, action);
+        console.log('NEW STATE:', newState);
+        return newState;
+    }, initialState);
 
     return (
         <ShoppingContext.Provider value={{...shoppingCart, dispatch}}>{children}</ShoppingContext.Provider>

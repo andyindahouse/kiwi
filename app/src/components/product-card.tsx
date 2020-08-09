@@ -72,45 +72,48 @@ const useStyles = createUseStyles(() => ({
 }));
 
 interface Props {
+    product: Product;
     handleClickDetail: () => void;
-    updateShopping: (type: 'addProduct' | 'removeProduct') => void;
-    units: number;
+    updateUnits: (units: number) => void;
 }
 
-const ProductCard = ({
-    name,
-    price,
-    img,
-    id,
-    ean,
-    discount,
-    handleClickDetail,
-    updateShopping,
-}: Props & Product) => {
+const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
+    const {name, price, img, id, ean, discount, units: initialUnits} = product;
     const theme = useTheme();
     const classes = useStyles({theme});
-    const [units, setUnits] = React.useState(0);
+    const [units, setUnits] = React.useState(initialUnits);
     const [openUnits, setOpenUnits] = React.useState(false);
     const [showSpinner, setShowSpinner] = React.useState(false);
+    const timerTimeOutRef = React.useRef<number | null>(null);
+    const spinnerTimeOutRef = React.useRef<number | null>(null);
 
     React.useEffect(() => {
-        let timer: any;
-        let spinner: any;
+        setUnits(product.units);
+    }, [product.units]);
+
+    React.useEffect(() => {
         if (openUnits) {
-            spinner = window.setTimeout(() => {
+            setShowSpinner(false);
+            spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
+            timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
+
+            spinnerTimeOutRef.current = window.setTimeout(() => {
+                console.log('units', units);
                 setShowSpinner(true);
             }, 3000);
-            timer = window.setTimeout(() => {
+
+            timerTimeOutRef.current = window.setTimeout(() => {
+                updateUnits(units);
                 setShowSpinner(false);
                 setOpenUnits(false);
             }, 5000);
         }
 
         return () => {
-            clearTimeout(timer);
-            clearTimeout(spinner);
+            spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
+            timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
         };
-    }, [openUnits]);
+    }, [units]);
 
     return (
         <div className={classes.container}>
@@ -130,7 +133,6 @@ const ProductCard = ({
                         onClick={() => {
                             if (units > 0) {
                                 setUnits(units - 1);
-                                updateShopping('removeProduct');
                             }
                         }}
                     />
@@ -153,7 +155,6 @@ const ProductCard = ({
                         onClick={() => {
                             setOpenUnits(true);
                             setUnits(units + 1);
-                            updateShopping('addProduct');
                         }}
                     />
                 )}
@@ -168,7 +169,7 @@ const ProductCard = ({
                         {name}
                     </Typography>
                     <Typography variant="subtitle2" className={classes.subtitle}>
-                        Ud 100 gramos
+                        PROMO
                     </Typography>
                 </div>
             </div>

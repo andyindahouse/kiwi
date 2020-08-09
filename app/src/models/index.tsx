@@ -27,12 +27,10 @@ export interface Product {
     url: string;
     ean: string;
     nutriments: Nutriments;
+    units: number;
+    note?: string;
 }
 
 export interface ShoppingCart {
-    products: ReadonlyArray<
-        Product & {
-            units: number;
-        }
-    >;
+    products: ReadonlyArray<Product>;
 }
