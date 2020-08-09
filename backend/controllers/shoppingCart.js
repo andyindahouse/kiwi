@@ -62,6 +62,7 @@ const controller = {
                     return {
                         ...product._doc,
                         quantity: shopppingCart.products[index].quantity,
+                        note: shopppingCart.products[index].note,
                     };
                 });
                 res.json({data: shoppingCartWithProducts});

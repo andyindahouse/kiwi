@@ -69,11 +69,10 @@ const controller = {
                     const prod = body.products
                         ? body.products.find((prod) => prod.ean === product.ean)
                         : null;
-                    const note = prod ? prod.note : null;
                     return {
                         ...product._doc,
                         items: new Array(shopppingCart.products[index].quantity).fill({date: null}),
-                        note,
+                        note: shopppingCart.products[index].note,
                         cost: costProduct,
                     };
                 });
