@@ -186,8 +186,6 @@ const controller = {
                 );
                 const pantry = await Pantry.findOne({email: user.email});
                 const products = pantry ? pantry.products : [];
-                console.log(order);
-                console.log(products);
                 const productsAdded = order.products;
 
                 const pantrySaved = await Pantry.findOneAndUpdate(
