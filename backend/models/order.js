@@ -3,7 +3,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const CheckoutSchema = Schema({
+const OrderSchema = Schema({
+    _id: mongoose.ObjectId,
     email: String,
     createdDate: Date,
     totalCost: Number,
@@ -12,4 +13,4 @@ const CheckoutSchema = Schema({
     products: [],
 });
 
-module.exports = mongoose.model('Checkout', CheckoutSchema, 'checkouts');
+module.exports = mongoose.model('Order', OrderSchema, 'orders');
