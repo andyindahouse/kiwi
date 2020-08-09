@@ -8,7 +8,7 @@ const ShoppingCartSchema = Schema({
     products: [
         {
             ean: String,
-            quantity: Number,
+            units: Number,
             note: String,
         },
     ],

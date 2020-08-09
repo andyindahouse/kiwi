@@ -14,12 +14,12 @@ const controller = {
                 let totalCost = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
                     const costProduct = parseFloat(
-                        (shopppingCart.products[index].quantity * product._doc.price.final).toFixed(2)
+                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
                     totalCost += costProduct;
                     return {
                         ...product._doc,
-                        quantity: shopppingCart.products[index].quantity,
+                        units: shopppingCart.products[index].units,
                         cost: costProduct,
                     };
                 });
@@ -61,7 +61,7 @@ const controller = {
                 const shoppingCartWithProducts = products.map((product, index) => {
                     return {
                         ...product._doc,
-                        quantity: shopppingCart.products[index].quantity,
+                        units: shopppingCart.products[index].units,
                         note: shopppingCart.products[index].note,
                     };
                 });

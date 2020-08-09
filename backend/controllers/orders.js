@@ -63,12 +63,12 @@ const controller = {
                 let totalCost = 0;
                 const orderWithProducts = products.map((product, index) => {
                     const costProduct = parseFloat(
-                        (shopppingCart.products[index].quantity * product._doc.price.final).toFixed(2)
+                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
                     totalCost += costProduct;
                     return {
                         ...product._doc,
-                        items: new Array(shopppingCart.products[index].quantity).fill({date: null}),
+                        items: new Array(shopppingCart.products[index].units).fill({date: null}),
                         note: shopppingCart.products[index].note,
                         cost: costProduct,
                     };
