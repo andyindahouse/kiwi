@@ -66,7 +66,7 @@ const controller = {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalShoppingCart += parseFloat(costProduct.toFixed(2));
+                    totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
                         items: new Array(shopppingCart.products[index].units).fill({date: null}),
