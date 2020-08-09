@@ -16,7 +16,7 @@ const controller = {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalCost += costProduct;
+                    totalCost += parseFloat(costProduct.toFixed(2));
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
@@ -64,7 +64,7 @@ const controller = {
                     const costProduct = parseFloat(
                         (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
                     );
-                    totalCost += costProduct;
+                    totalCost += parseFloat(costProduct.toFixed(2));
                     return {
                         ...product._doc,
                         units: shopppingCart.products[index].units,
