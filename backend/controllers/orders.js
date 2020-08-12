@@ -191,21 +191,21 @@ const controller = {
                 const pantry = await Pantry.findOne({email: user.email});
                 const products = pantry ? pantry.products : [];
                 const productsAdded = order.products;
+                const pantryProducts = [...products];
 
-                const pantrySaved = await Pantry.findOneAndUpdate(
-                    {email: user.email},
-                    {email: user.email, products: [products, ...productsAdded]},
-                    {
-                        new: true,
-                        upsert: true,
-                        useFindAndModify: false,
+                productsAdded.forEach((product) => {
+                    const index = pantryProducts.findIndex((productData) => productData.ean === product.ean);
+                    if (index > -1) {
+                        const productIndex = pantryProducts[index];
+                        pantryProducts[index] = {
+                            ...productIndex,
+                            items: [...productIndex.items, ...product.items],
+                        };
+                    } else {
+                        pantryProducts.push(product);
                     }
-                );
-                if (pantrySaved) {
-                    res.json({data: updatedOrder});
-                } else {
-                    next(new errorTypes.Error404('Order not found.'));
-                }
+                });
+                console.log(pantryProducts);
             } else {
                 next(new errorTypes.Error404('Order not found.'));
             }
