@@ -4,6 +4,7 @@ const ShoppingCart = require('../models/shoppingCart');
 const Product = require('../models/product');
 const errorTypes = require('./errorTypes');
 const {FEES} = require('../config');
+const utils = require('./utils');
 
 const controller = {
     get: async (req, res, next) => {
@@ -14,9 +15,7 @@ const controller = {
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
-                    const costProduct = parseFloat(
-                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
-                    );
+                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
@@ -68,9 +67,7 @@ const controller = {
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product, index) => {
-                    const costProduct = parseFloat(
-                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
-                    );
+                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,

@@ -19,7 +19,7 @@ const controller = {
 
         try {
             const totalSize = await Product.find(textQuery).countDocuments();
-            const result = await Product.find(textQuery).sort({__id: -1}).skip(skip).limit(limit);
+            const result = await Product.find(textQuery).sort({_id: -1}).skip(skip).limit(limit);
             res.json({
                 pageNumber,
                 pageSize,

@@ -7,6 +7,7 @@ const Pantry = require('../models/pantry');
 const errorTypes = require('./errorTypes');
 const ObjectID = require('mongodb').ObjectID;
 const {FEES} = require('../config');
+const utils = require('./utils');
 
 const controller = {
     getAll: async ({query, user}, res, next) => {
@@ -18,7 +19,7 @@ const controller = {
             const skip = pageNumber * pageSize;
             try {
                 const totalSize = await Order.find().countDocuments();
-                const result = await Order.find().sort({__id: 1}).skip(skip).limit(limit);
+                const result = await Order.find().sort({_id: -1}).skip(skip).limit(limit);
                 res.json({
                     pageNumber,
                     pageSize,
@@ -41,7 +42,7 @@ const controller = {
             const skip = pageNumber * pageSize;
             try {
                 const totalSize = await Order.find({email: user.email}).countDocuments();
-                const result = await Order.find({email: user.email}).sort({__id: 1}).skip(skip).limit(limit);
+                const result = await Order.find({email: user.email}).sort({_id: -1}).skip(skip).limit(limit);
                 res.json({
                     pageNumber,
                     pageSize,
@@ -63,9 +64,7 @@ const controller = {
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const orderWithProducts = products.map((product, index) => {
-                    const costProduct = parseFloat(
-                        (shopppingCart.products[index].units * product._doc.price.final).toFixed(2)
-                    );
+                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
@@ -205,7 +204,6 @@ const controller = {
                         pantryProducts.push(product);
                     }
                 });
-                console.log(pantryProducts);
             } else {
                 next(new errorTypes.Error404('Order not found.'));
             }

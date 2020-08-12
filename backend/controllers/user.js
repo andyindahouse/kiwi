@@ -9,7 +9,6 @@ const errorTypes = require('./errorTypes');
 
 const controller = {
     register: (req, res, next) => {
-        console.log(req.body);
         User.findOne({username: req.body.username})
             .then((data) => {
                 if (data) {
