@@ -56,6 +56,22 @@ const controller = {
             next(err);
         }
     },
+    getById: async ({params, user}, res, next) => {
+        if (!params.id) {
+            next(new errorTypes.Error400('Falta parametro id.'));
+        }
+        try {
+            const id = new ObjectID(params.id);
+            const result = await Order.findOne({_id: id, email: user.email});
+            if (!result) {
+                next(new errorTypes.Error404('Order not found.'));
+            } else {
+                res.json(result);
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
     create: async ({user, body}, res, next) => {
         try {
             const shopppingCart = await ShoppingCart.findOne({email: user.email});
