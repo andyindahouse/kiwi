@@ -24,6 +24,7 @@ const middlewares = {
         else if (error instanceof errorTypes.Error404) res.status(404).json({error: error.message});
         else if (error instanceof errorTypes.Error403) res.status(403).json({error: error.message});
         else if (error instanceof errorTypes.Error401) res.status(401).json({error: error.message});
+        else if (error instanceof errorTypes.Error400) res.status(400).json({error: error.message});
         else if (error.name == 'ValidationError') res.status(200).json({error: error.message});
         else if (error.message) res.status(500).json({error: error.message});
         else next();
