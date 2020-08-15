@@ -29,7 +29,7 @@ router.get('/orders/:id', customMdw.ensureAuthenticated, OrdersController.getByI
 router.post('/orders/:id/status', customMdw.ensureAuthenticated, OrdersController.updateStatus);
 // router.put('/orders/:id/products', customMdw.ensureAuthenticated, OrdersController.addProduct);
 router.post('/orders/:id/products/:ean', customMdw.ensureAuthenticated, OrdersController.updateProduct);
-// router.delete('/orders/:id/products/:ean', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
+router.delete('/orders/:id/products/:ean', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
 router.post('/orders/:id/finalize', customMdw.ensureAuthenticated, OrdersController.finalizeOrder);
 
 router.get('/test', SampleController.unprotected);

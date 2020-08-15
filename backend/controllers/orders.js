@@ -152,18 +152,33 @@ const controller = {
             const id = new ObjectID(params.id);
             const order = await Order.findById(id);
             if (order) {
+                if (!body.items || !body.items.length) {
+                    return next(new errorTypes.Error400('Items cannot have length 0'));
+                }
                 const productIndex = order.products.findIndex((product) => params.ean === product.ean);
                 const products = [...order.products];
+                const oldCostProduct = products[productIndex].cost;
+                const newCostProduct = utils.getPrice(products[productIndex], body.items.length);
                 products[productIndex] = {
                     ...products[productIndex],
                     items: body.items,
+                    note: body.note,
+                    cost: newCostProduct,
                 };
+                const newTotalShoppingCart = parseFloat(
+                    (order.totalShoppingCart - oldCostProduct + newCostProduct).toFixed(2)
+                );
+                const newTotalCost = parseFloat(
+                    (order.totalCost - order.totalShoppingCart + newTotalShoppingCart).toFixed(2)
+                );
                 if (productIndex > -1) {
                     const updatedOrder = await Order.findOneAndUpdate(
                         {_id: id},
                         {
                             products,
                             updatedDate: new Date(),
+                            totalShoppingCart: newTotalShoppingCart,
+                            totalCost: newTotalCost,
                         },
                         {
                             new: true,
@@ -178,6 +193,50 @@ const controller = {
                     }
                 } else {
                     next(new errorTypes.Error404('Product not found.'));
+                }
+            } else {
+                next(new errorTypes.Error404('Order not found.'));
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
+    deleteProduct: async ({params, body}, res, next) => {
+        try {
+            const id = new ObjectID(params.id);
+            const order = await Order.findById(id);
+            if (order) {
+                const productToDelete = order.products.find((product) => params.ean === product.ean);
+                if (!productToDelete) {
+                    return next(new errorTypes.Error404('Product not found.'));
+                }
+                const products = order.products.filter((product) => params.ean !== product.ean);
+                const newTotalShoppingCart = parseFloat(
+                    (order.totalShoppingCart - productToDelete.cost).toFixed(2)
+                );
+                const newTotalCost = parseFloat(
+                    (order.totalCost - order.totalShoppingCart + newTotalShoppingCart).toFixed(2)
+                );
+
+                const updatedOrder = await Order.findOneAndUpdate(
+                    {_id: id},
+                    {
+                        products,
+                        updatedDate: new Date(),
+                        totalShoppingCart: newTotalShoppingCart,
+                        totalCost: newTotalCost,
+                        status: products.length ? order.status : 'cancelled',
+                    },
+                    {
+                        new: true,
+                        upsert: false,
+                        useFindAndModify: false,
+                    }
+                );
+                if (updatedOrder) {
+                    res.json({data: updatedOrder});
+                } else {
+                    next(new errorTypes.Error404('Order not found.'));
                 }
             } else {
                 next(new errorTypes.Error404('Order not found.'));
