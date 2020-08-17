@@ -8,7 +8,9 @@ import SearchProducts from './pages/search-products';
 import ShoppingCart from './pages/shopping-cart';
 import Nutrition from './pages/nutrition';
 import Others from './pages/others';
-import YourPantry from './pages/your-pantry';
+import Pantry from './pages/pantry';
+import Orders from './pages/orders';
+import Order from './pages/order';
 import {ThemeProvider} from 'react-jss';
 import palette from './theme/palette';
 import {ShoppingProvider} from './contexts/shopping-cart';
@@ -41,10 +43,12 @@ const App: React.FC = () => (
                         <IonRouterOutlet>
                             <Route path="/home" component={Home} exact={true} />
                             <Route path="/search" component={SearchProducts} exact={true} />
-                            <Route path="/shopping/cart" component={ShoppingCart} exact={true} />
+                            <Route path="/search/cart" component={ShoppingCart} exact={true} />
                             <Route path="/nutrition" component={Nutrition} exact={true} />
                             <Route path="/others" component={Others} exact={true} />
-                            <Route path="/others/your-pantry" component={YourPantry} exact={true} />
+                            <Route path="/others/pantry" component={Pantry} exact={true} />
+                            <Route path="/others/orders" component={Orders} exact={true} />
+                            <Route path="/others/orders/:id" component={Order} exact={true} />
                             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
                         </IonRouterOutlet>
                         <IonTabBar slot="bottom">

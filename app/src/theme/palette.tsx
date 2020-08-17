@@ -54,7 +54,9 @@ export default {
     background: {
         default: '#F6F6F6',
         paper: white,
+        brand: '#F5FFF5',
     },
     icon: white,
     divider: '#F6F6F6',
+    grey: '#DADADA',
 };

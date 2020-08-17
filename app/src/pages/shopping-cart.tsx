@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {documentTextOutline, trashOutline, chevronForwardOutline} from 'ionicons/icons';
+import {chevronForwardOutline} from 'ionicons/icons';
 import {
     IonContent,
     IonHeader,
@@ -12,20 +12,18 @@ import {
     IonButtons,
     IonButton,
     IonIcon,
-    IonItemSliding,
-    IonItem,
-    IonItemOptions,
-    IonItemOption,
     IonList,
     IonAlert,
     IonFooter,
 } from '@ionic/react';
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
-import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
+import {SYNC_SHOPPING_CART, UPDATE_SHOPPING_CART_PRODUCT, useShoppingCart} from '../contexts/shopping-cart';
 import Typography from '../components/typography';
+import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -62,16 +60,6 @@ const useStyles = createUseStyles(() => ({
         height: 32,
         color: palette.black,
     },
-    card: {
-        width: '100%',
-        display: 'grid',
-        gridTemplateColumns: '40px 1fr auto',
-        gridGap: 8,
-        alignItems: 'center',
-    },
-    img: {
-        width: 40,
-    },
     feeZone: {
         padding: 16,
         display: 'grid',
@@ -80,48 +68,10 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-type Props = {
-    product: Product;
-    handleClickDetail: () => void;
-    handleAddNote: () => void;
-    handleRemoveProduct: (product: Product) => void;
-};
-
-const ProductItem = ({product, handleClickDetail, handleAddNote, handleRemoveProduct}: Props) => {
-    const {name, units, price, img} = product;
-    const classes = useStyles();
-    return (
-        <IonItemSliding id="item100">
-            <IonItem onClick={handleClickDetail}>
-                <div className={classes.card}>
-                    <img className={classes.img} alt="product" src={img} />
-                    <div>
-                        <Typography ellipsis lineClamp={2}>
-                            {name}
-                        </Typography>
-                        <Typography variant="subtitle2">
-                            {units}ud x {price.final}€
-                        </Typography>
-                    </div>
-                    <Typography variant="h5">{price.final}€</Typography>
-                </div>
-            </IonItem>
-
-            <IonItemOptions side="end">
-                <IonItemOption onClick={handleAddNote}>
-                    <IonIcon slot="icon-only" icon={documentTextOutline} />
-                </IonItemOption>
-                <IonItemOption color="danger" onClick={() => handleRemoveProduct(product)}>
-                    <IonIcon slot="icon-only" icon={trashOutline} />
-                </IonItemOption>
-            </IonItemOptions>
-        </IonItemSliding>
-    );
-};
-
 const ShoppingCart = () => {
     const classes = useStyles();
-    const {products, dispatch} = useShoppingCart();
+    const history = useHistory();
+    const {products, totalCost, totalShoppingCart, deliverFee, shopperFee, dispatch} = useShoppingCart();
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
     const handleRemoveProduct = (product: Product) => {
@@ -157,6 +107,21 @@ const ShoppingCart = () => {
                     shoppingCart: res,
                 });
             });
+    };
+    const handleCheckout = () => {
+        kiwiApi.checkout().then((res) => {
+            history.push('/others/orders');
+            dispatch({
+                type: SYNC_SHOPPING_CART,
+                shoppingCart: {
+                    products: [],
+                    deliverFee: 0,
+                    shopperFee: 0,
+                    totalShoppingCart: 0,
+                    totalCost: 0,
+                },
+            });
+        });
     };
 
     React.useEffect(() => {
@@ -195,7 +160,9 @@ const ShoppingCart = () => {
                         </div>
                         {products.length === 0 && (
                             <>
-                                <Typography variant="h2">Añade productos desde la tab de compra</Typography>
+                                <Typography center variant="h3">
+                                    Añade productos desde la tab de compra
+                                </Typography>
                             </>
                         )}
                     </IonList>
@@ -224,7 +191,7 @@ const ShoppingCart = () => {
                             cssClass: 'secondary',
                         },
                         {
-                            text: 'Añadir',
+                            text: productWithNote?.note ? 'Modificar' : 'Añadir',
                             handler: ({note}: {note: string}) => {
                                 if (productWithNote && note) {
                                     handleAddNote({
@@ -239,31 +206,42 @@ const ShoppingCart = () => {
                 <IonModal isOpen={!!selected}>
                     {selected && (
                         <ProductDetail
-                            updateShoppingCartProduct={() => {}}
+                            updateProduct={(product) => {
+                                dispatch({
+                                    type: UPDATE_SHOPPING_CART_PRODUCT,
+                                    product,
+                                });
+                            }}
                             closeModal={() => setSelected(null)}
                             product={selected}
                         />
                     )}
                 </IonModal>
             </IonContent>
-            <IonFooter>
-                <IonToolbar>
-                    <div className={classes.feeZone}>
-                        <Typography variant="subtitle2">Carrito</Typography>
-                        <Typography variant="body2">99,65€</Typography>
-                        <Typography variant="subtitle2">Servicio de personal shopper</Typography>
-                        <Typography variant="body2">3,95€</Typography>
-                        <Typography variant="subtitle2">Envío a domicilio</Typography>
-                        <Typography variant="body2">1,95€</Typography>
-                        <Typography variant="subtitle2">Total</Typography>
-                        <Typography variant="body2">999,65€</Typography>
-                    </div>
-                    <IonButton expand="full" size="large">
-                        <Typography variant="h3">Realizar pedido</Typography>
-                        <IonIcon className={classes.icon} slot="end" icon={chevronForwardOutline}></IonIcon>
-                    </IonButton>
-                </IonToolbar>
-            </IonFooter>
+            {products && products.length > 0 && (
+                <IonFooter>
+                    <IonToolbar>
+                        <div className={classes.feeZone}>
+                            <Typography variant="subtitle2">Carrito</Typography>
+                            <Typography variant="body2">{totalShoppingCart}</Typography>
+                            <Typography variant="subtitle2">Personal shopper</Typography>
+                            <Typography variant="body2">{shopperFee}€</Typography>
+                            <Typography variant="subtitle2">Envío a domicilio</Typography>
+                            <Typography variant="body2">{deliverFee}€</Typography>
+                            <Typography variant="subtitle2">Total</Typography>
+                            <Typography variant="body2">{totalCost}€</Typography>
+                        </div>
+                        <IonButton expand="full" size="large" onClick={handleCheckout}>
+                            <Typography variant="h3">Realizar pedido</Typography>
+                            <IonIcon
+                                className={classes.icon}
+                                slot="end"
+                                icon={chevronForwardOutline}
+                            ></IonIcon>
+                        </IonButton>
+                    </IonToolbar>
+                </IonFooter>
+            )}
         </IonPage>
     );
 };
