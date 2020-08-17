@@ -1,0 +1,75 @@
+version: '3'
+networks:
+    mongo-net:
+services:
+    mongo1:
+        hostname: mongo1
+        container_name: localmongo1
+        image: mongo
+        expose:
+            - 27017
+        restart: always
+        networks:
+            - mongo-net
+        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'rs0']
+    mongo2:
+        hostname: mongo2
+        container_name: localmongo2
+        image: mongo
+        expose:
+            - 27017
+        restart: always
+        networks:
+            - mongo-net
+        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'rs0']
+    mongo3:
+        hostname: mongo3
+        container_name: localmongo3
+        image: mongo
+        expose:
+            - 27017
+        restart: always
+        networks:
+            - mongo-net
+        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'rs0']
+    mongosetup:
+        image: mongo
+        depends_on:
+            - mongo1
+            - mongo2
+            - mongo3
+        volumes:
+            - ./scripts:/scripts
+        restart: 'no'
+        networks:
+            - mongo-net
+        entrypoint: ['bash', '/scripts/mongo_setup.sh']
+    mongo-express:
+        image: mongo-express
+        depends_on:
+            - mongo1
+            - mongo2
+            - mongo3
+            - mongosetup
+        restart: always
+        networks:
+            - mongo-net
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_MONGODB_SERVER: 'mongo1,mongo2,mongo3'
+            ME_CONFIG_MONGODB_PORT: 27017
+            ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+            ME_CONFIG_MONGODB_ADMINPASSWORD: password
+    backend:
+        build: ../backend/.
+        depends_on:
+            - mongo1
+            - mongo2
+            - mongo3
+            - mongosetup
+        restart: always
+        networks:
+            - mongo-net
+        ports:
+            - '3000:3000'
