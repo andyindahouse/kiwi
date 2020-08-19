@@ -23,7 +23,7 @@ const Others: React.FC = () => {
             </IonHeader>
             <IonContent>
                 <Container>
-                    <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/" />
+                    <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/others/pantry" />
                 </Container>
             </IonContent>
         </IonPage>

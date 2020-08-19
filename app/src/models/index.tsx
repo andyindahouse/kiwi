@@ -1,5 +1,3 @@
-import {cogSharp} from 'ionicons/icons';
-
 export interface Nutriments {
     nutritionDataPer: string;
     energyKcal100g: string;
@@ -29,8 +27,27 @@ export interface Product {
     nutriments: Nutriments;
     units: number;
     note?: string;
+    items?: ReadonlyArray<string>;
 }
 
 export interface ShoppingCart {
     products: ReadonlyArray<Product>;
+    deliverFee: number;
+    shopperFee: number;
+    totalShoppingCart: number;
+    totalCost: number;
+}
+
+export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'completed';
+
+export interface Order {
+    _id: string;
+    createdDate: string;
+    email: string;
+    products: ReadonlyArray<Product>;
+    status: OrderStatus;
+    deliverFee: number;
+    shopperFee: number;
+    totalShoppingCart: number;
+    totalCost: number;
 }

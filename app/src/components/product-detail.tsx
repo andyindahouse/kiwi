@@ -3,14 +3,12 @@ import {
     IonHeader,
     IonTitle,
     IonToolbar,
-    IonSpinner,
     IonButtons,
     IonButton,
     IonFooter,
     IonIcon,
 } from '@ionic/react';
 import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
-import {initial} from 'lodash';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Product} from '../models';
@@ -57,17 +55,24 @@ const useStyles = createUseStyles(() => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    nameProduct: {
+        '&::first-letter': {
+            textTransform: 'uppercase',
+        },
+    },
 }));
 
 interface Props {
     product: Product;
-    updateShoppingCartProduct?: (product: Product) => void;
+    updateProduct?: (product: Product) => void;
     closeModal: () => void;
+    disabled?: boolean;
 }
 
-const ProductDetail = ({product, closeModal, updateShoppingCartProduct}: Props) => {
+const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
     const classes = useStyles();
-    const {name, price, img, id, ean, discount, brand, units: initialUnits, nutriments} = product;
+    const {name, price, img, brand, units: initialUnits, nutriments} = product;
+    console.log('initial units', initialUnits);
     const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
 
     return (
@@ -90,8 +95,8 @@ const ProductDetail = ({product, closeModal, updateShoppingCartProduct}: Props) 
                     <Typography variant="subtitle1" gutterBottom={8}>
                         {brand}
                     </Typography>
-                    <Typography variant="h2" gutterBottom={16}>
-                        {name}
+                    <Typography className={classes.nameProduct} variant="h3" gutterBottom={16}>
+                        {name.replace(brand, '').trim()}
                     </Typography>
 
                     <Typography gutterBottom={16}>
@@ -119,7 +124,7 @@ const ProductDetail = ({product, closeModal, updateShoppingCartProduct}: Props) 
                     </div>
                 </div>
             </IonContent>
-            {updateShoppingCartProduct && (
+            {updateProduct && !disabled && (
                 <IonFooter>
                     <IonToolbar>
                         <div className={classes.footer}>
@@ -137,7 +142,7 @@ const ProductDetail = ({product, closeModal, updateShoppingCartProduct}: Props) 
                             <IonButton
                                 expand="full"
                                 onClick={() => {
-                                    updateShoppingCartProduct({
+                                    updateProduct({
                                         ...product,
                                         units,
                                     });

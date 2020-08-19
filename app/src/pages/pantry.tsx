@@ -12,13 +12,13 @@ import {
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
-    IonButtons,
-    IonButton,
     IonFabButton,
     IonFab,
     IonIcon,
+    IonSegment,
+    IonSegmentButton,
+    IonBadge,
+    IonList,
 } from '@ionic/react';
 import {scanSharp} from 'ionicons/icons';
 import {Product} from '../models';
@@ -69,6 +69,15 @@ const useStyles = createUseStyles(() => ({
             color: palette.warning.dark,
         },
     },
+    segmentItem: {
+        display: 'flex',
+        flexDirection: 'columns',
+        alignItems: 'center',
+        justifyContent: 'center',
+        '& > p': {
+            marginRight: 8,
+        },
+    },
 }));
 
 const ProductList = ({
@@ -107,14 +116,11 @@ const ProductList = ({
 
     return (
         <>
-            <div>
-                <Typography variant="h2" gutterBottom={16}>
-                    Tus alimentos
-                </Typography>
-                {products.map((product) => (
-                    <IonItemSliding>
+            <IonList>
+                {products.map((product, index) => (
+                    <IonItemSliding key={index}>
                         <IonItemOptions side="start">
-                            <IonItemOption color="danger" expandable>
+                            <IonItemOption color="primary" expandable>
                                 Consumido
                             </IonItemOption>
                         </IonItemOptions>
@@ -130,7 +136,7 @@ const ProductList = ({
                                     src="https://cdn.grupoelcorteingles.es/SGFM/dctm/MEDIA03/201604/07/00118480200130____1__325x325.jpg"
                                 />
                                 <div>
-                                    <Typography className={classes.name}>
+                                    <Typography variant="body2" ellipsis lineClamp={3}>
                                         LA FINCA Vacuno Joven Dos Primaveras carne picada peso aproximado
                                         bandeja 600g
                                     </Typography>
@@ -144,22 +150,13 @@ const ProductList = ({
                         </IonItem>
 
                         <IonItemOptions side="end">
-                            <IonItemOption color="tertiary" expandable>
+                            <IonItemOption color="secondary" expandable>
                                 Abierto
                             </IonItemOption>
                         </IonItemOptions>
                     </IonItemSliding>
                 ))}
-            </div>
-            <IonInfiniteScroll
-                threshold="100px"
-                id="infiniteScroll"
-                disabled={disableInfiniteScroll}
-                onIonInfinite={() => handleScrollEvent()}
-            >
-                <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
-            </IonInfiniteScroll>
-
+            </IonList>
             <IonModal isOpen={!!selected}>
                 {selected && <ProductDetail closeModal={() => setSelected(null)} product={selected} />}
             </IonModal>
@@ -167,10 +164,10 @@ const ProductList = ({
     );
 };
 
-const YourPantry: React.FC = () => {
+const Pantry: React.FC = () => {
     const classes = useStyles();
     const [filter, setFilter] = React.useState({
-        searchText: 'asd',
+        searchText: '',
         pageNumber: 0,
     });
     const [products, setProducts] = React.useState<ReadonlyArray<any> | null>([
@@ -201,6 +198,11 @@ const YourPantry: React.FC = () => {
 
     return (
         <IonPage>
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle>Tu despensa</IonTitle>
+                </IonToolbar>
+            </IonHeader>
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
@@ -221,7 +223,7 @@ const YourPantry: React.FC = () => {
                             }}
                             debounce={1000}
                             animated
-                            placeholder="Busca tus productos aquí"
+                            placeholder="Buscar en tu despensa"
                             showCancelButton="focus"
                             cancelButtonText="Borrar"
                         ></IonSearchbar>
@@ -232,7 +234,39 @@ const YourPantry: React.FC = () => {
                         <IonIcon icon={scanSharp} />
                     </IonFabButton>
                 </IonFab>
-                <Fragment icon={scanSharp} text="Añade productos a tu despensa" link="/shopping/cart" />
+                <IonToolbar>
+                    <IonSegment
+                        scrollable
+                        onIonChange={(e) => console.log('Segment selected', e.detail.value)}
+                        value="all"
+                    >
+                        <IonSegmentButton value="all">
+                            <div className={classes.segmentItem}>
+                                <Typography variant="caption2">Todo</Typography>
+                                <IonBadge color="primary">11</IonBadge>
+                            </div>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="fridge">
+                            <div className={classes.segmentItem}>
+                                <Typography variant="caption2">Frigo</Typography>
+                                <IonBadge color="primary">6</IonBadge>
+                            </div>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="freezer">
+                            <div className={classes.segmentItem}>
+                                <Typography variant="caption2">Congelador</Typography>
+                                <IonBadge color="primary">23</IonBadge>
+                            </div>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="pantry">
+                            <div className={classes.segmentItem}>
+                                <Typography variant="caption2">Despensa</Typography>
+                                <IonBadge color="primary">111</IonBadge>
+                            </div>
+                        </IonSegmentButton>
+                    </IonSegment>
+                </IonToolbar>
+
                 {products ? (
                     <ProductList
                         products={products}
@@ -264,4 +298,4 @@ const YourPantry: React.FC = () => {
     );
 };
 
-export default YourPantry;
+export default Pantry;

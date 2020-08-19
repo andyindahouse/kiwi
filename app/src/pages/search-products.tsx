@@ -1,17 +1,7 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonSearchbar,
-    IonModal,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
-} from '@ionic/react';
-import kiwiApi, {GetProductsQueryParams} from '../api';
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar, IonModal} from '@ionic/react';
+import kiwiApi from '../api';
 import {Product} from '../models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
@@ -25,7 +15,7 @@ import {cartOutline} from 'ionicons/icons';
 import Typography from '../components/typography';
 import Fragment from '../components/fragment';
 import {extendRawProducts} from '../utils';
-import ShoppingCart from './shopping-cart';
+import InfiniteScroll from '../components/infinite-scroll';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -84,9 +74,6 @@ const ProductList = ({
     const classes = useStyles();
     const [showModal, setShowModal] = React.useState(false);
     const [selected, setSelected] = React.useState<Product | null>(null);
-    const infiniteScrollRef = React.useRef<HTMLIonInfiniteScrollElement | null>(
-        document.getElementById('infiniteScroll') as HTMLIonInfiniteScrollElement
-    );
     const {products: shoppingCart} = useShoppingCart();
 
     React.useEffect(() => {
@@ -96,17 +83,6 @@ const ProductList = ({
             }
         });
     }, [shoppingCart]);
-
-    React.useEffect(() => {
-        if (!isLoading) {
-            if (!infiniteScrollRef.current) {
-                infiniteScrollRef.current = document.getElementById(
-                    'infiniteScroll'
-                ) as HTMLIonInfiniteScrollElement;
-            }
-            infiniteScrollRef.current?.complete();
-        }
-    }, [isLoading]);
 
     if (products.length === 0 && !isLoading) {
         return <div>No hemos encontrado productos para esa busqueda</div>;
@@ -131,19 +107,16 @@ const ProductList = ({
                     />
                 ))}
             </div>
-            <IonInfiniteScroll
-                threshold="100px"
-                id="infiniteScroll"
+            <InfiniteScroll
+                isLoading={isLoading}
                 disabled={disableInfiniteScroll}
-                onIonInfinite={() => handleScrollEvent()}
-            >
-                <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
-            </IonInfiniteScroll>
+                handleScrollEvent={handleScrollEvent}
+            />
 
             <IonModal isOpen={!!selected}>
                 {selected && (
                     <ProductDetail
-                        updateShoppingCartProduct={(product: Product) =>
+                        updateProduct={(product: Product) =>
                             updateShoppingCart({
                                 type: UPDATE_SHOPPING_CART_PRODUCT,
                                 product,
@@ -160,7 +133,7 @@ const ProductList = ({
 
 const SearchProducts: React.FC = () => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState<GetProductsQueryParams>({
+    const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
         searchText: '',
         pageNumber: 0,
     });
@@ -244,7 +217,7 @@ const SearchProducts: React.FC = () => {
                         />
                     ) : (
                         <>
-                            <Fragment icon={cartOutline} text="Tu compra actual" link="/shopping/cart" />
+                            <Fragment icon={cartOutline} text="Tu compra actual" link="/search/cart" />
                             <Typography variant="h2" gutterBottom={16} className={classes.center}>
                                 Busca tus productos <br />
                                 directamente en el buscador
