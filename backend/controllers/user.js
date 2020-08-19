@@ -9,7 +9,7 @@ const errorTypes = require('./errorTypes');
 
 const controller = {
     register: (req, res, next) => {
-        User.findOne({username: req.body.username})
+        User.findOne({email: req.body.email})
             .then((data) => {
                 if (data) {
                     throw new errorTypes.InfoError('User already exists');

@@ -10,9 +10,10 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const {PORT, CONFIG_MONGO, PASSPORT_CONFIG} = require('./config');
-const routes = require('./routes/routes');
 const User = require('./models/user');
 const customMdw = require('./middleware/custom');
+const routesUser = require('./routes/routes-user');
+const routesRider = require('./routes/routes-rider');
 
 mongoose.connect(CONFIG_MONGO.URL, {useNewUrlParser: true}).catch((err) => {
     console.log(err);
@@ -67,7 +68,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-app.use('/api', routes);
+app.use('/api', routesUser);
+app.use('/api/rider', routesRider);
 
 app.use(customMdw.errorHandler);
 app.use(customMdw.notFoundHandler);

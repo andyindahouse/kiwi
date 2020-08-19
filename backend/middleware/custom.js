@@ -19,6 +19,13 @@ const middlewares = {
         })(req, res, next);
     },
 
+    ensureRider: (req, res, next) => {
+        if (!req.user.rider) {
+            return next(new errorTypes.Error403('Forbidden access.'));
+        }
+        next();
+    },
+
     errorHandler: (error, req, res, next) => {
         if (error instanceof errorTypes.InfoError) res.status(200).json({error: error.message});
         else if (error instanceof errorTypes.Error404) res.status(404).json({error: error.message});

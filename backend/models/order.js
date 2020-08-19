@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const OrderSchema = Schema({
     _id: mongoose.ObjectId,
     email: String,
+    rider: String,
     createdDate: Date,
     status: String,
     note: String,

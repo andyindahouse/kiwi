@@ -10,6 +10,32 @@ const {FEES} = require('../config');
 const utils = require('./utils');
 
 const controller = {
+    getAllAvailables: async ({query, user}, res, next) => {
+        try {
+            const pageNumber = parseInt(query.pageNumber || 0);
+            const pageSize = parseInt(query.pageSize || 20);
+
+            const limit = pageSize;
+            const skip = pageNumber * pageSize;
+            try {
+                const totalSize = await Order.find().countDocuments();
+                const result = await Order.find({rider: {$exists: false}})
+                    .sort({_id: -1})
+                    .skip(skip)
+                    .limit(limit);
+                res.json({
+                    pageNumber,
+                    pageSize,
+                    content: result,
+                    totalSize,
+                });
+            } catch (err) {
+                next(err);
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
     get: async ({query, user}, res, next) => {
         try {
             const pageNumber = parseInt(query.pageNumber || 0);
@@ -18,8 +44,8 @@ const controller = {
             const limit = pageSize;
             const skip = pageNumber * pageSize;
             try {
-                const totalSize = await Order.find({email: user.email}).countDocuments();
-                const result = await Order.find({email: user.email}).sort({_id: -1}).skip(skip).limit(limit);
+                const totalSize = await Order.find({rider: user.email}).countDocuments();
+                const result = await Order.find({rider: user.email}).sort({_id: -1}).skip(skip).limit(limit);
                 res.json({
                     pageNumber,
                     pageSize,
@@ -35,11 +61,11 @@ const controller = {
     },
     getById: async ({params, user}, res, next) => {
         if (!params.id) {
-            next(new errorTypes.Error400('Falta parametro id.'));
+            return next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
             const id = new ObjectID(params.id);
-            const result = await Order.findOne({_id: id, email: user.email});
+            const result = await Order.findOne({_id: id});
             if (!result) {
                 next(new errorTypes.Error404('Order not found.'));
             } else {
@@ -49,62 +75,45 @@ const controller = {
             next(err);
         }
     },
-    create: async ({user, body}, res, next) => {
+    assign: async ({params, body, user}, res, next) => {
         try {
-            const shopppingCart = await ShoppingCart.findOne({email: user.email});
-            if (shopppingCart && shopppingCart.products) {
-                const productsId = shopppingCart.products.map((product) => product.ean);
-                const products = await Product.find({ean: {$in: productsId}});
-                let totalShoppingCart = 0;
-                const orderWithProducts = products.map((product, index) => {
-                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
-                    totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
-                    return {
-                        ...product._doc,
-                        items: new Array(shopppingCart.products[index].units).fill({date: null}),
-                        note: shopppingCart.products[index].note,
-                        cost: costProduct,
-                    };
-                });
-                const totalCost = parseFloat(
-                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
-                );
-                const order = {
-                    _id: new ObjectID(),
-                    email: user.email,
-                    createdDate: new Date(),
-                    products: orderWithProducts,
-                    totalShoppingCart,
-                    deliverFee: FEES.deliverFee,
-                    shopperFee: FEES.shopperFee,
-                    totalCost,
-                    status: 'pending',
-                    note: body.note,
-                };
-                const saveOrder = await Order.create(order);
-                await ShoppingCart.findOneAndUpdate(
-                    {email: user.email},
-                    {
-                        email: user.email,
-                        products: [],
-                    },
-                    {
-                        new: true,
-                        upsert: true,
-                        useFindAndModify: true,
-                    }
-                );
-                res.json({data: saveOrder});
+            if (!params.id) {
+                return next(new errorTypes.Error400('Falta parametro id.'));
+            }
+            const id = new ObjectID(params.id);
+            const order = await Order.findOne({_id: id});
+            if (!order) {
+                return next(new errorTypes.Error404('Order not found.'));
+            }
+            if (order.rider) {
+                return next(new errorTypes.Error400('Order already had been asigned.'));
+            }
+            const updatedOrder = await Order.findOneAndUpdate(
+                {_id: id},
+                {
+                    rider: user.email,
+                    updatedDate: new Date(),
+                },
+                {
+                    new: true,
+                    upsert: false,
+                    useFindAndModify: false,
+                }
+            );
+            if (updatedOrder) {
+                res.json({data: updatedOrder});
+            } else {
+                next(new errorTypes.Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
         }
     },
-    updateStatus: async ({params, body}, res, next) => {
+    updateStatus: async ({params, body, user}, res, next) => {
         try {
             const id = new ObjectID(params.id);
             const updatedOrder = await Order.findOneAndUpdate(
-                {_id: id, email: email.user},
+                {_id: id, rider: user.email},
                 {
                     status: body.status,
                     updatedDate: new Date(),
@@ -124,12 +133,12 @@ const controller = {
             next(err);
         }
     },
-    addProduct: async ({params, body}, res, next) => {
+    addProduct: async ({params, body, user}, res, next) => {
         try {
             if (!body.ean) {
-                next(new errorTypes.Error400('Falta parametro ean.'));
+                return next(new errorTypes.Error400('Falta parametro ean.'));
             } else if (!body.units) {
-                next(new errorTypes.Error400('Falta parametro units.'));
+                return next(new errorTypes.Error400('Falta parametro units.'));
             }
             const id = new ObjectID(params.id);
             const order = await Order.findById(id);
@@ -153,7 +162,7 @@ const controller = {
                 const newTotalShoppingCart = parseFloat((order.totalShoppingCart + costProduct).toFixed(2));
                 const newTotalCost = parseFloat((order.totalCost + costProduct).toFixed(2));
                 const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: id, email: email.user},
+                    {_id: id, rider: user.email},
                     {
                         products,
                         updatedDate: new Date(),
@@ -178,7 +187,7 @@ const controller = {
             next(err);
         }
     },
-    updateProduct: async ({params, body}, res, next) => {
+    updateProduct: async ({params, body, user}, res, next) => {
         try {
             const id = new ObjectID(params.id);
             const order = await Order.findById(id);
@@ -189,11 +198,13 @@ const controller = {
                 const productIndex = order.products.findIndex((product) => params.ean === product.ean);
                 const products = [...order.products];
                 const oldCostProduct = products[productIndex].cost;
-                const newCostProduct = utils.getPrice(products[productIndex], body.items.length);
-                products[productIndex] = {
+                const newProduct = {
                     ...products[productIndex],
-                    items: body.items,
-                    note: body.note,
+                    ...body,
+                };
+                const newCostProduct = utils.getPrice(newProduct, newProduct.items.length);
+                products[productIndex] = {
+                    ...newProduct,
                     cost: newCostProduct,
                 };
                 const newTotalShoppingCart = parseFloat(
@@ -204,7 +215,7 @@ const controller = {
                 );
                 if (productIndex > -1) {
                     const updatedOrder = await Order.findOneAndUpdate(
-                        {_id: id, email: email.user},
+                        {_id: id, rider: user.email},
                         {
                             products,
                             updatedDate: new Date(),
@@ -232,7 +243,7 @@ const controller = {
             next(err);
         }
     },
-    deleteProduct: async ({params, body}, res, next) => {
+    deleteProduct: async ({params, body, user}, res, next) => {
         try {
             const id = new ObjectID(params.id);
             const order = await Order.findById(id);
@@ -250,7 +261,7 @@ const controller = {
                 );
 
                 const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: id, email: email.user},
+                    {_id: id, rider: user.email},
                     {
                         products,
                         updatedDate: new Date(),
@@ -268,6 +279,67 @@ const controller = {
                     res.json({data: updatedOrder});
                 } else {
                     next(new errorTypes.Error404('Order not found.'));
+                }
+            } else {
+                next(new errorTypes.Error404('Order not found.'));
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
+    finalizeOrder: async ({params, body, user}, res, next) => {
+        try {
+            const id = new ObjectID(params.id);
+            const order = await Order.findById(id);
+            if (order) {
+                const updatedOrder = await Order.findOneAndUpdate(
+                    {_id: id, rider: user.email},
+                    {
+                        status: 'finalized',
+                        updatedDate: new Date(),
+                    },
+                    {
+                        new: true,
+                        upsert: false,
+                        useFindAndModify: false,
+                    }
+                );
+                const pantry = await Pantry.findOne({email: order.email});
+                const products = pantry ? pantry.products : [];
+                const productsAdded = order.products;
+                const pantryProducts = [...products];
+
+                productsAdded.forEach((product) => {
+                    const index = pantryProducts.findIndex((productData) => productData.ean === product.ean);
+                    if (index > -1) {
+                        const productIndex = pantryProducts[index];
+                        pantryProducts[index] = {
+                            ...productIndex,
+                            items: [...productIndex.items, ...product.items],
+                        };
+                    } else {
+                        pantryProducts.push(product);
+                    }
+                });
+
+                console.log(pantryProducts);
+
+                const updatedPantry = await Pantry.findOneAndUpdate(
+                    {email: order.email},
+                    {
+                        email: order.email,
+                        products: pantryProducts,
+                        updatedDate: new Date(),
+                    },
+                    {
+                        new: true,
+                        upsert: true,
+                        useFindAndModify: false,
+                    }
+                );
+
+                if (updatedOrder) {
+                    res.json({data: updatedOrder});
                 }
             } else {
                 next(new errorTypes.Error404('Order not found.'));
