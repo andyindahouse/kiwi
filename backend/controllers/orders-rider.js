@@ -18,7 +18,7 @@ const controller = {
             const limit = pageSize;
             const skip = pageNumber * pageSize;
             try {
-                const totalSize = await Order.find().countDocuments();
+                const totalSize = await Order.find({rider: {$exists: false}}).countDocuments();
                 const result = await Order.find({rider: {$exists: false}})
                     .sort({_id: -1})
                     .skip(skip)
@@ -43,9 +43,16 @@ const controller = {
 
             const limit = pageSize;
             const skip = pageNumber * pageSize;
+            console.log(query.status);
+            const findOrder = {
+                rider: user.email,
+                ...(query.status
+                    ? {status: Array.isArray(query.status) ? query.status : [query.status]}
+                    : {}),
+            };
             try {
-                const totalSize = await Order.find({rider: user.email}).countDocuments();
-                const result = await Order.find({rider: user.email}).sort({_id: -1}).skip(skip).limit(limit);
+                const totalSize = await Order.find(findOrder).countDocuments();
+                const result = await Order.find(findOrder).sort({_id: -1}).skip(skip).limit(limit);
                 res.json({
                     pageNumber,
                     pageSize,
