@@ -5,7 +5,13 @@ const Schema = mongoose.Schema;
 
 const PantrySchema = Schema({
     email: String,
-    products: [],
+    inStorage: String,
+    ean: String,
+    img: String,
+    name: String,
+    buyedDate: Date,
+    email: String,
+    date: Date,
 });
 
 module.exports = mongoose.model('Pantry', PantrySchema, 'pantries');
