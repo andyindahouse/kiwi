@@ -3,6 +3,7 @@
 const Pantry = require('../models/pantry');
 const Product = require('../models/product');
 const errorTypes = require('./errorTypes');
+const ObjectID = require('mongodb').ObjectID;
 
 const controller = {
     get: async ({query, user}, res, next) => {
@@ -35,12 +36,12 @@ const controller = {
             next(err);
         }
     },
-    update: async ({params, user}, res, next) => {
+    update: async ({params, body, user}, res, next) => {
         if (!params.id) {
             return next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
-            const id = new ObjectID({_id: id});
+            const id = new ObjectID(params.id);
             const updateProductPantry = await Pantry.findOneAndUpdate(
                 {_id: id, email: user.email},
                 {
