@@ -43,7 +43,6 @@ const controller = {
 
             const limit = pageSize;
             const skip = pageNumber * pageSize;
-            console.log(query.status);
             const findOrder = {
                 rider: user.email,
                 ...(query.status
@@ -311,39 +310,30 @@ const controller = {
                         useFindAndModify: false,
                     }
                 );
-                const pantry = await Pantry.findOne({email: order.email});
-                const products = pantry ? pantry.products : [];
-                const productsAdded = order.products;
-                const pantryProducts = [...products];
 
-                productsAdded.forEach((product) => {
-                    const index = pantryProducts.findIndex((productData) => productData.ean === product.ean);
-                    if (index > -1) {
-                        const productIndex = pantryProducts[index];
-                        pantryProducts[index] = {
-                            ...productIndex,
-                            items: [...productIndex.items, ...product.items],
+                const newProducts = order.products.reduce((acum, product) => {
+                    const items = product.items.map((item) => {
+                        console.log(item);
+                        return {
+                            ...item,
+                            inStorage: 'pending',
+                            ean: product.ean,
+                            img: product.img,
+                            name: product.name,
+                            buyedDate: new Date(),
+                            email: order.email,
                         };
-                    } else {
-                        pantryProducts.push(product);
-                    }
-                });
+                    });
+                    return [...acum, ...items];
+                }, []);
 
-                console.log(pantryProducts);
+                console.log(newProducts);
 
-                const updatedPantry = await Pantry.findOneAndUpdate(
-                    {email: order.email},
-                    {
-                        email: order.email,
-                        products: pantryProducts,
-                        updatedDate: new Date(),
-                    },
-                    {
-                        new: true,
-                        upsert: true,
-                        useFindAndModify: false,
-                    }
-                );
+                try {
+                    await Pantry.insertMany(newProducts);
+                } catch (err) {
+                    next(err);
+                }
 
                 if (updatedOrder) {
                     res.json({data: updatedOrder});
