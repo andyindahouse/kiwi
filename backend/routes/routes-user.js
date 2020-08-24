@@ -19,6 +19,7 @@ router.get('/shoppingCart', customMdw.ensureAuthenticated, ShoppingCartControlle
 router.post('/shoppingCart', customMdw.ensureAuthenticated, ShoppingCartController.update);
 
 router.get('/pantry', customMdw.ensureAuthenticated, PantryController.get);
+router.post('/pantry/:id', customMdw.ensureAuthenticated, PantryController.update);
 
 router.put('/checkout', customMdw.ensureAuthenticated, OrdersController.create);
 router.get('/orders', customMdw.ensureAuthenticated, OrdersController.get);
