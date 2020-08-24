@@ -1,6 +1,6 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Order as OrderModel} from '../models';
+import {Order as OrderModel, Product} from '../models';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
 import {IonButton, IonIcon} from '@ionic/react';
@@ -104,6 +104,10 @@ const IconStatus = ({icon, activated}: {icon: string | undefined; activated: boo
     );
 };
 
+const getTotalItems = (products: ReadonlyArray<Product>) => {
+    return products.reduce((value, current) => value + (current.items?.length || 0), 0);
+};
+
 type Props = {
     order: OrderModel;
     selected: boolean;
@@ -122,7 +126,7 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                     <img className={classes.logo} src="./images/eci.jpg" alt="elcroteingles_imagen" />
                     <div>
                         <Typography>El Corte inglés Supermercado</Typography>
-                        <Typography variant="subtitle1">{products.length} productos</Typography>
+                        <Typography variant="subtitle1">{getTotalItems(products)} productos</Typography>
                     </div>
                 </div>
                 <div className={classes.subtitles}>
@@ -156,7 +160,7 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                     <IconStatus icon={checkmarkDoneOutline} activated={status === 'pending'}></IconStatus>
                     <IconStatus icon={cartOutline} activated={status === 'in-progress'}></IconStatus>
                     <IconStatus icon={bicycleOutline} activated={status === 'comming'}></IconStatus>
-                    <IconStatus icon={homeOutline} activated={status === 'completed'}></IconStatus>
+                    <IconStatus icon={homeOutline} activated={status === 'finalized'}></IconStatus>
                 </div>
                 <div className={classes.feeSection}>
                     <Typography variant="subtitle2">Carrito</Typography>

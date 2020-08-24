@@ -1,9 +1,9 @@
-import {Order, Product, ShoppingCart} from '../models';
+import {Order, OrderStatus, Product, ShoppingCart} from '../models';
 import {extendRawProducts} from '../utils';
 
 const serverIp = 'http://192.168.1.48:3000';
 const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjJlNjQzNzQ2YTJjMTA4NjViMDM0NTYiLCJleHAiOjE1OTY4NzU5NzUzMTIsImVtYWlsIjoiZmFrZS50ZXN0In0.gFm_dDgcpsLJPT9gYxNtn5uMF89qIGY_EwZB17RdOi0';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjNkNmY2MzFlZGY5Mzc4OWUwNzljNTAiLCJleHAiOjE1OTc4NjI5Njk4NTcsImVtYWlsIjoicmlkZXIudGVzdCJ9.XKZZ4THi-AL0NsGbykT19E9EyuiowF0GF1KHDTFHvTY';
 
 export interface SetCartRequest {
     products: ReadonlyArray<{ean: string; quantity: number}>;
@@ -17,104 +17,15 @@ export type PaginatedResponse<T> = {
 };
 
 const api = {
-    getProducts: (queryParams: {
-        searchText: string | null;
-        pageNumber: number;
-    }): Promise<PaginatedResponse<ReadonlyArray<Product>>> => {
-        console.log('API GET PRODUCTS req:', queryParams);
-        return fetch(
-            `${serverIp}/api/products?searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`
-        )
-            .then((e) => e.json())
-            .catch((error) => {
-                console.log('API GET PRODUCTS res:', error);
-                return null;
-            })
-            .then((res) => {
-                console.log('API GET PRODUCTS res:', res);
-                return res;
-            });
-    },
-    getProductDetail: (ean: string): Promise<Product> => {
-        console.log('API GET PRODUCT DETAIL req:', ean);
-        return fetch(`${serverIp}/api/products/${ean}`)
-            .then((e) => e.json())
-            .catch((error) => {
-                console.log('API GET PRODUCT DETAIL error:', error);
-                return null;
-            })
-            .then((res: any) => {
-                console.log('API GET PRODUCT DETAIL res:', res);
-                return res;
-            });
-    },
-    setShoppingCart: (req: {products: ReadonlyArray<Product>}): Promise<ShoppingCart> => {
-        console.log('API SET CART req:', req);
-        return fetch(`${serverIp}/api/shoppingCart`, {
-            method: 'POST',
-            body: JSON.stringify(req),
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => res.json())
-            .catch((error) => {
-                console.log('API SET CART error:', error);
-                return null;
-            })
-            .then((res: {data: ShoppingCart}) => {
-                console.log('API SET CART res:', res);
-                return res.data;
-            });
-    },
-    getShoppingCart: (): Promise<ShoppingCart> => {
-        console.log('API GET CART res:');
-        return fetch(`${serverIp}/api/shoppingCart`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => res.json())
-            .catch((error) => {
-                console.log('API GET CART error:', error);
-                return null;
-            })
-            .then((res: {data: ShoppingCart}) => {
-                console.log('API GET CART res:', res);
-                return res.data;
-            });
-    },
-    checkout: (): Promise<Order> => {
-        console.log('API PUT CHECKOUT res:');
-        return fetch(`${serverIp}/api/checkout`, {
-            method: 'PUT',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => res.json())
-            .catch((error) => {
-                console.log('API PUT CHECKOUT error:', error);
-                return null;
-            })
-            .then((res) => {
-                console.log('API PUT CHECKOUT res:', res);
-                return res;
-            });
-    },
-    getOrders: ({
+    getNewOrders: ({
         pageNumber,
-        pageSize,
+        pageSize = 5,
     }: {
         pageNumber: number;
-        pageSize: number;
+        pageSize?: number;
     }): Promise<PaginatedResponse<ReadonlyArray<Order>>> => {
         console.log('API GET ORDERS req:', pageNumber, pageSize);
-        return fetch(`${serverIp}/api/orders?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        return fetch(`${serverIp}/api/rider/orders/all?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -131,9 +42,58 @@ const api = {
                 return res;
             });
     },
+    takeOrder: (id: string) => {
+        console.log('API POST TAKE ORDER res:', id);
+        return fetch(`${serverIp}/api/rider/orders/${id}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => res.json())
+            .catch((error) => {
+                console.log('API POST TAKE ORDER error:', error);
+                return null;
+            })
+            .then((res: {data: Order}) => {
+                console.log('API POST TAKE ORDER res:', res);
+                return res.data;
+            });
+    },
+    getMyOrders: ({
+        pageNumber,
+        pageSize = 5,
+        status,
+    }: {
+        pageNumber: number;
+        pageSize?: number;
+        status: ReadonlyArray<OrderStatus> | null;
+    }): Promise<PaginatedResponse<ReadonlyArray<Order>>> => {
+        console.log('API GET MY ORDERS req:', pageNumber, pageSize);
+        const statusArrayParam = status ? '&' + status.map((e) => `status=${e}`).join('&') : '';
+        return fetch(
+            `${serverIp}/api/rider/orders?pageNumber=${pageNumber}&pageSize=${pageSize}${statusArrayParam}`,
+            {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+            .then((res) => res.json())
+            .catch((error) => {
+                console.log('API GET MY ORDERS error:', error);
+                return null;
+            })
+            .then((res) => {
+                console.log('API GET MY ORDERS res:', res);
+                return res;
+            });
+    },
     getOrder: ({id}: {id: string}): Promise<Order> => {
         console.log('API GET ORDER res:', id);
-        return fetch(`${serverIp}/api/orders/${id}`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -147,15 +107,12 @@ const api = {
             })
             .then((res: Order) => {
                 console.log('API GET ORDER res:', res);
-                return {
-                    ...res,
-                    products: res.products.map((e) => ({...e, units: e.items?.length || 0})),
-                };
+                return res;
             });
     },
     updateOrderProduct: (product: Product, id: string) => {
         console.log('API POST ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.ean}`, {
             method: 'POST',
             body: JSON.stringify(product),
             headers: {
@@ -170,17 +127,14 @@ const api = {
             })
             .then((res: {data: Order}) => {
                 console.log('API POST ORDER PRODUCT res:', res);
-                return {
-                    ...res.data,
-                    products: res.data.products.map((e) => ({...e, units: e.items?.length || 0})),
-                };
+                return res.data;
             });
     },
-    updateStatusOrder: (id: string) => {
+    updateStatusOrder: (id: string, status: OrderStatus) => {
         console.log('API POST STATUS ORDER res:', id);
-        return fetch(`${serverIp}/api/orders/${id}/status`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}/status`, {
             method: 'POST',
-            body: JSON.stringify({status: 'cancelled'}),
+            body: JSON.stringify({status}),
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -193,15 +147,12 @@ const api = {
             })
             .then((res: {data: Order}) => {
                 console.log('API POST STATUS ORDER res:', res);
-                return {
-                    ...res.data,
-                    products: res.data.products.map((e) => ({...e, units: e.items?.length || 0})),
-                };
+                return res.data;
             });
     },
     deleteOrderProduct: (product: Product, id: string) => {
         console.log('API DELETE ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.ean}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -215,6 +166,25 @@ const api = {
             })
             .then((res: {data: Order}) => {
                 console.log('API DELETE ORDER PRODUCT res:', res);
+                return res.data;
+            });
+    },
+    finalizeOrder: (id: string) => {
+        console.log('API FINALIZE ORDER res:', id);
+        return fetch(`${serverIp}/api/rider/orders/${id}/finalize`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .catch((error) => {
+                console.log('API FINALIZE ORDER error:', error);
+                return null;
+            })
+            .then((res: {data: Order}) => {
+                console.log('API FINALIZE ORDER res:', res);
                 return res.data;
             });
     },

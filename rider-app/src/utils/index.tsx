@@ -19,9 +19,9 @@ export const statusOrderMap = {
         label: 'Pendiente',
         icon: checkmarkDoneOutline,
     },
-    cancelled: {
-        color: palette.error.main,
-        label: 'Cancelado',
+    selected: {
+        color: palette.secondary.main,
+        label: 'Por empezar',
         icon: checkmarkDoneOutline,
     },
     'in-progress': {
@@ -39,9 +39,14 @@ export const statusOrderMap = {
         label: 'Error',
         icon: checkmarkDoneOutline,
     },
-    completed: {
+    finalized: {
         color: palette.primary.main,
-        label: 'Completado',
+        label: 'Entregado',
         icon: homeOutline,
+    },
+    cancelled: {
+        color: palette.error.main,
+        label: 'Cancelado',
+        icon: checkmarkDoneOutline,
     },
 };

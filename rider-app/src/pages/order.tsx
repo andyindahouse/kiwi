@@ -10,7 +10,6 @@ import {
     IonModal,
     IonButtons,
     IonButton,
-    IonIcon,
     IonList,
     IonAlert,
     IonFooter,
@@ -24,9 +23,8 @@ import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
 import {useHistory, useParams} from 'react-router-dom';
-import {statusOrderMap} from '../utils';
 
-import type {Order as OrderModel, OrderStatus, Product} from '../models';
+import type {Order as OrderModel, Product, ProductOrderStatus} from '../models';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -80,63 +78,23 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const getMesaggeStatus = (status: OrderStatus) => {
-    if (status === 'pending') {
-        return 'Podrás modificar tu pedido mientras tu personal shopper no haya empezado a realizar tu compra';
-    }
-
-    if (status === 'cancelled') {
-        return 'Has cancelado este pedido';
-    }
-
-    if (status === 'in-progress') {
-        return 'Tu personal shopper está realizando el pedido, en breves recibiras tu compra';
-    }
-
-    if (status === 'comming') {
-        return 'Tu pedido está en camino';
-    }
-
-    if (status === 'completed') {
-        return 'Tu pedido está completado, todos tus productos han sido movidos a tu despensa';
-    }
-};
-
 const Order = () => {
     const classes = useStyles();
     const {id = null} = useParams<{id: string}>();
+    const history = useHistory();
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
+    const [tab, setTab] = React.useState<ProductOrderStatus>('pending');
+    const [showAlert, setShowAlert] = React.useState(false);
     const updateOrderProduct = (product: Product) => {
         kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
             setOrder(res);
         });
     };
-    const handleCancelledOrder = () => {
-        kiwiApi.updateStatusOrder(order?._id || '').then((res) => {
-            setOrder(res);
-        });
-    };
-    const handleUpdateOrderProduct = (product: Product) => {
-        let updatedProduct;
-        if (product.units < (product.items?.length || 0)) {
-            updatedProduct = {
-                ...product,
-                items: product.items?.slice(0, product.units),
-            };
-        } else {
-            updatedProduct = {
-                ...product,
-                items: new Array(product.units).fill({date: null}),
-            };
-        }
-
-        updateOrderProduct(updatedProduct);
-    };
-    const handleRemoveOrderProduct = (product: Product) => {
-        kiwiApi.deleteOrderProduct(product, order?._id || '').then((res) => {
-            setOrder(res);
+    const handleOrderCompleted = () => {
+        kiwiApi.updateStatusOrder(order?._id || '', 'comming').then((res) => {
+            history.replace(`/orders/delivery/${order?._id}`);
         });
     };
 
@@ -155,26 +113,38 @@ const Order = () => {
                     <IonButtons slot="start">
                         <IonBackButton text="Volver" defaultHref="/orders" />
                     </IonButtons>
-                    <IonTitle>Pedido {order?.totalCost}€</IonTitle>
+                    <IonTitle>Pedido {order?.totalShoppingCart}€</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonToolbar>
                     <IonSegment
                         scrollable
-                        onIonChange={(e) => console.log('Segment selected', e.detail.value)}
-                        value="selected"
+                        onIonChange={(e) => setTab(e.detail.value as ProductOrderStatus)}
+                        value={tab}
                     >
-                        <IonSegmentButton value="all">
+                        <IonSegmentButton value="pending">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Por coger</Typography>
-                                <IonBadge color="primary">11</IonBadge>
+                                <IonBadge color="primary">
+                                    {order?.products.filter((e) => e.statusOrder === 'pending').length}
+                                </IonBadge>
                             </div>
                         </IonSegmentButton>
-                        <IonSegmentButton value="selected">
+                        <IonSegmentButton value="saved">
                             <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Cogidos</Typography>
-                                <IonBadge color="primary">6</IonBadge>
+                                <Typography variant="caption2">Carrito</Typography>
+                                <IonBadge color="primary">
+                                    {order?.products.filter((e) => e.statusOrder === 'saved').length}
+                                </IonBadge>
+                            </div>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="not-available">
+                            <div className={classes.segmentItem}>
+                                <Typography variant="caption2">No disponible</Typography>
+                                <IonBadge color="primary">
+                                    {order?.products.filter((e) => e.statusOrder === 'not-available').length}
+                                </IonBadge>
                             </div>
                         </IonSegmentButton>
                     </IonSegment>
@@ -182,16 +152,18 @@ const Order = () => {
                 {order?.products && (
                     <IonList>
                         <div className={classes.list}>
-                            {order.products.map((product) => (
-                                <ProductItem
-                                    key={product.id}
-                                    product={product}
-                                    handleClickDetail={() => setSelected(product)}
-                                    handleAddNote={() => setProductWithNote(product)}
-                                    handleRemoveProduct={handleRemoveOrderProduct}
-                                    disabled={order.status !== 'pending'}
-                                />
-                            ))}
+                            {order.products
+                                .filter((e) => e.statusOrder === tab)
+                                .map((product) => (
+                                    <ProductItem
+                                        key={product.id}
+                                        product={product}
+                                        handleClickDetail={() => setSelected(product)}
+                                        handleAddNote={() => setProductWithNote(product)}
+                                        handleRemoveProduct={() => {}}
+                                        disabled={order.status !== 'pending'}
+                                    />
+                                ))}
                         </div>
                         {order.products.length === 0 && (
                             <>
@@ -240,7 +212,7 @@ const Order = () => {
                     {selected && (
                         <ProductDetail
                             disabled={order?.status !== 'pending'}
-                            updateProduct={handleUpdateOrderProduct}
+                            updateProduct={updateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
                         />
@@ -250,12 +222,40 @@ const Order = () => {
             {order && (
                 <IonFooter>
                     <IonToolbar style={{backgroundColor: palette.background.default}}>
-                        <IonButton color="secondary" expand="block" onClick={handleCancelledOrder}>
-                            Pagado
+                        <IonButton
+                            color="secondary"
+                            expand="block"
+                            onClick={() => {
+                                setShowAlert(true);
+                            }}
+                        >
+                            Comprado, pasar al siguiente paso
                         </IonButton>
                     </IonToolbar>
                 </IonFooter>
             )}
+
+            <IonAlert
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                cssClass="my-custom-class"
+                header={'Confirmar que el pedido está comprado'}
+                message={'¿Has comprado el pedido y estás listo para ir a entregarlo?'}
+                buttons={[
+                    {
+                        text: 'Cancelar',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: (blah) => {},
+                    },
+                    {
+                        text: 'Aceptar',
+                        handler: () => {
+                            handleOrderCompleted();
+                        },
+                    },
+                ]}
+            />
         </IonPage>
     );
 };

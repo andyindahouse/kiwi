@@ -1,4 +1,4 @@
-import {Product} from '../models';
+import {OrderStatus, Product} from '../models';
 import palette from '../theme/palette';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 
@@ -13,7 +13,7 @@ export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart
     });
 };
 
-export const statusOrderMap = {
+export const statusOrderMap: Record<OrderStatus, {color: string; label: string; icon: string}> = {
     pending: {
         color: palette.secondary.main,
         label: 'Pendiente',
@@ -39,7 +39,7 @@ export const statusOrderMap = {
         label: 'Error',
         icon: checkmarkDoneOutline,
     },
-    completed: {
+    finalized: {
         color: palette.primary.main,
         label: 'Completado',
         icon: homeOutline,

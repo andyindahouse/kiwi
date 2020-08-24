@@ -14,17 +14,10 @@ import {
     IonList,
     IonItemDivider,
 } from '@ionic/react';
-import {
-    addCircleOutline,
-    addCircleSharp,
-    chevronForwardOutline,
-    removeCircleOutline,
-    removeCircleSharp,
-} from 'ionicons/icons';
-import {type} from 'os';
+import {addCircleOutline, removeCircleOutline} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Product} from '../models';
+import {OrderStatus, Product, ProductOrderStatus} from '../models';
 import palette from '../theme/palette';
 import Typography from './typography';
 
@@ -99,11 +92,32 @@ const Units = ({
                 icon={addCircleOutline}
                 role="button"
                 onClick={() => {
-                    handleOnChange(units - 1);
+                    handleOnChange(units + 1);
                 }}
             />
         </div>
     );
+};
+
+const mapNextState: Record<
+    ProductOrderStatus,
+    {labelCta: string; color: string; nextStatus: ProductOrderStatus}
+> = {
+    pending: {
+        labelCta: 'Marcar como cogido',
+        color: 'primary',
+        nextStatus: 'saved',
+    },
+    saved: {
+        labelCta: 'Actualizar producto',
+        color: 'primary',
+        nextStatus: 'saved',
+    },
+    'not-available': {
+        labelCta: 'Devolver al carrito',
+        color: 'primary',
+        nextStatus: 'saved',
+    },
 };
 
 type Props = {
@@ -115,10 +129,13 @@ type Props = {
 
 const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
     const classes = useStyles();
-    const {name, price, cost, img, brand, units: initialUnits, nutriments} = product;
-    console.log('initial units', initialUnits);
-    const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
-    const [selectedDate, setSelectedDate] = React.useState<string>('2012-12-15T13:47:20.789');
+    const {name, price, cost, img, brand, note, items = []} = product;
+    const [currentPrice, setCurrentPrice] = React.useState(Number(price.final));
+    const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);
+    const [daysAfterOpened, setDaysAfterOpened] = React.useState(0);
+    const changeUnits = (index: number, value: string) => {
+        setUnits([...units.slice(0, index), {date: value}, ...units.slice(index + 1)]);
+    };
 
     return (
         <>
@@ -143,19 +160,55 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                     <Typography className={classes.nameProduct} variant="h3">
                         {name.replace(brand, '').trim()}
                     </Typography>
+                    {note && <Typography>Nota del cliente: {note}</Typography>}
                 </div>
                 <IonList>
                     <IonItemDivider />
-                    <IonItem>
-                        <IonLabel>Fecha de caducidad:</IonLabel>
-                        <IonDatetime
-                            min={new Date().toISOString()}
-                            value={null}
-                            placeholder="Añadir"
-                            displayFormat="DD/MM/YYYY"
-                            onIonChange={(e) => {}}
+                    <IonItem lines="none">
+                        <IonLabel>Precio marcado:</IonLabel>
+                        <IonInput
+                            type="number"
+                            value={currentPrice}
+                            onIonChange={(e) => {
+                                e && setCurrentPrice(Number(e.detail.value));
+                            }}
                         />
                     </IonItem>
+                    <IonItemDivider />
+
+                    <IonItem>
+                        <div>
+                            <Typography gutterBottom={8}>Unidades cogidas:</Typography>
+                            <Typography style={{display: 'block'}} gutterBottom={8} variant="subtitle2">
+                                Si no están disponibles las unidades requeridas marcar la cantidad cogida
+                            </Typography>
+                            <Units
+                                label={['ud recogida', 'ud recogidas']}
+                                units={units.length}
+                                handleOnChange={(ud) => {
+                                    if (ud > units.length) {
+                                        setUnits([...units, {date: null}]);
+                                    } else {
+                                        setUnits(units.slice(0, ud));
+                                    }
+                                }}
+                            />
+                        </div>
+                    </IonItem>
+                    {units.map((e, index) => (
+                        <IonItem key={index} lines={index === units.length - 1 ? 'none' : 'inset'}>
+                            <IonLabel>Fecha de caducidad:</IonLabel>
+                            <IonDatetime
+                                min={new Date().toISOString()}
+                                value={e.date}
+                                placeholder="Añadir"
+                                displayFormat="DD/MM/YYYY"
+                                onIonChange={(e) => changeUnits(index, e.detail.value ?? '')}
+                            />
+                        </IonItem>
+                    ))}
+                    <IonItemDivider />
+
                     <IonItem lines="none">
                         <div>
                             <Typography>Una vez abierto consumir en:</Typography>
@@ -164,55 +217,62 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                             </Typography>
                             <Units
                                 label={['día', 'días']}
-                                units={units}
-                                handleOnChange={(units) => {
-                                    console.log(units);
+                                units={daysAfterOpened}
+                                handleOnChange={(days) => {
+                                    setDaysAfterOpened(days);
                                 }}
                             />
                         </div>
                     </IonItem>
                     <IonItemDivider />
-                    <IonItem>
-                        <IonLabel>Precio:</IonLabel>
-                        <IonInput type="number" value={cost} onIonChange={(e) => {}} />
-                    </IonItem>
-                    <IonItem lines="none">
+
+                    {product.statusOrder !== 'not-available' && (
                         <div>
-                            <Typography gutterBottom={8}>Unidades recogidas:</Typography>
-                            <Typography style={{display: 'block'}} gutterBottom={8} variant="subtitle2">
-                                Si no están disponibles las unidades requeridas marcar la cantidad cogida
-                            </Typography>
-                            <Units
-                                label={['ud recogida', 'ud recogidas']}
-                                units={units}
-                                handleOnChange={(units) => {
-                                    console.log(units);
+                            <IonButton
+                                expand="block"
+                                color="danger"
+                                onClick={() => {
+                                    updateProduct({
+                                        ...product,
+                                        statusOrder: 'not-available',
+                                    });
+                                    closeModal();
                                 }}
-                            />
+                            >
+                                No disponible en tienda
+                            </IonButton>
                         </div>
-                    </IonItem>
+                    )}
                     <IonItemDivider />
                 </IonList>
             </IonContent>
 
-            <IonFooter>
-                <IonToolbar>
-                    <div className={classes.footer}>
-                        <IonButton
-                            expand="full"
-                            onClick={() => {
-                                updateProduct({
-                                    ...product,
-                                    units,
-                                });
-                                closeModal();
-                            }}
-                        >
-                            Marcar como cogido
-                        </IonButton>
-                    </div>
-                </IonToolbar>
-            </IonFooter>
+            {product.statusOrder && (
+                <IonFooter>
+                    <IonToolbar>
+                        <div className={classes.footer}>
+                            <IonButton
+                                expand="block"
+                                color={mapNextState[product.statusOrder].color}
+                                onClick={() => {
+                                    if (product.statusOrder) {
+                                        updateProduct({
+                                            ...product,
+                                            items: units,
+                                            daysAfterOpened,
+                                            price: {final: String(currentPrice)},
+                                            statusOrder: mapNextState[product.statusOrder].nextStatus,
+                                        });
+                                        closeModal();
+                                    }
+                                }}
+                            >
+                                {mapNextState[product.statusOrder].labelCta}
+                            </IonButton>
+                        </div>
+                    </IonToolbar>
+                </IonFooter>
+            )}
         </>
     );
 };

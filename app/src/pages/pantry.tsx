@@ -26,6 +26,7 @@ import Typography from '../components/typography';
 import palette from '../theme/palette';
 import ProductDetail from '../components/product-detail';
 import Fragment from '../components/fragment';
+import kiwiApi from '../api';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -94,21 +95,12 @@ const ProductList = ({
     const classes = useStyles();
     const [showModal, setShowModal] = React.useState(false);
     const [selected, setSelected] = React.useState<Product | null>(null);
-    const infiniteScrollRef = React.useRef<HTMLIonInfiniteScrollElement | null>(
-        document.getElementById('infiniteScroll') as HTMLIonInfiniteScrollElement
-    );
-    // const {dispatch} = useShopping();
 
     React.useEffect(() => {
-        if (!isLoading) {
-            if (!infiniteScrollRef.current) {
-                infiniteScrollRef.current = document.getElementById(
-                    'infiniteScroll'
-                ) as HTMLIonInfiniteScrollElement;
-            }
-            infiniteScrollRef.current?.complete();
-        }
-    }, [isLoading]);
+        kiwiApi.getPantry().then((res) => {
+            console.log(res);
+        });
+    }, []);
 
     if (products.length === 0 && !isLoading) {
         return <div>No hemos encontrado productos para esa busqueda</div>;
@@ -131,14 +123,10 @@ const ProductList = ({
                             }}
                         >
                             <div className={classes.card}>
-                                <img
-                                    alt="product"
-                                    src="https://cdn.grupoelcorteingles.es/SGFM/dctm/MEDIA03/201604/07/00118480200130____1__325x325.jpg"
-                                />
+                                <img alt="product-image" src={product.img} />
                                 <div>
                                     <Typography variant="body2" ellipsis lineClamp={3}>
-                                        LA FINCA Vacuno Joven Dos Primaveras carne picada peso aproximado
-                                        bandeja 600g
+                                        {product.name}
                                     </Typography>
                                     <Typography variant="subtitle2">2 unidades</Typography>
                                 </div>
@@ -167,33 +155,24 @@ const ProductList = ({
 const Pantry: React.FC = () => {
     const classes = useStyles();
     const [filter, setFilter] = React.useState({
-        searchText: '',
+        searchText: 'ace',
         pageNumber: 0,
     });
-    const [products, setProducts] = React.useState<ReadonlyArray<any> | null>([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-    ]);
+    const [products, setProducts] = React.useState<ReadonlyArray<any> | null>();
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
     const [isLoading, setLoading] = React.useState(false);
+    const [totalSize, setTotalSize] = React.useState<number | null>(null);
+    const getPantry = () => {
+        setLoading(true);
+        kiwiApi.getProducts(filter).then((res) => {
+            setLoading(false);
+            setTotalSize(res.totalSize);
+            setProducts((products) => (products ?? []).concat(res.content));
+        });
+    };
 
     React.useEffect(() => {
-        if (filter.searchText) {
-            // setLoading(true);
-            // kiwiApi.getProducts(filter).then((res) => {
-            //     setLoading(false);
-            //     setTotalSize(res.totalSize);
-            //     setProducts((products) => (products ?? []).concat(res.content));
-            // });
-        }
+        getPantry();
     }, [filter]);
 
     return (

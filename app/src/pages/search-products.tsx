@@ -107,6 +107,7 @@ const ProductList = ({
                     />
                 ))}
             </div>
+
             <InfiniteScroll
                 isLoading={isLoading}
                 disabled={disableInfiniteScroll}

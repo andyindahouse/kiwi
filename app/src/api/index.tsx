@@ -17,6 +17,39 @@ export type PaginatedResponse<T> = {
 };
 
 const api = {
+    registerUser: ({
+        email,
+        first_name,
+        last_name,
+        password,
+    }: {
+        email: string;
+        first_name: string;
+        password: string;
+        last_name: string;
+    }) => {
+        console.log('API POST USER req:', email, first_name, password, last_name);
+
+        return fetch(`${serverIp}/api/register`, {
+            method: 'POST',
+            body: JSON.stringify({
+                email: 'rider.test',
+                first_name: 'rider',
+                last_name: 'surname',
+                password: '1234',
+            }),
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then((e) => e.json())
+            .catch((error) => {
+                console.log('API POST USER res:', error);
+                return null;
+            })
+            .then((res) => {
+                console.log('API POST USER res:', res);
+                return res;
+            });
+    },
     getProducts: (queryParams: {
         searchText: string | null;
         pageNumber: number;
@@ -216,6 +249,25 @@ const api = {
             .then((res: {data: Order}) => {
                 console.log('API DELETE ORDER PRODUCT res:', res);
                 return res.data;
+            });
+    },
+    getPantry: () => {
+        console.log('API GET PANTRY req:');
+        return fetch(`${serverIp}/api/pantry`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .catch((error) => {
+                console.log('API GET PANTRY error:', error);
+                return null;
+            })
+            .then((res) => {
+                console.log('API GET PANTRY res:', res);
+                return res;
             });
     },
 };

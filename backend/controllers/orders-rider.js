@@ -100,6 +100,7 @@ const controller = {
                 {
                     rider: user.email,
                     updatedDate: new Date(),
+                    products: order.products.map((e) => ({...e, statusOrder: 'pending'})),
                 },
                 {
                     new: true,

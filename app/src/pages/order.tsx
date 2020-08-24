@@ -85,7 +85,7 @@ const getMesaggeStatus = (status: OrderStatus) => {
         return 'Tu pedido está en camino';
     }
 
-    if (status === 'completed') {
+    if (status === 'finalized') {
         return 'Tu pedido está completado, todos tus productos han sido movidos a tu despensa';
     }
 };

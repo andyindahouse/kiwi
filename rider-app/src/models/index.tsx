@@ -9,6 +9,8 @@ export interface Nutriments {
     salt100g: string;
 }
 
+export type ProductOrderStatus = 'pending' | 'saved' | 'not-available';
+
 export interface Product {
     id: string;
     brand: string;
@@ -28,7 +30,9 @@ export interface Product {
     nutriments: Nutriments;
     units: number;
     note?: string;
-    items?: ReadonlyArray<string>;
+    items?: ReadonlyArray<{date: string | null}>;
+    daysAfterOpened?: number;
+    statusOrder?: 'pending' | 'saved' | 'not-available';
 }
 
 export interface ShoppingCart {
@@ -39,7 +43,7 @@ export interface ShoppingCart {
     totalCost: number;
 }
 
-export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'completed';
+export type OrderStatus = 'pending' | 'in-progress' | 'comming' | 'finalized' | 'cancelled';
 
 export interface Order {
     _id: string;

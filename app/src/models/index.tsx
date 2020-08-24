@@ -38,7 +38,7 @@ export interface ShoppingCart {
     totalCost: number;
 }
 
-export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'completed';
+export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'issue' | 'comming' | 'finalized';
 
 export interface Order {
     _id: string;

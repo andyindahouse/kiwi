@@ -1,11 +1,9 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Order as OrderModel} from '../models';
+import {Order as OrderModel, Product} from '../models';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
-import {IonButton, IonIcon} from '@ionic/react';
-import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
-import classnames from 'classnames';
+import {IonButton} from '@ionic/react';
 import {statusOrderMap} from '../utils';
 
 const useStyles = createUseStyles(() => ({
@@ -75,36 +73,18 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const IconStatus = ({icon, activated}: {icon: string | undefined; activated: boolean}) => {
-    const classes = useStyles();
-    return (
-        <div
-            className={classes.iconStatus}
-            style={{
-                backgroundColor: activated ? palette.secondary.main : palette.grey,
-            }}
-        >
-            <IonIcon
-                size="large"
-                icon={icon}
-                style={{
-                    width: 24,
-                    height: 24,
-                    color: activated ? palette.primary.main : palette.white,
-                }}
-            ></IonIcon>
-        </div>
-    );
+const getTotalItems = (products: ReadonlyArray<Product>) => {
+    return products.reduce((value, current) => value + (current.items?.length || 0), 0);
 };
 
 type Props = {
     order: OrderModel;
-    selected: boolean;
-    handleOpen: () => void;
-    handleManageOrder: () => void;
+    handleOpen?: () => void;
+    handleManageOrder?: () => void;
+    labelCta?: string;
 };
 
-const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
+const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Seleccionar pedido'}: Props) => {
     const classes = useStyles();
     const {totalCost, products, status, createdDate, totalShoppingCart, shopperFee, deliverFee} = order;
 
@@ -139,18 +119,24 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                 <Typography variant="subtitle2">Teléfono</Typography>
                 <Typography variant="body2">666 666 666</Typography>
                 <Typography variant="subtitle2">Nº de productos</Typography>
-                <Typography variant="body2">{products.length}</Typography>
+                <Typography variant="body2">{getTotalItems(products)}</Typography>
                 <Typography variant="subtitle2">Total compra</Typography>
                 <Typography variant="body2">{totalCost}€</Typography>
-                <IonButton
-                    size="small"
-                    color="secondary"
-                    expand="block"
-                    style={{gridColumn: '1 / 3'}}
-                    onClick={handleManageOrder}
-                >
-                    Comenzar con el pedido
-                </IonButton>
+                {handleManageOrder && (
+                    <IonButton
+                        size="small"
+                        color="secondary"
+                        expand="block"
+                        style={{gridColumn: '1 / 3'}}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            handleManageOrder && handleManageOrder();
+                        }}
+                    >
+                        {labelCta}
+                    </IonButton>
+                )}
             </div>
         </div>
     );
