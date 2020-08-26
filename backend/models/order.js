@@ -15,6 +15,9 @@ const OrderSchema = Schema({
     shopperFee: Number,
     totalShoppingCart: Number,
     totalCost: Number,
+    deliveryAddress: String,
+    deliveryDate: Date,
+    deliveryHour: String,
 });
 
 module.exports = mongoose.model('Order', OrderSchema, 'orders');

@@ -80,6 +80,9 @@ const controller = {
                     totalCost,
                     status: 'pending',
                     note: body.note,
+                    deliveryAddress: body.deliveryAddress,
+                    deliveryDate: body.deliveryDate,
+                    deliveryHour: body.deliveryHour,
                 };
                 const saveOrder = await Order.create(order);
                 await ShoppingCart.findOneAndUpdate(
