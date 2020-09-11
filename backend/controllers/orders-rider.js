@@ -204,7 +204,6 @@ const controller = {
                 }
                 const productIndex = order.products.findIndex((product) => params.ean === product.ean);
                 const products = [...order.products];
-                const oldCostProduct = products[productIndex].cost;
                 const newProduct = {
                     ...products[productIndex],
                     ...body,
@@ -214,20 +213,32 @@ const controller = {
                     ...newProduct,
                     cost: newCostProduct,
                 };
-                const newTotalShoppingCart = parseFloat(
-                    (order.totalShoppingCart - oldCostProduct + newCostProduct).toFixed(2)
+
+                let totalShoppingCart = 0;
+                const orderWithProducts = products.map((product, index) => {
+                    const costProduct = utils.getPrice(product, product.items.length);
+                    if (product.statusOrder !== 'not-available') {
+                        totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
+                    }
+                    return {
+                        ...product,
+                        items: new Array(order.products[index].units).fill({date: null}),
+                        note: order.products[index].note,
+                        cost: costProduct,
+                    };
+                });
+                const totalCost = parseFloat(
+                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
                 );
-                const newTotalCost = parseFloat(
-                    (order.totalCost - order.totalShoppingCart + newTotalShoppingCart).toFixed(2)
-                );
+
                 if (productIndex > -1) {
                     const updatedOrder = await Order.findOneAndUpdate(
                         {_id: id, rider: user.email},
                         {
                             products,
                             updatedDate: new Date(),
-                            totalShoppingCart: newTotalShoppingCart,
-                            totalCost: newTotalCost,
+                            totalShoppingCart,
+                            totalCost,
                         },
                         {
                             new: true,

@@ -72,6 +72,9 @@ const controller = {
                 const order = {
                     _id: new ObjectID(),
                     email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    phone: user.phone,
                     createdDate: new Date(),
                     products: orderWithProducts,
                     totalShoppingCart,
