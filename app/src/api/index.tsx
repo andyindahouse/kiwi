@@ -1,4 +1,4 @@
-import {Order, Product, ShoppingCart} from '../models';
+import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart} from '../models';
 import {extendRawProducts} from '../utils';
 
 const serverIp = 'http://192.168.1.48:3000';
@@ -17,7 +17,7 @@ export type PaginatedResponse<T> = {
 };
 
 const api = {
-    registerUser: ({
+    registerUser: async ({
         email,
         first_name,
         last_name,
@@ -29,7 +29,6 @@ const api = {
         last_name: string;
     }) => {
         console.log('API POST USER req:', email, first_name, password, last_name);
-
         return fetch(`${serverIp}/api/register`, {
             method: 'POST',
             body: JSON.stringify({
@@ -42,8 +41,7 @@ const api = {
         })
             .then((e) => e.json())
             .catch((error) => {
-                console.log('API POST USER res:', error);
-                return null;
+                throw Error(`API POST USER res: ${error}`);
             })
             .then((res) => {
                 console.log('API POST USER res:', res);
@@ -60,8 +58,7 @@ const api = {
         )
             .then((e) => e.json())
             .catch((error) => {
-                console.log('API GET PRODUCTS res:', error);
-                return null;
+                throw Error(`API GET PRODUCTS res: ${error}`);
             })
             .then((res) => {
                 console.log('API GET PRODUCTS res:', res);
@@ -73,8 +70,7 @@ const api = {
         return fetch(`${serverIp}/api/products/${ean}`)
             .then((e) => e.json())
             .catch((error) => {
-                console.log('API GET PRODUCT DETAIL error:', error);
-                return null;
+                throw Error(`API GET PRODUCT DETAIL error: ${error}`);
             })
             .then((res: any) => {
                 console.log('API GET PRODUCT DETAIL res:', res);
@@ -93,8 +89,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API SET CART error:', error);
-                return null;
+                throw Error(`API SET CART error: ${error}`);
             })
             .then((res: {data: ShoppingCart}) => {
                 console.log('API SET CART res:', res);
@@ -112,18 +107,33 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API GET CART error:', error);
-                return null;
+                throw Error(`API GET CART error: ${error}`);
             })
             .then((res: {data: ShoppingCart}) => {
                 console.log('API GET CART res:', res);
                 return res.data;
             });
     },
-    checkout: (): Promise<Order> => {
+    checkout: ({
+        note,
+        deliveryAddress,
+        deliveryDate,
+        deliveryHour,
+    }: {
+        note: string;
+        deliveryAddress: string;
+        deliveryDate: string;
+        deliveryHour: string;
+    }): Promise<Order> => {
         console.log('API PUT CHECKOUT res:');
         return fetch(`${serverIp}/api/checkout`, {
             method: 'PUT',
+            body: JSON.stringify({
+                note,
+                deliveryAddress,
+                deliveryDate,
+                deliveryHour,
+            }),
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -131,8 +141,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API PUT CHECKOUT error:', error);
-                return null;
+                throw Error(`API PUT CHECKOUT error: ${error}`);
             })
             .then((res) => {
                 console.log('API PUT CHECKOUT res:', res);
@@ -156,8 +165,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API GET ORDERS error:', error);
-                return null;
+                throw Error(`API GET ORDERS error: ${error}`);
             })
             .then((res) => {
                 console.log('API GET ORDERS res:', res);
@@ -175,8 +183,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API GET ORDER error:', error);
-                return null;
+                throw Error(`API GET ORDER error: ${error}`);
             })
             .then((res: Order) => {
                 console.log('API GET ORDER res:', res);
@@ -198,8 +205,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API POST ORDER PRODUCT error:', error);
-                return null;
+                throw Error(`API POST ORDER PRODUCT error: ${error}`);
             })
             .then((res: {data: Order}) => {
                 console.log('API POST ORDER PRODUCT res:', res);
@@ -221,8 +227,7 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API POST STATUS ORDER error:', error);
-                return null;
+                throw Error(`API POST STATUS ORDER error: ${error}`);
             })
             .then((res: {data: Order}) => {
                 console.log('API POST STATUS ORDER res:', res);
@@ -243,18 +248,45 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API DELETE ORDER PRODUCT error:', error);
-                return null;
+                throw Error(`API DELETE ORDER PRODUCT error: ${error}`);
             })
             .then((res: {data: Order}) => {
                 console.log('API DELETE ORDER PRODUCT res:', res);
                 return res.data;
             });
     },
-    getPantry: () => {
-        console.log('API GET PANTRY req:');
-        return fetch(`${serverIp}/api/pantry`, {
-            method: 'GET',
+    getPantry: (queryParams: {
+        searchText?: string;
+        inStorage?: PantryProductStatus;
+        pageNumber: number;
+    }): Promise<PaginatedResponse<ReadonlyArray<Product>>> => {
+        console.log('API GET PANTRY req:', queryParams);
+        const searchTextParam = queryParams.searchText ? `&searchText=${queryParams.searchText}` : '';
+        const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
+        return fetch(
+            `${serverIp}/api/pantry?pageSize=5&pageNumber=${queryParams.pageNumber}${searchTextParam}${inStorageParam}`,
+            {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+            .then((res) => res.json())
+            .catch((error) => {
+                throw error(`API GET PANTRY error: ${error}`);
+            })
+            .then((res) => {
+                console.log('API GET PANTRY res:', res);
+                return res;
+            });
+    },
+    updatePantryProduct: (product: PantryProduct): Promise<null> => {
+        console.log('API UPDATE PANTRY PRODUCT req:', product);
+        return fetch(`${serverIp}/api/pantry/${product._id}`, {
+            method: 'POST',
+            body: JSON.stringify(product),
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -262,11 +294,10 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API GET PANTRY error:', error);
-                return null;
+                throw error(`API UPDATE PANTRY PRODUCT error: ${error}`);
             })
             .then((res) => {
-                console.log('API GET PANTRY res:', res);
+                console.log('API UPDATE PANTRY PRODUCT res:', res);
                 return res;
             });
     },

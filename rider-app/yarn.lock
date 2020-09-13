@@ -1203,27 +1203,27 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@ionic/core@5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.3.1.tgz#0b5852b0977063ab0c2a4d3da799fae7ff3d6228"
-  integrity sha512-psOiYZbpL5uGKi7MZ9BXCfQIdJVVVW1n8AvrWAiifFE/ebI1x0wbO+D5QLmF2Mc2t/d0nbk4N1V8XyF2bjjiLg==
+"@ionic/core@5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.3.2.tgz#80c3effd8217974858febea9234e6d14188b9492"
+  integrity sha512-s/SDnS993fnZ3d6EzOlURHBbc2aI2/WsZSsCLgnJz3G+KUO4hY/2RQvdmtl0FZpDHMSyehG6tRgFFXvnFSI9CQ==
   dependencies:
     ionicons "^5.1.2"
     tslib "^1.10.0"
 
-"@ionic/react-router@^5.0.7":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-5.3.1.tgz#8be31459de157a7da0e4757f48febb88d470e9bd"
-  integrity sha512-pb61x4APPpH21OjNTUIWDMKVR91rX+io6+xvm9JDsawIwKlI0CfdUo0uAl54WumDQGdC1zc88c6LazwhNG7ojQ==
+"@ionic/react-router@^5.1.0":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-5.3.2.tgz#43bb183da96f91a4de490398f67317e75c6d581a"
+  integrity sha512-yU2bNw64gHOGzJz3POY8LehJkR5KAvxmtkuk4xZBIoLWKrRHDIeZt9WmnUufuhbRq3LXaScf3zHc5mGtiHGg8A==
   dependencies:
     tslib "*"
 
-"@ionic/react@^5.0.7":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-5.3.1.tgz#3fa16e9e418f128d7fc8ea62a92aa00305970bf7"
-  integrity sha512-G+giFkfWpc6idl7wvFMPX45NDxDZ6nbxXUfzA+bmHum3JZ6+B9rXJzvd8Cqco6DYLz3s7WP+UAvHGDg+MEWpAw==
+"@ionic/react@^5.1.0":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-5.3.2.tgz#68bc6402917beb808ca47602232d9b153ad87eea"
+  integrity sha512-keLOvpSkaVr1jaX/9qr4GnL8U6bqECYDXIEEtesGF3+QYOOs/c43o8GD8NIyAkyd42418Pe5x+/fgagnGPJcFQ==
   dependencies:
-    "@ionic/core" "5.3.1"
+    "@ionic/core" "5.3.2"
     ionicons "^5.1.2"
     tslib "*"
 
@@ -3757,6 +3757,11 @@ data-urls@^1.0.0, data-urls@^1.1.0:
     abab "^2.0.0"
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
+
+date-fns@^2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.16.0.tgz#d34f0f5f2fd498c984513042e8f7247ea86c4cb7"
+  integrity sha512-DWTRyfOA85sZ4IiXPHhiRIOs3fW5U6Msrp+gElXARa6EpoQTXPyHQmh7hr+ssw2nx9FtOQWnAMJKgL5vaJqILw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"

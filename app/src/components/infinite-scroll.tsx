@@ -7,6 +7,15 @@ type Props = {
     handleScrollEvent: () => void;
 };
 
+export const isLastPage = (
+    pageNumber: number,
+    pageSize: number,
+    totalSize: number,
+    contentLength: number
+) => {
+    return (pageNumber > 0 ? pageNumber * pageSize + contentLength : contentLength) === totalSize;
+};
+
 const InfiniteScroll = ({isLoading, disabled, handleScrollEvent}: Props) => {
     const infiniteScrollRef = React.useRef<HTMLIonInfiniteScrollElement | null>(
         document.getElementById('infiniteScroll') as HTMLIonInfiniteScrollElement
@@ -24,14 +33,16 @@ const InfiniteScroll = ({isLoading, disabled, handleScrollEvent}: Props) => {
     }, [isLoading]);
 
     return (
-        <IonInfiniteScroll
-            threshold="100px"
-            id="infiniteScroll"
-            disabled={disabled}
-            onIonInfinite={() => handleScrollEvent()}
-        >
-            <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
-        </IonInfiniteScroll>
+        <>
+            <IonInfiniteScroll
+                threshold="100px"
+                id="infiniteScroll"
+                disabled={disabled}
+                onIonInfinite={() => handleScrollEvent()}
+            >
+                <IonInfiniteScrollContent loadingSpinner="crescent" loadingText="Cargando..." />
+            </IonInfiniteScroll>
+        </>
     );
 };
 

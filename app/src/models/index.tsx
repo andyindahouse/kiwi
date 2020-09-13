@@ -51,3 +51,17 @@ export interface Order {
     totalShoppingCart: number;
     totalCost: number;
 }
+
+export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' | 'consumed';
+
+export interface PantryProduct {
+    buyedDate: string;
+    date: string;
+    ean: string;
+    email: string;
+    img: string;
+    inStorage: PantryProductStatus;
+    name: string;
+    _id: string;
+    consumedDate: string;
+}

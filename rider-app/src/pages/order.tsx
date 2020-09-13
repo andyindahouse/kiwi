@@ -16,15 +16,17 @@ import {
     IonSegment,
     IonSegmentButton,
     IonBadge,
+    IonIcon,
 } from '@ionic/react';
 import ProductDetail from '../components/product-detail';
 import Typography from '../components/typography';
 import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
-import {useHistory, useParams} from 'react-router-dom';
+import {RouteComponentProps, useHistory, useParams} from 'react-router-dom';
 
 import type {Order as OrderModel, Product, ProductOrderStatus} from '../models';
+import {chevronForwardOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -78,10 +80,9 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const Order = () => {
+const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) => {
     const classes = useStyles();
-    const {id = null} = useParams<{id: string}>();
-    const history = useHistory();
+    const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
@@ -218,44 +219,46 @@ const Order = () => {
                         />
                     )}
                 </IonModal>
+                <IonAlert
+                    isOpen={showAlert}
+                    onDidDismiss={() => setShowAlert(false)}
+                    cssClass="my-custom-class"
+                    header={'Confirmar que el pedido está comprado'}
+                    message={'¿Has comprado el pedido y estás listo para ir a entregarlo?'}
+                    buttons={[
+                        {
+                            text: 'Cancelar',
+                            role: 'cancel',
+                            cssClass: 'secondary',
+                            handler: (blah) => {},
+                        },
+                        {
+                            text: 'Aceptar',
+                            handler: () => {
+                                handleOrderCompleted();
+                            },
+                        },
+                    ]}
+                />
             </IonContent>
             {order && (
                 <IonFooter>
                     <IonToolbar style={{backgroundColor: palette.background.default}}>
                         <IonButton
                             color="secondary"
-                            expand="block"
+                            expand="full"
                             onClick={() => {
                                 setShowAlert(true);
                             }}
                         >
-                            Comprado, pasar al siguiente paso
+                            <Typography color={palette.white} variant="h3">
+                                Comprado y listo para entregar
+                            </Typography>
+                            <IonIcon slot="end" icon={chevronForwardOutline}></IonIcon>
                         </IonButton>
                     </IonToolbar>
                 </IonFooter>
             )}
-
-            <IonAlert
-                isOpen={showAlert}
-                onDidDismiss={() => setShowAlert(false)}
-                cssClass="my-custom-class"
-                header={'Confirmar que el pedido está comprado'}
-                message={'¿Has comprado el pedido y estás listo para ir a entregarlo?'}
-                buttons={[
-                    {
-                        text: 'Cancelar',
-                        role: 'cancel',
-                        cssClass: 'secondary',
-                        handler: (blah) => {},
-                    },
-                    {
-                        text: 'Aceptar',
-                        handler: () => {
-                            handleOrderCompleted();
-                        },
-                    },
-                ]}
-            />
         </IonPage>
     );
 };

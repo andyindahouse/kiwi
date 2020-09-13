@@ -15,15 +15,29 @@ import {
     IonList,
     IonAlert,
     IonFooter,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonDatetime,
+    IonItemDivider,
+    IonSelect,
+    IonSelectOption,
 } from '@ionic/react';
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
-import {SYNC_SHOPPING_CART, UPDATE_SHOPPING_CART_PRODUCT, useShoppingCart} from '../contexts/shopping-cart';
+import {
+    EMPTY_SHOPPING_CART,
+    SYNC_SHOPPING_CART,
+    UPDATE_SHOPPING_CART_PRODUCT,
+    useShoppingCart,
+} from '../contexts/shopping-cart';
 import Typography from '../components/typography';
 import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
 import {useHistory} from 'react-router-dom';
+import {format, startOfTomorrow, addDays} from 'date-fns';
+import {es} from 'date-fns/locale';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -61,12 +75,30 @@ const useStyles = createUseStyles(() => ({
         color: palette.black,
     },
     feeZone: {
-        padding: 16,
+        padding: 8,
         display: 'grid',
         gridTemplateColumns: '1fr auto',
         gridGap: 8,
     },
 }));
+
+const getFormatDate = (date: Date) =>
+    format(date, 'eeee, dd MMMM', {
+        locale: es,
+    });
+const getAllowDays = () => {
+    const tomorrow = startOfTomorrow();
+    const dayAfterTomorrow = addDays(tomorrow, 1);
+    const dayAfterAfterTomorrow = addDays(tomorrow, 2);
+    const dayAfterAfterAfterTomorrow = addDays(tomorrow, 3);
+
+    return [
+        {value: tomorrow.toISOString(), label: getFormatDate(tomorrow)},
+        {value: dayAfterTomorrow.toISOString(), label: getFormatDate(dayAfterTomorrow)},
+        {value: dayAfterAfterTomorrow.toISOString(), label: getFormatDate(dayAfterAfterTomorrow)},
+        {value: dayAfterAfterAfterTomorrow.toISOString(), label: getFormatDate(dayAfterAfterAfterTomorrow)},
+    ];
+};
 
 const ShoppingCart = () => {
     const classes = useStyles();
@@ -74,6 +106,12 @@ const ShoppingCart = () => {
     const {products, totalCost, totalShoppingCart, deliverFee, shopperFee, dispatch} = useShoppingCart();
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
+    const [showModal, setShowModal] = React.useState(false);
+    const [deliveryAddress, setDeliveryAddress] = React.useState('');
+    const [deliveryDate, setDeliveryDate] = React.useState(startOfTomorrow().toISOString());
+    const [deliveryHour, setDeliveryHour] = React.useState('1990-02-19T16:30Z');
+    const [deliveryNote, setDeliveryNote] = React.useState('');
+    const [showAlert, setShowAlert] = React.useState(false);
     const handleRemoveProduct = (product: Product) => {
         const productIndex = products.findIndex((e) => e.id === product.id);
         kiwiApi
@@ -84,7 +122,6 @@ const ShoppingCart = () => {
                 if (!res) {
                     throw new Error('Carrito desactualizado');
                 }
-                console.log(res);
                 dispatch({
                     type: SYNC_SHOPPING_CART,
                     shoppingCart: res,
@@ -101,7 +138,6 @@ const ShoppingCart = () => {
                 if (!res) {
                     throw new Error('Carrito desactualizado');
                 }
-                console.log(res);
                 dispatch({
                     type: SYNC_SHOPPING_CART,
                     shoppingCart: res,
@@ -109,30 +145,30 @@ const ShoppingCart = () => {
             });
     };
     const handleCheckout = () => {
-        kiwiApi.checkout().then((res) => {
-            history.push('/others/orders');
-            dispatch({
-                type: SYNC_SHOPPING_CART,
-                shoppingCart: {
-                    products: [],
-                    deliverFee: 0,
-                    shopperFee: 0,
-                    totalShoppingCart: 0,
-                    totalCost: 0,
-                },
+        kiwiApi
+            .checkout({
+                note: deliveryNote,
+                deliveryAddress,
+                deliveryDate,
+                deliveryHour,
+            })
+            .then((res) => {
+                setShowModal(false);
+                dispatch({
+                    type: EMPTY_SHOPPING_CART,
+                });
+                history.push('/others/orders');
             });
-        });
     };
 
     React.useEffect(() => {
         kiwiApi.getShoppingCart().then((res) => {
-            console.log(res);
             dispatch({
                 type: SYNC_SHOPPING_CART,
                 shoppingCart: res,
             });
         });
-    }, []);
+    }, [dispatch]);
 
     return (
         <IonPage>
@@ -217,6 +253,115 @@ const ShoppingCart = () => {
                         />
                     )}
                 </IonModal>
+                <IonModal isOpen={!!showModal}>
+                    <>
+                        <IonHeader>
+                            <IonToolbar>
+                                <IonTitle>Pago y envío</IonTitle>
+                                <IonButtons slot="end">
+                                    <IonButton
+                                        onClick={() => {
+                                            setShowModal(false);
+                                        }}
+                                    >
+                                        Volver
+                                    </IonButton>
+                                </IonButtons>
+                            </IonToolbar>
+                        </IonHeader>
+                        <IonContent>
+                            <IonList lines="full">
+                                <IonItem>
+                                    <IonLabel>Dirección de entrega:</IonLabel>
+                                    <IonInput
+                                        value={deliveryAddress}
+                                        onIonChange={(e) => setDeliveryAddress(e.detail.value || '')}
+                                    />
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>Fecha de entrega:</IonLabel>
+                                    <IonSelect
+                                        value={deliveryDate}
+                                        okText="Ok"
+                                        cancelText="Cancelar"
+                                        onIonChange={(e) => setDeliveryDate(e.detail.value)}
+                                    >
+                                        {getAllowDays().map((e: {value: string; label: string}) => (
+                                            <IonSelectOption key={e.value} value={e.value}>
+                                                {e.label}
+                                            </IonSelectOption>
+                                        ))}
+                                    </IonSelect>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>Hora de entrega:</IonLabel>
+                                    <IonDatetime
+                                        displayFormat="HH:mm"
+                                        minuteValues="0,15,30,45"
+                                        hourValues="11,12,13,14,15,16,17,18,19,20"
+                                        pickerFormat="HH:mm"
+                                        value={deliveryHour}
+                                        onIonChange={(e) => setDeliveryHour(e.detail.value || '')}
+                                    ></IonDatetime>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>Agrega una nota al envío:</IonLabel>
+                                    <IonInput
+                                        value={deliveryNote}
+                                        onIonChange={(e) => setDeliveryNote(e.detail.value || '')}
+                                    />
+                                </IonItem>
+
+                                <IonItemDivider />
+
+                                <div className={classes.feeZone}>
+                                    <Typography variant="subtitle1">Carrito</Typography>
+                                    <Typography>{totalShoppingCart}€</Typography>
+                                    <Typography variant="subtitle1">Personal shopper</Typography>
+                                    <Typography>{shopperFee}€</Typography>
+                                    <Typography variant="subtitle1">Envío a domicilio</Typography>
+                                    <Typography>{deliverFee}€</Typography>
+                                    <Typography variant="subtitle1">Total</Typography>
+                                    <Typography variant="caption">{totalCost}€</Typography>
+                                </div>
+                                <IonItemDivider />
+                            </IonList>
+                            <IonAlert
+                                isOpen={showAlert}
+                                onDidDismiss={() => setShowAlert(false)}
+                                cssClass="my-custom-class"
+                                header={'¿Estás seguro que quieres realizar el pedido?'}
+                                message={'Una vez realizado no podrás cambiarlo'}
+                                buttons={[
+                                    {
+                                        text: 'Cancelar',
+                                        role: 'cancel',
+                                        cssClass: 'secondary',
+                                        handler: (blah) => {},
+                                    },
+                                    {
+                                        text: 'Aceptar',
+                                        handler: () => {
+                                            handleCheckout();
+                                        },
+                                    },
+                                ]}
+                            />
+                        </IonContent>
+                        <IonFooter>
+                            <IonToolbar>
+                                <IonButton expand="full" size="large" onClick={() => setShowAlert(true)}>
+                                    <Typography variant="h3">Realizar pedido</Typography>
+                                    <IonIcon
+                                        className={classes.icon}
+                                        slot="end"
+                                        icon={chevronForwardOutline}
+                                    ></IonIcon>
+                                </IonButton>
+                            </IonToolbar>
+                        </IonFooter>
+                    </>
+                </IonModal>
             </IonContent>
             {products && products.length > 0 && (
                 <IonFooter>
@@ -231,10 +376,18 @@ const ShoppingCart = () => {
                             <Typography variant="subtitle2">Total</Typography>
                             <Typography variant="body2">{totalCost}€</Typography>
                         </div>
-                        <IonButton expand="full" size="large" onClick={handleCheckout}>
-                            <Typography variant="h3">Realizar pedido</Typography>
+                        <IonButton
+                            color="secondary"
+                            expand="full"
+                            size="large"
+                            onClick={() => setShowModal(true)}
+                        >
+                            <Typography variant="h3" style={{color: palette.white}}>
+                                Ir a pago y envío
+                            </Typography>
                             <IonIcon
                                 className={classes.icon}
+                                style={{color: palette.white}}
                                 slot="end"
                                 icon={chevronForwardOutline}
                             ></IonIcon>

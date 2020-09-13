@@ -49,7 +49,9 @@ const useStyles = createUseStyles(() => ({
     ml: {
         marginLeft: 16,
     },
-    icon: {},
+    icon: {
+        color: palette.primary.main,
+    },
     footer: {
         display: 'flex',
         justifyContent: 'center',

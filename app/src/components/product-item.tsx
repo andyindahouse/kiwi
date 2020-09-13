@@ -35,7 +35,7 @@ const ProductItem = ({
     handleRemoveProduct,
     disabled = false,
 }: Props) => {
-    const {name, units, price, img} = product;
+    const {name, price, img} = product;
     const classes = useStyles();
     return (
         <IonItemSliding id="item100" disabled={disabled}>

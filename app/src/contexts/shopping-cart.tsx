@@ -13,7 +13,12 @@ export type SyncShoppingCart = {
     shoppingCart: ShoppingCart;
 };
 
-type Actions = UpdateShoppingCartProduct | SyncShoppingCart;
+export const EMPTY_SHOPPING_CART = 'EMPTY_SHOPPING_CART';
+export type EmptyShoppingCart = {
+    type: 'EMPTY_SHOPPING_CART';
+};
+
+type Actions = UpdateShoppingCartProduct | SyncShoppingCart | EmptyShoppingCart;
 
 const initialState = {
     products: [],
@@ -31,6 +36,9 @@ const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Disp
 function reducer(state: ShoppingCart, action: Actions) {
     console.log('ACTION:', action, state);
     switch (action.type) {
+        case EMPTY_SHOPPING_CART: {
+            return initialState;
+        }
         case SYNC_SHOPPING_CART: {
             return action.shoppingCart;
         }

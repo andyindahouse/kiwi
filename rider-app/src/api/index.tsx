@@ -24,7 +24,7 @@ const api = {
         pageNumber: number;
         pageSize?: number;
     }): Promise<PaginatedResponse<ReadonlyArray<Order>>> => {
-        console.log('API GET ORDERS req:', pageNumber, pageSize);
+        console.log('API GET NEW ORDERS req:', pageNumber, pageSize);
         return fetch(`${serverIp}/api/rider/orders/all?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             method: 'GET',
             headers: {
@@ -34,11 +34,11 @@ const api = {
         })
             .then((res) => res.json())
             .catch((error) => {
-                console.log('API GET ORDERS error:', error);
+                console.log('API GET NEW ORDERS error:', error);
                 return null;
             })
             .then((res) => {
-                console.log('API GET ORDERS res:', res);
+                console.log('API GET NEW ORDERS res:', res);
                 return res;
             });
     },

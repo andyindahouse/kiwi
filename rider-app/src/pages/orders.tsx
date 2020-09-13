@@ -12,12 +12,13 @@ import {
     IonButtons,
     IonButton,
     IonList,
+    useIonViewWillEnter,
 } from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order, Order as OrderModel, OrderStatus} from '../models';
 import Typography from '../components/typography';
-import {useHistory} from 'react-router';
+import {RouteComponentProps, useHistory, useLocation} from 'react-router';
 import OrderCard from '../components/order-card';
 import InfiniteScroll from '../components/infinite-scroll';
 
@@ -39,22 +40,27 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const tabMap: Record<string, ReadonlyArray<OrderStatus>> = {
+const segmentMap: Record<string, ReadonlyArray<OrderStatus>> = {
     active: ['in-progress', 'comming'],
     toStart: ['pending'],
     history: ['finalized', 'cancelled'],
 };
 
-const Orders: React.FC = () => {
+type Segment = 'active' | 'toStart' | 'history';
+
+const getParam = (search: string, param: string) => {
+    return new URLSearchParams(search).get(param) as Segment;
+};
+
+const Orders: React.FC<RouteComponentProps> = ({history, location: {search}}) => {
     const classes = useStyles();
-    const history = useHistory();
-    const [tab, setTab] = React.useState<'active' | 'toStart' | 'history'>('active');
+    const [segment, setSegment] = React.useState<Segment>(getParam(search, 'tab') || 'active');
     const [filter, setFilter] = React.useState<{
         pageNumber: number;
         status: ReadonlyArray<OrderStatus> | null;
     }>({
         pageNumber: 0,
-        status: tabMap['active'],
+        status: segmentMap[segment],
     });
     const [orders, setOrders] = React.useState<ReadonlyArray<OrderModel> | null>(null);
     const [isLoading, setLoading] = React.useState(false);
@@ -66,15 +72,25 @@ const Orders: React.FC = () => {
             history.push(`/orders/${order._id}`);
         });
     };
+    const changeSegment = (newSegment: Segment) => {
+        setSegment(newSegment);
+        setOrders([]);
+        setDisableInfiniteScroll(false);
+        setFilter({
+            pageNumber: 0,
+            status: segmentMap[newSegment],
+        });
+    };
 
     React.useEffect(() => {
-        if (orders && orders.length === totalSize) {
+        if (orders && totalSize && orders.length === totalSize) {
             setDisableInfiniteScroll(true);
         }
     }, [orders, totalSize]);
 
     React.useEffect(() => {
         setLoading(true);
+        console.log(filter);
         kiwiApi.getMyOrders(filter).then((res) => {
             setLoading(false);
             setTotalSize(res.totalSize);
@@ -87,7 +103,13 @@ const Orders: React.FC = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="end">
-                        <IonButton href="/orders/all">Nuevos</IonButton>
+                        <IonButton
+                            onClick={() => {
+                                history.push('/orders/all');
+                            }}
+                        >
+                            Nuevos
+                        </IonButton>
                     </IonButtons>
                     <IonTitle>Tus pedidos</IonTitle>
                 </IonToolbar>
@@ -98,31 +120,26 @@ const Orders: React.FC = () => {
                         scrollable
                         onIonChange={(e) => {
                             const value = e.detail.value as 'active' | 'toStart' | 'history';
-                            setTab(value);
-                            setOrders([]);
-                            setFilter({
-                                pageNumber: 0,
-                                status: tabMap[value],
-                            });
+                            changeSegment(value);
                         }}
-                        value={tab}
+                        value={segment}
                     >
                         <IonSegmentButton value="active">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Activos</Typography>
-                                {tab === 'active' && <IonBadge color="primary">{totalSize}</IonBadge>}
+                                {segment === 'active' && <IonBadge color="primary">{totalSize}</IonBadge>}
                             </div>
                         </IonSegmentButton>
                         <IonSegmentButton value="toStart">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Por empezar</Typography>
-                                {tab === 'toStart' && <IonBadge color="primary">{totalSize}</IonBadge>}
+                                {segment === 'toStart' && <IonBadge color="primary">{totalSize}</IonBadge>}
                             </div>
                         </IonSegmentButton>
                         <IonSegmentButton value="history">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Historial</Typography>
-                                {tab === 'history' && <IonBadge color="primary">{totalSize}</IonBadge>}
+                                {segment === 'history' && <IonBadge color="primary">{totalSize}</IonBadge>}
                             </div>
                         </IonSegmentButton>
                     </IonSegment>
@@ -133,7 +150,7 @@ const Orders: React.FC = () => {
                         <IonList className={classes.container}>
                             {orders.map((order) => (
                                 <Fragment key={order._id}>
-                                    {tab === 'active' ? (
+                                    {segment === 'active' ? (
                                         <OrderCard
                                             order={order}
                                             handleOpen={() => {
@@ -144,7 +161,7 @@ const Orders: React.FC = () => {
                                                 }
                                             }}
                                         />
-                                    ) : tab === 'toStart' ? (
+                                    ) : segment === 'toStart' ? (
                                         <OrderCard
                                             order={order}
                                             handleManageOrder={() => updateOrder(order)}

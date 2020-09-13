@@ -1,15 +1,27 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonPage,
+    IonTitle,
+    IonRouterLink,
+    IonToolbar,
+    IonButton,
+} from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order as OrderModel} from '../models';
 import OrderList from '../components/order-list';
+import {useHistory} from 'react-router';
+import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles(() => ({}));
 
 const AllOrders: React.FC = () => {
-    const classes = useStyles();
+    const history = useHistory();
     const [filter, setFilter] = React.useState<{pageNumber: number}>({
         pageNumber: 0,
     });
@@ -27,7 +39,7 @@ const AllOrders: React.FC = () => {
     };
     const selectOrder = (order: OrderModel) => {
         kiwiApi.takeOrder(order._id).then(() => {
-            refresh();
+            history.push('/orders?segment=toStart');
         });
     };
 
@@ -43,10 +55,10 @@ const AllOrders: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
-                <IonButtons slot="start">
-                    <IonBackButton text="Volver" defaultHref="/orders" />
-                </IonButtons>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonBackButton text="Volver" defaultHref="/orders" />
+                    </IonButtons>
                     <IonTitle>Nuevos pedidos</IonTitle>
                 </IonToolbar>
             </IonHeader>
