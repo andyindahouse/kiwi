@@ -259,12 +259,12 @@ const api = {
         searchText?: string;
         inStorage?: PantryProductStatus;
         pageNumber: number;
-    }): Promise<PaginatedResponse<ReadonlyArray<Product>>> => {
+    }): Promise<PaginatedResponse<ReadonlyArray<PantryProduct>>> => {
         console.log('API GET PANTRY req:', queryParams);
         const searchTextParam = queryParams.searchText ? `&searchText=${queryParams.searchText}` : '';
         const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
         return fetch(
-            `${serverIp}/api/pantry?pageSize=5&pageNumber=${queryParams.pageNumber}${searchTextParam}${inStorageParam}`,
+            `${serverIp}/api/pantry?pageSize=200&pageNumber=${queryParams.pageNumber}${searchTextParam}${inStorageParam}`,
             {
                 method: 'GET',
                 headers: {

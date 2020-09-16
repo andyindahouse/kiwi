@@ -27,9 +27,9 @@ import Typography from '../components/typography';
 import palette from '../theme/palette';
 import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';
-import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {getFormatDate} from '../utils/format-date';
 import {differenceInDays, isSameDay} from 'date-fns';
+import {RouteComponentProps} from 'react-router';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -38,6 +38,7 @@ const useStyles = createUseStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
+        padding: '0 16px',
     },
     title: {
         display: 'flex',
@@ -122,23 +123,59 @@ const getExpiryObj = (date: string) => {
     };
 };
 
+const segmentMap: Record<PantryProductStatus, {emptyMessage: string}> = {
+    pending: {
+        emptyMessage:
+            'Ahora mismo no tienes productos por clasificar. Aquí encontrarás los productos según tu pedido sea entregado.',
+    },
+    cooled: {
+        emptyMessage:
+            'Ahora mismo no tienes alimentos en el frigorífico. Puedes añadir tus alimentos al frigorífico desde la sección de "Por clasificar"',
+    },
+    frozen: {
+        emptyMessage:
+            'Ahora mismo no tienes alimentos en el congelador. Puedes añadir tus alimentos al congelador desde la sección de "Por clasificar", esto afectará a las notificaciones de proximos a caducar dado que los alimentos congelados resisten más tiempo',
+    },
+    storaged: {
+        emptyMessage:
+            'Ahora mismo no tienes alimentos en tu despensa. Puedes añadir alimentos a tu despensa desde la sección de "Por clasificar"',
+    },
+    consumed: {
+        emptyMessage:
+            'Ahora mismo no tienes alimentos consumidos puedes marcar tus alimentos según los vayas consumiendo. Podrás encontrar los mismos en la sección en las que los tengas clasificados o usando el buscador.',
+    },
+    others: {
+        emptyMessage:
+            'Ahora mismo no tienes productos aquí. Usa está categoría para claisificar todos los productos que no encajen en las otras.',
+    },
+};
+
+const hasExpiredDate = (date: string) => {
+    const expiryDate = new Date(date);
+    const currentDate = new Date();
+    const daysDiff = differenceInDays(expiryDate, currentDate);
+
+    return daysDiff < 0;
+};
+
 const ProductList = ({
     isLoading,
     products,
-    disableInfiniteScroll,
-    handleScrollEvent,
     segment,
+    refreshProducts,
+    refreshSegmentClassifyProduct,
 }: {
     isLoading: boolean;
     products: ReadonlyArray<PantryProduct>;
-    disableInfiniteScroll: boolean;
-    handleScrollEvent: () => void;
     segment: PantryProductStatus;
+    refreshProducts: (products: ReadonlyArray<PantryProduct>) => void;
+    refreshSegmentClassifyProduct: (target: PantryProductStatus) => void;
 }) => {
     const classes = useStyles();
     const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
     const [selectedPantryProduct, setSelectedPantryProduct] = React.useState<PantryProduct | null>(null);
     const [showClassifyAlert, setShowClassifyAlert] = React.useState(false);
+    const [showExpiryDateAlert, setShowExpiryDateAlert] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
 
     const getProduct = (ean: string) => {
@@ -147,21 +184,29 @@ const ProductList = ({
         });
     };
     const consumedProduct = (product: PantryProduct) => {
-        setSelectedPantryProduct(product);
-        updatePantryProduct({
-            ...product,
-            inStorage: 'consumed',
-            consumedDate: new Date().toISOString(),
-        });
+        if (hasExpiredDate(product.date)) {
+            setSelectedPantryProduct(product);
+            setShowExpiryDateAlert(true);
+        } else {
+            updatePantryProduct({
+                ...product,
+                inStorage: 'consumed',
+                consumedDate: new Date().toISOString(),
+            });
+        }
     };
     const updatePantryProduct = (product: PantryProduct) =>
         kiwiApi.updatePantryProduct(product).then((res) => {
-            console.log(res);
             listRef.current?.closeSlidingItems();
+            refreshProducts(products.filter((e) => e._id !== product._id));
         });
 
     if (products.length === 0 && !isLoading) {
-        return <div>No hemos encontrado productos para esta busqueda</div>;
+        return (
+            <div className={classes.center}>
+                <Typography>{segmentMap[segment].emptyMessage}</Typography>
+            </div>
+        );
     }
 
     return (
@@ -199,20 +244,7 @@ const ProductList = ({
                                 </div>
                             </IonItem>
 
-                            {segment !== 'consumed' && segment !== 'pending' && (
-                                <IonItemOptions
-                                    side="end"
-                                    onIonSwipe={() => {
-                                        consumedProduct(product);
-                                    }}
-                                >
-                                    <IonItemOption color="secondary" expandable>
-                                        Consumido
-                                    </IonItemOption>
-                                </IonItemOptions>
-                            )}
-
-                            {segment !== 'consumed' && segment === 'pending' && (
+                            {segment !== 'consumed' && (
                                 <IonItemOptions side="end">
                                     <IonItemOption
                                         onClick={() => {
@@ -236,12 +268,6 @@ const ProductList = ({
                     );
                 })}
             </IonList>
-
-            <InfiniteScroll
-                isLoading={isLoading}
-                disabled={disableInfiniteScroll}
-                handleScrollEvent={handleScrollEvent}
-            />
 
             <IonAlert
                 isOpen={showClassifyAlert}
@@ -277,6 +303,13 @@ const ProductList = ({
                         value: 'storaged',
                         checked: segment === 'storaged',
                     },
+                    {
+                        name: 'radio5',
+                        type: 'radio',
+                        label: 'Otros',
+                        value: 'others',
+                        checked: segment === 'others',
+                    },
                 ]}
                 buttons={[
                     {
@@ -290,6 +323,43 @@ const ProductList = ({
                                 updatePantryProduct({
                                     ...selectedPantryProduct,
                                     inStorage: value,
+                                }).then(() => {
+                                    console.log('works', refreshSegmentClassifyProduct);
+                                    refreshSegmentClassifyProduct && refreshSegmentClassifyProduct(value);
+                                });
+                            }
+                        },
+                    },
+                ]}
+            />
+
+            <IonAlert
+                isOpen={showExpiryDateAlert}
+                onDidDismiss={() => setShowExpiryDateAlert(false)}
+                cssClass="my-custom-class"
+                header="El producto aparece como caducado"
+                message={'¿Consumiste este producto <strong>antes</strong> de que caducará?'}
+                buttons={[
+                    {
+                        text: 'No',
+                        handler: () => {
+                            if (selectedPantryProduct) {
+                                updatePantryProduct({
+                                    ...selectedPantryProduct,
+                                    inStorage: 'consumed',
+                                    consumedDate: new Date().toISOString(),
+                                });
+                            }
+                        },
+                    },
+                    {
+                        text: 'Sí',
+                        handler: () => {
+                            if (selectedPantryProduct) {
+                                updatePantryProduct({
+                                    ...selectedPantryProduct,
+                                    inStorage: 'consumed',
+                                    consumedDate: selectedPantryProduct.date,
                                 });
                             }
                         },
@@ -306,39 +376,83 @@ const ProductList = ({
     );
 };
 
-const Pantry: React.FC = () => {
-    const classes = useStyles();
-    const [filter, setFilter] = React.useState<{
-        searchText: string;
-        inStorage: PantryProductStatus;
-        pageNumber: number;
-    }>({
-        searchText: '',
-        inStorage: 'pending',
-        pageNumber: 0,
-    });
-    const [products, setProducts] = React.useState<ReadonlyArray<any> | null>();
-    const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
-    const [isLoading, setLoading] = React.useState(false);
-    const [totalSize, setTotalSize] = React.useState<number | null>(null);
-    const getPantry = React.useCallback(() => {
-        setLoading(true);
-        kiwiApi.getPantry(filter).then((res) => {
-            setLoading(false);
-            setTotalSize(res.totalSize);
-            setProducts((products) => (products ?? []).concat(res.content));
+type PantryProductsView = {
+    products: ReadonlyArray<PantryProduct>;
+    isLoading: boolean;
+    totalSize: number | null;
+};
 
-            if (isLastPage(res.pageNumber, res.pageSize, res.totalSize, res.content.length)) {
-                setDisableInfiniteScroll(true);
-            } else {
-                setDisableInfiniteScroll(false);
-            }
+const Pantry: React.FC<RouteComponentProps> = ({location}) => {
+    const classes = useStyles();
+    const [segment, setSegment] = React.useState<PantryProductStatus>('pending');
+    const [searchText, setSearchText] = React.useState('');
+    const [pendingProducts, setPendingProducts] = React.useState<PantryProductsView | null>(null);
+    const [cooledProducts, setCooledProducts] = React.useState<PantryProductsView | null>(null);
+    const [frozenProducts, setFrozenProducts] = React.useState<PantryProductsView | null>(null);
+    const [storagedProducts, setStoragedProducts] = React.useState<PantryProductsView | null>(null);
+    const [othersProducts, setOthersProducts] = React.useState<PantryProductsView | null>(null);
+    const refresh = (
+        inStorage: PantryProductStatus,
+        setter: React.Dispatch<
+            React.SetStateAction<{
+                products: ReadonlyArray<PantryProduct>;
+                isLoading: boolean;
+                totalSize: number | null;
+            } | null>
+        >,
+        searchText?: string
+    ) => {
+        setter({
+            products: [],
+            totalSize: null,
+            isLoading: true,
         });
-    }, [filter]);
+        kiwiApi
+            .getPantry({
+                pageNumber: 0,
+                inStorage,
+                searchText,
+            })
+            .then((res) => {
+                setter({
+                    products: res.content,
+                    totalSize: res.totalSize,
+                    isLoading: false,
+                });
+            });
+    };
+    const refreshSegment = (segment: PantryProductStatus) => {
+        console.log(segment, 'andy');
+        switch (segment) {
+            case 'cooled':
+                refresh('cooled', setCooledProducts, searchText);
+                break;
+            case 'frozen':
+                refresh('frozen', setFrozenProducts, searchText);
+                break;
+            case 'storaged':
+                refresh('storaged', setStoragedProducts, searchText);
+                break;
+            case 'consumed':
+                break;
+            case 'pending':
+                refresh('pending', setPendingProducts, searchText);
+                break;
+            case 'others':
+                refresh('others', setOthersProducts, searchText);
+                break;
+            default:
+                break;
+        }
+    };
 
     React.useEffect(() => {
-        getPantry();
-    }, [getPantry]);
+        refreshSegment('pending');
+        refreshSegment('cooled');
+        refreshSegment('frozen');
+        refreshSegment('storaged');
+        refreshSegment('others');
+    }, [searchText]);
 
     return (
         <IonPage>
@@ -348,16 +462,9 @@ const Pantry: React.FC = () => {
                 </IonToolbar>
                 <IonToolbar>
                     <IonSearchbar
-                        value={filter.searchText}
+                        value={searchText}
                         onIonChange={(e) => {
-                            if (products && products.length > 0) {
-                                setProducts(null);
-                            }
-                            setFilter({
-                                ...filter,
-                                pageNumber: 0,
-                                searchText: e.detail.value ?? '',
-                            });
+                            setSearchText(e.detail.value ?? '');
                         }}
                         debounce={1000}
                         animated
@@ -377,79 +484,127 @@ const Pantry: React.FC = () => {
                     <IonSegment
                         scrollable
                         onIonChange={(e) => {
-                            const newValue = e.detail.value as PantryProductStatus;
-                            setFilter({
-                                ...filter,
-                                pageNumber: 0,
-                                inStorage: newValue,
-                            });
-                            setProducts([]);
+                            setSegment(e.detail.value as PantryProductStatus);
                         }}
-                        value={filter.inStorage}
+                        value={segment}
                     >
                         <IonSegmentButton value="pending">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Por clasificar</Typography>
-                                {filter.inStorage === 'pending' && (
-                                    <IonBadge color="primary">{totalSize}</IonBadge>
+                                {pendingProducts?.totalSize && (
+                                    <IonBadge color="primary">{pendingProducts.totalSize}</IonBadge>
                                 )}
                             </div>
                         </IonSegmentButton>
                         <IonSegmentButton value="cooled">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Frigo</Typography>
-                                {filter.inStorage === 'cooled' && (
-                                    <IonBadge color="primary">{totalSize}</IonBadge>
+                                {cooledProducts?.totalSize && (
+                                    <IonBadge color="primary">{cooledProducts.totalSize}</IonBadge>
                                 )}
                             </div>
                         </IonSegmentButton>
                         <IonSegmentButton value="frozen">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Congelador</Typography>
-                                {filter.inStorage === 'frozen' && (
-                                    <IonBadge color="primary">{totalSize}</IonBadge>
+                                {frozenProducts?.totalSize && (
+                                    <IonBadge color="primary">{frozenProducts.totalSize}</IonBadge>
                                 )}
                             </div>
                         </IonSegmentButton>
                         <IonSegmentButton value="storaged">
                             <div className={classes.segmentItem}>
                                 <Typography variant="caption2">Despensa</Typography>
-                                {filter.inStorage === 'storaged' && (
-                                    <IonBadge color="primary">{totalSize}</IonBadge>
+                                {storagedProducts?.totalSize && (
+                                    <IonBadge color="primary">{storagedProducts.totalSize}</IonBadge>
                                 )}
                             </div>
                         </IonSegmentButton>
-                        <IonSegmentButton value="consumed">
+                        <IonSegmentButton value="others">
                             <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Consumidos</Typography>
-                                {filter.inStorage === 'consumed' && (
-                                    <IonBadge color="primary">{totalSize}</IonBadge>
+                                <Typography variant="caption2">Otros</Typography>
+                                {othersProducts?.totalSize && (
+                                    <IonBadge color="primary">{othersProducts.totalSize}</IonBadge>
                                 )}
                             </div>
                         </IonSegmentButton>
                     </IonSegment>
                 </IonToolbar>
 
-                {products ? (
+                {segment === 'pending' && pendingProducts && (
                     <ProductList
-                        products={products}
-                        isLoading={isLoading}
-                        handleScrollEvent={() => {
-                            setFilter({
-                                ...filter,
-                                pageNumber: filter.pageNumber + 1,
+                        products={pendingProducts?.products}
+                        isLoading={pendingProducts.isLoading}
+                        segment="pending"
+                        refreshProducts={(products) => {
+                            setPendingProducts({
+                                isLoading: false,
+                                totalSize: products.length,
+                                products,
                             });
                         }}
-                        disableInfiniteScroll={disableInfiniteScroll}
-                        segment={filter.inStorage}
+                        refreshSegmentClassifyProduct={refreshSegment}
                     />
-                ) : (
-                    <>
-                        <Typography variant="h2" gutterBottom={16} className={classes.center}>
-                            Todavia no tienes <br />
-                            Productos en tu despensa
-                        </Typography>
-                    </>
+                )}
+                {segment === 'cooled' && cooledProducts && (
+                    <ProductList
+                        products={cooledProducts?.products}
+                        isLoading={cooledProducts.isLoading}
+                        segment="cooled"
+                        refreshProducts={(products) => {
+                            setCooledProducts({
+                                isLoading: false,
+                                totalSize: products.length,
+                                products,
+                            });
+                        }}
+                        refreshSegmentClassifyProduct={refreshSegment}
+                    />
+                )}
+                {segment === 'frozen' && frozenProducts && (
+                    <ProductList
+                        products={frozenProducts?.products}
+                        isLoading={frozenProducts.isLoading}
+                        segment="frozen"
+                        refreshProducts={(products) => {
+                            setFrozenProducts({
+                                isLoading: false,
+                                totalSize: products.length,
+                                products,
+                            });
+                        }}
+                        refreshSegmentClassifyProduct={refreshSegment}
+                    />
+                )}
+                {segment === 'storaged' && storagedProducts && (
+                    <ProductList
+                        products={storagedProducts?.products}
+                        isLoading={storagedProducts.isLoading}
+                        segment="storaged"
+                        refreshProducts={(products) => {
+                            setStoragedProducts({
+                                isLoading: false,
+                                totalSize: products.length,
+                                products,
+                            });
+                        }}
+                        refreshSegmentClassifyProduct={refreshSegment}
+                    />
+                )}
+                {segment === 'others' && othersProducts && (
+                    <ProductList
+                        products={othersProducts?.products}
+                        isLoading={othersProducts.isLoading}
+                        segment="others"
+                        refreshProducts={(products) => {
+                            setOthersProducts({
+                                isLoading: false,
+                                totalSize: products.length,
+                                products,
+                            });
+                        }}
+                        refreshSegmentClassifyProduct={refreshSegment}
+                    />
                 )}
             </IonContent>
         </IonPage>

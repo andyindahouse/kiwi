@@ -41,15 +41,15 @@ const App: React.FC = () => (
                 <IonReactRouter>
                     <IonTabs>
                         <IonRouterOutlet>
-                            <Route path="/home" component={Home} exact={true} />
-                            <Route path="/search" component={SearchProducts} exact={true} />
-                            <Route path="/search/cart" component={ShoppingCart} exact={true} />
-                            <Route path="/nutrition" component={Nutrition} exact={true} />
-                            <Route path="/others" component={Others} exact={true} />
-                            <Route path="/others/pantry" component={Pantry} exact={true} />
-                            <Route path="/others/orders" component={Orders} exact={true} />
-                            <Route path="/others/orders/:id" component={Order} exact={true} />
-                            <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
+                            <Route path="/home" component={Home} exact />
+                            <Route path="/search" component={SearchProducts} exact />
+                            <Route path="/search/cart" component={ShoppingCart} exact />
+                            <Route path="/nutrition" component={Nutrition} exact />
+                            <Route path="/others" component={Others} exact />
+                            <Route path="/others/pantry" component={Pantry} exact />
+                            <Route path="/others/orders" component={Orders} exact />
+                            <Route path="/others/orders/:id" component={Order} exact />
+                            <Route path="/" render={() => <Redirect to="/home" />} exact />
                         </IonRouterOutlet>
                         <IonTabBar slot="bottom">
                             <IonTabButton tab="home" href="/home">

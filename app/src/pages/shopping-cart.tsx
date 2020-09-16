@@ -25,12 +25,7 @@ import {
 } from '@ionic/react';
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
-import {
-    EMPTY_SHOPPING_CART,
-    SYNC_SHOPPING_CART,
-    UPDATE_SHOPPING_CART_PRODUCT,
-    useShoppingCart,
-} from '../contexts/shopping-cart';
+import {EMPTY_SHOPPING_CART, SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import Typography from '../components/typography';
 import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
@@ -105,39 +100,24 @@ const ShoppingCart = () => {
     const history = useHistory();
     const {products, totalCost, totalShoppingCart, deliverFee, shopperFee, dispatch} = useShoppingCart();
     const [selected, setSelected] = React.useState<Product | null>(null);
-    const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
+    const [productWithNote, setProductWithNote] = React.useState<{product: Product; index: number} | null>(
+        null
+    );
     const [showModal, setShowModal] = React.useState(false);
     const [deliveryAddress, setDeliveryAddress] = React.useState('');
     const [deliveryDate, setDeliveryDate] = React.useState(startOfTomorrow().toISOString());
     const [deliveryHour, setDeliveryHour] = React.useState('1990-02-19T16:30Z');
     const [deliveryNote, setDeliveryNote] = React.useState('');
     const [showAlert, setShowAlert] = React.useState(false);
-    const handleRemoveProduct = (product: Product) => {
-        const productIndex = products.findIndex((e) => e.id === product.id);
+    const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
         kiwiApi
             .setShoppingCart({
-                products: products.slice(0, productIndex).concat(products.slice(productIndex + 1)),
+                products: updatedProducts,
+            })
+            .catch((error) => {
+                throw new Error('Carrito desactualizado');
             })
             .then((res) => {
-                if (!res) {
-                    throw new Error('Carrito desactualizado');
-                }
-                dispatch({
-                    type: SYNC_SHOPPING_CART,
-                    shoppingCart: res,
-                });
-            });
-    };
-    const handleAddNote = (product: Product) => {
-        const productIndex = products.findIndex((e) => e.id === product.id);
-        kiwiApi
-            .setShoppingCart({
-                products: products.slice(0, productIndex).concat([product], products.slice(productIndex + 1)),
-            })
-            .then((res) => {
-                if (!res) {
-                    throw new Error('Carrito desactualizado');
-                }
                 dispatch({
                     type: SYNC_SHOPPING_CART,
                     shoppingCart: res,
@@ -184,13 +164,17 @@ const ShoppingCart = () => {
                 {products && (
                     <IonList>
                         <div className={classes.list}>
-                            {products.map((product) => (
+                            {products.map((product, index) => (
                                 <ProductItem
                                     key={product.id}
                                     product={product}
                                     handleClickDetail={() => setSelected(product)}
-                                    handleAddNote={() => setProductWithNote(product)}
-                                    handleRemoveProduct={handleRemoveProduct}
+                                    handleAddNote={() => setProductWithNote({product, index})}
+                                    handleRemoveProduct={() => {
+                                        updateShoppingCart(
+                                            products.slice(0, index).concat(products.slice(index + 1))
+                                        );
+                                    }}
                                 />
                             ))}
                         </div>
@@ -216,7 +200,7 @@ const ShoppingCart = () => {
                             name: 'note',
                             type: 'text',
                             label: 'Nota de producto',
-                            value: productWithNote?.note,
+                            value: productWithNote?.product.note,
                             placeholder: 'Ej: Coger el menos maduro posible',
                         },
                     ]}
@@ -227,13 +211,22 @@ const ShoppingCart = () => {
                             cssClass: 'secondary',
                         },
                         {
-                            text: productWithNote?.note ? 'Modificar' : 'Añadir',
+                            text: productWithNote?.product.note ? 'Modificar' : 'Añadir',
                             handler: ({note}: {note: string}) => {
                                 if (productWithNote && note) {
-                                    handleAddNote({
-                                        ...productWithNote,
+                                    console.log(note, productWithNote);
+                                    const updatedProduct = {
+                                        ...productWithNote.product,
                                         note,
-                                    });
+                                    };
+                                    updateShoppingCart(
+                                        products
+                                            .slice(0, productWithNote.index)
+                                            .concat(
+                                                [updatedProduct],
+                                                products.slice(productWithNote.index + 1)
+                                            )
+                                    );
                                 }
                             },
                         },
@@ -243,10 +236,20 @@ const ShoppingCart = () => {
                     {selected && (
                         <ProductDetail
                             updateProduct={(product) => {
-                                dispatch({
-                                    type: UPDATE_SHOPPING_CART_PRODUCT,
-                                    product,
-                                });
+                                const productIndex = products.findIndex((e) => e.id === product.id);
+                                if (product.units === 0) {
+                                    updateShoppingCart(
+                                        products
+                                            .slice(0, productIndex)
+                                            .concat(products.slice(productIndex + 1))
+                                    );
+                                } else {
+                                    updateShoppingCart(
+                                        products
+                                            .slice(0, productIndex)
+                                            .concat([product], products.slice(productIndex + 1))
+                                    );
+                                }
                             }}
                             closeModal={() => setSelected(null)}
                             product={selected}

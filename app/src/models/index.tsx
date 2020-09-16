@@ -52,7 +52,7 @@ export interface Order {
     totalCost: number;
 }
 
-export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' | 'consumed';
+export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' | 'others' | 'consumed';
 
 export interface PantryProduct {
     buyedDate: string;
