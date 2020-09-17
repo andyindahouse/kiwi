@@ -4,17 +4,24 @@ import {documentTextOutline, trashOutline} from 'ionicons/icons';
 import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
 import {Product} from '../models';
 import Typography from '../components/typography';
+import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     card: {
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: '40px 1fr auto',
+        gridTemplateColumns: '64px 1fr auto',
         gridGap: 8,
         alignItems: 'center',
     },
     img: {
-        width: 40,
+        width: 64,
+        padding: '8px 0',
+    },
+    nameProduct: {
+        '&::first-letter': {
+            textTransform: 'uppercase',
+        },
     },
 }));
 
@@ -35,7 +42,7 @@ const ProductItem = ({
     handleRemoveProduct,
     disabled = false,
 }: Props) => {
-    const {name, price, img} = product;
+    const {name, price, img, brand} = product;
     const classes = useStyles();
     return (
         <IonItemSliding id="item100" disabled={disabled}>
@@ -43,14 +50,24 @@ const ProductItem = ({
                 <div className={classes.card}>
                     <img className={classes.img} alt="product" src={img} />
                     <div>
-                        <Typography ellipsis lineClamp={2}>
-                            {name}
+                        <Typography
+                            variant="body2"
+                            gutterBottom={4}
+                            className={classes.nameProduct}
+                            ellipsis
+                            lineClamp={2}
+                        >
+                            {name.replace(brand, '').trim()}
                         </Typography>
                         <Typography variant="subtitle2">
-                            {getUnits(product)}ud x {price.final}€
+                            {getUnits(product)} ud x {price.final}€ / ud
                         </Typography>
                     </div>
-                    <Typography variant="h5">{price.final}€</Typography>
+                    <div>
+                        <Typography color={palette.secondary.main} variant="caption">
+                            {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                        </Typography>
+                    </div>
                 </div>
             </IonItem>
 

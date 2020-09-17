@@ -20,6 +20,9 @@ import {
     IonBadge,
     IonList,
     IonAlert,
+    IonToast,
+    IonButtons,
+    IonBackButton,
 } from '@ionic/react';
 import {scanSharp} from 'ionicons/icons';
 import {Product, PantryProductStatus, PantryProduct} from '../models';
@@ -29,7 +32,8 @@ import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';
 import {getFormatDate} from '../utils/format-date';
 import {differenceInDays, isSameDay} from 'date-fns';
-import {RouteComponentProps} from 'react-router';
+import {RouteComponentProps, useHistory} from 'react-router';
+import {useShoppingCart} from '../contexts/shopping-cart';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -146,7 +150,7 @@ const segmentMap: Record<PantryProductStatus, {emptyMessage: string}> = {
     },
     others: {
         emptyMessage:
-            'Ahora mismo no tienes productos aquí. Usa está categoría para claisificar todos los productos que no encajen en las otras.',
+            'Ahora mismo no tienes productos aquí. Usa esta categoría para clasificar todos los productos que no encajen en las otras categorías.',
     },
 };
 
@@ -172,33 +176,53 @@ const ProductList = ({
     refreshSegmentClassifyProduct: (target: PantryProductStatus) => void;
 }) => {
     const classes = useStyles();
+    const history = useHistory();
+    const {products: shoppingCartProducts} = useShoppingCart();
     const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
     const [selectedPantryProduct, setSelectedPantryProduct] = React.useState<PantryProduct | null>(null);
     const [showClassifyAlert, setShowClassifyAlert] = React.useState(false);
     const [showExpiryDateAlert, setShowExpiryDateAlert] = React.useState(false);
+    const [showToast, setShowToast] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
 
-    const getProduct = (ean: string) => {
-        kiwiApi.getProductDetail(ean).then((res) => {
-            setSelectedProduct(res);
-        });
-    };
-    const consumedProduct = (product: PantryProduct) => {
-        if (hasExpiredDate(product.date)) {
-            setSelectedPantryProduct(product);
-            setShowExpiryDateAlert(true);
+    const getProduct = (ean: string) => kiwiApi.getProductDetail(ean);
+    const consumedProduct = async (consumedDate: string) => {
+        if (selectedPantryProduct) {
+            try {
+                const {data} = await updatePantryProduct({
+                    ...selectedPantryProduct,
+                    inStorage: 'consumed',
+                    consumedDate: consumedDate,
+                });
+                const product = await getProduct(data.ean);
+                const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
+                await kiwiApi.setShoppingCart({
+                    products:
+                        productIndex === -1
+                            ? [
+                                  ...shoppingCartProducts,
+                                  {
+                                      ...product,
+                                      units: 1,
+                                  },
+                              ]
+                            : shoppingCartProducts
+                                  .slice(0, productIndex)
+                                  .concat(shoppingCartProducts.slice(productIndex + 1)),
+                });
+                setShowToast(true);
+            } catch (err) {
+                console.log(err);
+            }
         } else {
-            updatePantryProduct({
-                ...product,
-                inStorage: 'consumed',
-                consumedDate: new Date().toISOString(),
-            });
+            throw Error('selectedPantryProduct should have a value');
         }
     };
-    const updatePantryProduct = (product: PantryProduct) =>
+    const updatePantryProduct = async (product: PantryProduct) =>
         kiwiApi.updatePantryProduct(product).then((res) => {
             listRef.current?.closeSlidingItems();
             refreshProducts(products.filter((e) => e._id !== product._id));
+            return res;
         });
 
     if (products.length === 0 && !isLoading) {
@@ -218,7 +242,9 @@ const ProductList = ({
                         <IonItemSliding key={product._id}>
                             <IonItem
                                 onClick={() => {
-                                    getProduct(product.ean);
+                                    getProduct(product.ean).then((res) => {
+                                        setSelectedProduct(res);
+                                    });
                                 }}
                             >
                                 <div className={classes.card}>
@@ -236,7 +262,7 @@ const ProductList = ({
                                             {expiryObj.label}
                                         </Typography>
                                         <Typography variant="subtitle2">
-                                            f. caducidad:
+                                            caducidad
                                             <br />
                                             {new Date(product.date).toLocaleDateString()}
                                         </Typography>
@@ -257,7 +283,12 @@ const ProductList = ({
                                     <IonItemOption
                                         color="secondary"
                                         onClick={() => {
-                                            consumedProduct(product);
+                                            if (hasExpiredDate(product.date)) {
+                                                setSelectedPantryProduct(product);
+                                                setShowExpiryDateAlert(true);
+                                            } else {
+                                                consumedProduct(new Date().toISOString());
+                                            }
                                         }}
                                     >
                                         Consumido
@@ -275,13 +306,6 @@ const ProductList = ({
                 cssClass="my-custom-class"
                 header={'Radio'}
                 inputs={[
-                    {
-                        name: 'radio1',
-                        type: 'radio',
-                        label: 'Por clasificar',
-                        value: 'pending',
-                        checked: segment === 'pending',
-                    },
                     {
                         name: 'radio2',
                         type: 'radio',
@@ -333,6 +357,24 @@ const ProductList = ({
                 ]}
             />
 
+            <IonToast
+                isOpen={!!showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message="Producto añadido al carrito"
+                position="bottom"
+                duration={4000}
+                translucent
+                buttons={[
+                    {
+                        text: 'Ver carrito',
+                        role: 'cancel',
+                        handler: () => {
+                            history.push('/search/cart');
+                        },
+                    },
+                ]}
+            />
+
             <IonAlert
                 isOpen={showExpiryDateAlert}
                 onDidDismiss={() => setShowExpiryDateAlert(false)}
@@ -343,24 +385,14 @@ const ProductList = ({
                     {
                         text: 'No',
                         handler: () => {
-                            if (selectedPantryProduct) {
-                                updatePantryProduct({
-                                    ...selectedPantryProduct,
-                                    inStorage: 'consumed',
-                                    consumedDate: new Date().toISOString(),
-                                });
-                            }
+                            consumedProduct(new Date().toISOString());
                         },
                     },
                     {
                         text: 'Sí',
                         handler: () => {
                             if (selectedPantryProduct) {
-                                updatePantryProduct({
-                                    ...selectedPantryProduct,
-                                    inStorage: 'consumed',
-                                    consumedDate: selectedPantryProduct.date,
-                                });
+                                consumedProduct(selectedPantryProduct.date);
                             }
                         },
                     },
@@ -458,6 +490,9 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonBackButton text="Volver" defaultHref="/others" />
+                    </IonButtons>
                     <IonTitle>Tu despensa</IonTitle>
                 </IonToolbar>
                 <IonToolbar>
@@ -466,8 +501,8 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                         onIonChange={(e) => {
                             setSearchText(e.detail.value ?? '');
                         }}
-                        debounce={1000}
                         animated
+                        debounce={1000}
                         placeholder="Buscar en tu despensa"
                         showCancelButton="focus"
                         cancelButtonText="Borrar"

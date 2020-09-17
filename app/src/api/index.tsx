@@ -282,7 +282,7 @@ const api = {
                 return res;
             });
     },
-    updatePantryProduct: (product: PantryProduct): Promise<null> => {
+    updatePantryProduct: (product: PantryProduct): Promise<{data: PantryProduct}> => {
         console.log('API UPDATE PANTRY PRODUCT req:', product);
         return fetch(`${serverIp}/api/pantry/${product._id}`, {
             method: 'POST',

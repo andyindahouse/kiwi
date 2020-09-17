@@ -76,7 +76,7 @@ const FoodToExpire = () => {
     return (
         <div className={classes.container}>
             <div className={classes.title}>
-                <Typography variant="h3">Alimentos próximos a caducar</Typography>
+                <Typography variant="h3">Tienes alimentos próximos a caducar</Typography>
                 <IonIcon color="warning" size="large" icon={warningOutline} />
             </div>
 

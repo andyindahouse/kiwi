@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Product, ShoppingCart} from '../models';
+import kiwiApi from '../api';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {
@@ -84,6 +85,15 @@ export const ShoppingProvider = ({children}: {children: React.ReactNode}) => {
         console.log('NEW STATE:', newState);
         return newState;
     }, initialState);
+
+    React.useEffect(() => {
+        kiwiApi.getShoppingCart().then((res) => {
+            dispatch({
+                type: SYNC_SHOPPING_CART,
+                shoppingCart: res,
+            });
+        });
+    }, [dispatch]);
 
     return (
         <ShoppingContext.Provider value={{...shoppingCart, dispatch}}>{children}</ShoppingContext.Provider>

@@ -21,7 +21,7 @@ const useStyles = createUseStyles(() => ({
     },
     image: {
         margin: 16,
-        height: 325,
+        height: 240,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
