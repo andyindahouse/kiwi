@@ -153,16 +153,26 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                 {order?.products && (
                     <IonList>
                         <div className={classes.list}>
-                            {order.products.map((product) => (
-                                <ProductItem
-                                    key={product.id}
-                                    product={product}
-                                    handleClickDetail={() => setSelected(product)}
-                                    handleAddNote={() => setProductWithNote(product)}
-                                    handleRemoveProduct={handleRemoveOrderProduct}
-                                    disabled
-                                />
-                            ))}
+                            {order.products.map((product) => {
+                                const {name, price, img, brand} = product;
+                                const getUnits = (product: Product) => product.units ?? product.items?.length;
+                                return (
+                                    <ProductItem
+                                        key={product.id}
+                                        img={img}
+                                        title={name.replace(brand, '').trim()}
+                                        subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                        handleClickDetail={() => setSelected(product)}
+                                        disableSwipeOptions
+                                    >
+                                        <div>
+                                            <Typography color={palette.secondary.main} variant="caption">
+                                                {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                            </Typography>
+                                        </div>
+                                    </ProductItem>
+                                );
+                            })}
                         </div>
                         {order.products.length === 0 && (
                             <>

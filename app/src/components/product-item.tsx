@@ -26,26 +26,33 @@ const useStyles = createUseStyles(() => ({
 }));
 
 type Props = {
-    product: Product;
+    img: string;
+    title: string;
+    subtitle: string;
     handleClickDetail: () => void;
-    handleAddNote: () => void;
-    handleRemoveProduct: (product: Product) => void;
-    disabled?: boolean;
+    disableSwipeOptions?: boolean;
+    labelLeftAction?: string | React.ReactNode;
+    labelRightAction?: string | React.ReactNode;
+    handleClickLeftAction?: () => void;
+    handleClickRightAction?: () => void;
+    children: React.ReactNode;
 };
 
-const getUnits = (product: Product) => product.units ?? product.items?.length;
-
 const ProductItem = ({
-    product,
+    img,
+    title,
+    subtitle,
     handleClickDetail,
-    handleAddNote,
-    handleRemoveProduct,
-    disabled = false,
+    disableSwipeOptions = false,
+    labelLeftAction,
+    labelRightAction,
+    handleClickLeftAction,
+    handleClickRightAction,
+    children,
 }: Props) => {
-    const {name, price, img, brand} = product;
     const classes = useStyles();
     return (
-        <IonItemSliding id="item100" disabled={disabled}>
+        <IonItemSliding disabled={disableSwipeOptions}>
             <IonItem onClick={handleClickDetail}>
                 <div className={classes.card}>
                     <img className={classes.img} alt="product" src={img} />
@@ -57,27 +64,23 @@ const ProductItem = ({
                             ellipsis
                             lineClamp={2}
                         >
-                            {name.replace(brand, '').trim()}
+                            {title}
                         </Typography>
-                        <Typography variant="subtitle2">
-                            {getUnits(product)} ud x {price.final}€ / ud
-                        </Typography>
+                        <Typography variant="subtitle2">{subtitle}</Typography>
                     </div>
-                    <div>
-                        <Typography color={palette.secondary.main} variant="caption">
-                            {(getUnits(product) * Number(price.final)).toFixed(2)}€
-                        </Typography>
-                    </div>
+                    {children}
                 </div>
             </IonItem>
 
             <IonItemOptions side="end">
-                <IonItemOption onClick={handleAddNote}>
-                    <IonIcon slot="icon-only" icon={documentTextOutline} />
-                </IonItemOption>
-                <IonItemOption color="danger" onClick={() => handleRemoveProduct(product)}>
-                    <IonIcon slot="icon-only" icon={trashOutline} />
-                </IonItemOption>
+                {handleClickLeftAction && labelLeftAction && (
+                    <IonItemOption onClick={handleClickLeftAction}>{labelLeftAction}</IonItemOption>
+                )}
+                {handleClickRightAction && labelRightAction && (
+                    <IonItemOption color="danger" onClick={handleClickRightAction}>
+                        {labelRightAction}
+                    </IonItemOption>
+                )}
             </IonItemOptions>
         </IonItemSliding>
     );

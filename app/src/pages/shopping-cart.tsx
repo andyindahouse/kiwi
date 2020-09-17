@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {chevronForwardOutline} from 'ionicons/icons';
+import {chevronForwardOutline, documentTextOutline, trashOutline} from 'ionicons/icons';
 import {
     IonContent,
     IonHeader,
@@ -75,6 +75,15 @@ const useStyles = createUseStyles(() => ({
         gridTemplateColumns: '1fr auto',
         gridGap: 8,
     },
+    center: {
+        marginTop: 100,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: '0 16px',
+    },
 }));
 
 const getFormatDate = (date: Date) =>
@@ -109,6 +118,8 @@ const ShoppingCart = () => {
     const [deliveryHour, setDeliveryHour] = React.useState('1990-02-19T16:30Z');
     const [deliveryNote, setDeliveryNote] = React.useState('');
     const [showAlert, setShowAlert] = React.useState(false);
+    const listRef = React.useRef<HTMLIonListElement | null>(null);
+
     const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
         kiwiApi
             .setShoppingCart({
@@ -118,6 +129,7 @@ const ShoppingCart = () => {
                 throw new Error('Carrito desactualizado');
             })
             .then((res) => {
+                listRef.current?.closeSlidingItems();
                 dispatch({
                     type: SYNC_SHOPPING_CART,
                     shoppingCart: res,
@@ -162,28 +174,50 @@ const ShoppingCart = () => {
                     </IonToolbar>
                 </IonHeader>
                 {products && (
-                    <IonList>
+                    <IonList ref={listRef}>
                         <div className={classes.list}>
-                            {products.map((product, index) => (
-                                <ProductItem
-                                    key={product.id}
-                                    product={product}
-                                    handleClickDetail={() => setSelected(product)}
-                                    handleAddNote={() => setProductWithNote({product, index})}
-                                    handleRemoveProduct={() => {
-                                        updateShoppingCart(
-                                            products.slice(0, index).concat(products.slice(index + 1))
-                                        );
-                                    }}
-                                />
-                            ))}
+                            {products.map((product, index) => {
+                                const {name, price, img, brand} = product;
+                                const getUnits = (product: Product) => product.units ?? product.items?.length;
+                                return (
+                                    <ProductItem
+                                        key={product.id}
+                                        img={img}
+                                        title={name.replace(brand, '').trim()}
+                                        subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                        handleClickDetail={() => setSelected(product)}
+                                        labelLeftAction={
+                                            <IonIcon slot="icon-only" icon={documentTextOutline} />
+                                        }
+                                        labelRightAction={<IonIcon slot="icon-only" icon={trashOutline} />}
+                                        handleClickLeftAction={() => setProductWithNote({product, index})}
+                                        handleClickRightAction={() =>
+                                            updateShoppingCart(
+                                                products.slice(0, index).concat(products.slice(index + 1))
+                                            )
+                                        }
+                                    >
+                                        <div>
+                                            <Typography color={palette.secondary.main} variant="caption">
+                                                {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                            </Typography>
+                                        </div>
+                                    </ProductItem>
+                                );
+                            })}
                         </div>
                         {products.length === 0 && (
-                            <>
-                                <Typography center variant="h3">
-                                    Añade productos desde la tab de compra
+                            <div className={classes.center}>
+                                <Typography center variant="h3" gutterBottom={32}>
+                                    Tu compra está vacía, puedes añadir productos desde la tab de compra
                                 </Typography>
-                            </>
+
+                                <Typography center>
+                                    Ya sabemos que la primera compra es la más tediosa de hacer, es por eso
+                                    que iremos preparando tus siguientes compras automágicamente en base a tu
+                                    consumo
+                                </Typography>
+                            </div>
                         )}
                     </IonList>
                 )}
@@ -209,6 +243,9 @@ const ShoppingCart = () => {
                             text: 'Cancelar',
                             role: 'cancel',
                             cssClass: 'secondary',
+                            handler: () => {
+                                listRef.current?.closeSlidingItems();
+                            },
                         },
                         {
                             text: productWithNote?.product.note ? 'Modificar' : 'Añadir',

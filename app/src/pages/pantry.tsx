@@ -34,6 +34,7 @@ import {getFormatDate} from '../utils/format-date';
 import {differenceInDays, isSameDay} from 'date-fns';
 import {RouteComponentProps, useHistory} from 'react-router';
 import {useShoppingCart} from '../contexts/shopping-cart';
+import ProductItem from '../components/product-item';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -239,63 +240,41 @@ const ProductList = ({
                 {products.map((product) => {
                     const expiryObj = getExpiryObj(product.date);
                     return (
-                        <IonItemSliding key={product._id}>
-                            <IonItem
-                                onClick={() => {
-                                    getProduct(product.ean).then((res) => {
-                                        setSelectedProduct(res);
-                                    });
-                                }}
-                            >
-                                <div className={classes.card}>
-                                    <img alt="product-image" src={product.img} />
-                                    <div>
-                                        <Typography variant="body2" ellipsis lineClamp={3} gutterBottom={4}>
-                                            {product.name}
-                                        </Typography>
-                                        <Typography variant="subtitle2" ellipsis>
-                                            Comprado el {getFormatDate(product.buyedDate)}
-                                        </Typography>
-                                    </div>
-                                    <div className={classes.date}>
-                                        <Typography style={{color: expiryObj.color}}>
-                                            {expiryObj.label}
-                                        </Typography>
-                                        <Typography variant="subtitle2">
-                                            caducidad
-                                            <br />
-                                            {new Date(product.date).toLocaleDateString()}
-                                        </Typography>
-                                    </div>
-                                </div>
-                            </IonItem>
-
-                            {segment !== 'consumed' && (
-                                <IonItemOptions side="end">
-                                    <IonItemOption
-                                        onClick={() => {
-                                            setSelectedPantryProduct(product);
-                                            setShowClassifyAlert(true);
-                                        }}
-                                    >
-                                        Clasificar
-                                    </IonItemOption>
-                                    <IonItemOption
-                                        color="secondary"
-                                        onClick={() => {
-                                            if (hasExpiredDate(product.date)) {
-                                                setSelectedPantryProduct(product);
-                                                setShowExpiryDateAlert(true);
-                                            } else {
-                                                consumedProduct(new Date().toISOString());
-                                            }
-                                        }}
-                                    >
-                                        Consumido
-                                    </IonItemOption>
-                                </IonItemOptions>
-                            )}
-                        </IonItemSliding>
+                        <ProductItem
+                            key={product._id}
+                            img={product.img}
+                            title={product.name}
+                            subtitle={`Comprado el ${getFormatDate(product.buyedDate)}`}
+                            handleClickDetail={() => {
+                                getProduct(product.ean).then((res) => {
+                                    setSelectedProduct(res);
+                                });
+                            }}
+                            labelLeftAction="Clasificar"
+                            labelRightAction="Consumido"
+                            handleClickLeftAction={() => {
+                                setSelectedPantryProduct(product);
+                                setShowClassifyAlert(true);
+                            }}
+                            disableSwipeOptions={segment === 'consumed'}
+                            handleClickRightAction={() => {
+                                if (hasExpiredDate(product.date)) {
+                                    setSelectedPantryProduct(product);
+                                    setShowExpiryDateAlert(true);
+                                } else {
+                                    consumedProduct(new Date().toISOString());
+                                }
+                            }}
+                        >
+                            <div className={classes.date}>
+                                <Typography style={{color: expiryObj.color}}>{expiryObj.label}</Typography>
+                                <Typography variant="subtitle2">
+                                    caducidad
+                                    <br />
+                                    {new Date(product.date).toLocaleDateString()}
+                                </Typography>
+                            </div>
+                        </ProductItem>
                     );
                 })}
             </IonList>
@@ -339,6 +318,9 @@ const ProductList = ({
                     {
                         text: 'Cancelar',
                         role: 'cancel',
+                        handler: () => {
+                            listRef.current?.closeSlidingItems();
+                        },
                     },
                     {
                         text: 'Aceptar',
