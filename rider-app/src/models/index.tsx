@@ -55,4 +55,8 @@ export interface Order {
     shopperFee: number;
     totalShoppingCart: number;
     totalCost: number;
+    note: string;
+    deliveryAddress: string;
+    deliveryDate: string;
+    deliveryHour: string;
 }

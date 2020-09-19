@@ -21,7 +21,7 @@ const useStyles = createUseStyles(() => ({
     },
     image: {
         margin: 16,
-        height: 325,
+        height: 240,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -49,7 +49,9 @@ const useStyles = createUseStyles(() => ({
     ml: {
         marginLeft: 16,
     },
-    icon: {},
+    icon: {
+        color: palette.primary.main,
+    },
     footer: {
         display: 'flex',
         justifyContent: 'center',

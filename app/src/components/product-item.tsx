@@ -4,63 +4,83 @@ import {documentTextOutline, trashOutline} from 'ionicons/icons';
 import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
 import {Product} from '../models';
 import Typography from '../components/typography';
+import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     card: {
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: '40px 1fr auto',
+        gridTemplateColumns: '64px 1fr auto',
         gridGap: 8,
         alignItems: 'center',
     },
     img: {
-        width: 40,
+        width: 64,
+        padding: '8px 0',
+    },
+    nameProduct: {
+        '&::first-letter': {
+            textTransform: 'uppercase',
+        },
     },
 }));
 
 type Props = {
-    product: Product;
+    img: string;
+    title: string;
+    subtitle: string;
     handleClickDetail: () => void;
-    handleAddNote: () => void;
-    handleRemoveProduct: (product: Product) => void;
-    disabled?: boolean;
+    disableSwipeOptions?: boolean;
+    labelLeftAction?: string | React.ReactNode;
+    labelRightAction?: string | React.ReactNode;
+    handleClickLeftAction?: () => void;
+    handleClickRightAction?: () => void;
+    children: React.ReactNode;
 };
 
-const getUnits = (product: Product) => product.units ?? product.items?.length;
-
 const ProductItem = ({
-    product,
+    img,
+    title,
+    subtitle,
     handleClickDetail,
-    handleAddNote,
-    handleRemoveProduct,
-    disabled = false,
+    disableSwipeOptions = false,
+    labelLeftAction,
+    labelRightAction,
+    handleClickLeftAction,
+    handleClickRightAction,
+    children,
 }: Props) => {
-    const {name, units, price, img} = product;
     const classes = useStyles();
     return (
-        <IonItemSliding id="item100" disabled={disabled}>
+        <IonItemSliding disabled={disableSwipeOptions}>
             <IonItem onClick={handleClickDetail}>
                 <div className={classes.card}>
                     <img className={classes.img} alt="product" src={img} />
                     <div>
-                        <Typography ellipsis lineClamp={2}>
-                            {name}
+                        <Typography
+                            variant="body2"
+                            gutterBottom={4}
+                            className={classes.nameProduct}
+                            ellipsis
+                            lineClamp={2}
+                        >
+                            {title}
                         </Typography>
-                        <Typography variant="subtitle2">
-                            {getUnits(product)}ud x {price.final}€
-                        </Typography>
+                        <Typography variant="subtitle2">{subtitle}</Typography>
                     </div>
-                    <Typography variant="h5">{price.final}€</Typography>
+                    {children}
                 </div>
             </IonItem>
 
             <IonItemOptions side="end">
-                <IonItemOption onClick={handleAddNote}>
-                    <IonIcon slot="icon-only" icon={documentTextOutline} />
-                </IonItemOption>
-                <IonItemOption color="danger" onClick={() => handleRemoveProduct(product)}>
-                    <IonIcon slot="icon-only" icon={trashOutline} />
-                </IonItemOption>
+                {handleClickLeftAction && labelLeftAction && (
+                    <IonItemOption onClick={handleClickLeftAction}>{labelLeftAction}</IonItemOption>
+                )}
+                {handleClickRightAction && labelRightAction && (
+                    <IonItemOption color="danger" onClick={handleClickRightAction}>
+                        {labelRightAction}
+                    </IonItemOption>
+                )}
             </IonItemOptions>
         </IonItemSliding>
     );

@@ -5,6 +5,7 @@ import Typography from '../components/typography';
 import palette from '../theme/palette';
 import {IonButton} from '@ionic/react';
 import {statusOrderMap} from '../utils';
+import {getFormatDate, getFormatTime} from '../utils/format-date';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -86,7 +87,7 @@ type Props = {
 
 const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Seleccionar pedido'}: Props) => {
     const classes = useStyles();
-    const {totalCost, products, status, createdDate, totalShoppingCart, shopperFee, deliverFee} = order;
+    const {totalCost, products, deliveryAddress, deliveryDate, deliveryHour} = order;
 
     return (
         <div className={classes.container} onClick={handleOpen}>
@@ -94,10 +95,13 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                 <div className={classes.headerText}>
                     <img className={classes.logo} src="./images/eci.jpg" alt="elcroteingles_imagen" />
                     <div>
-                        <Typography>Comisión: 4,95€</Typography>
+                        <Typography>Precio total compra: {totalCost}€</Typography>
 
+                        <Typography variant="subtitle2" gutterBottom={4}>
+                            Fecha de entrega: {deliveryDate && getFormatDate(new Date(deliveryDate))}
+                        </Typography>
                         <Typography variant="subtitle2">
-                            Fecha de entrega: {new Date(createdDate).toLocaleString()}
+                            Hora de entrega: {deliveryHour && getFormatTime(new Date(deliveryHour))}
                         </Typography>
                     </div>
                 </div>
@@ -113,15 +117,11 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                 <Typography variant="subtitle2">Cliente</Typography>
                 <Typography variant="body2">Daniel Caldera García</Typography>
                 <Typography variant="subtitle2">Dirección de entrega</Typography>
-                <Typography variant="body2">
-                    Avenida Juan Carlos I, s/n, 28806 Alcalá de Henares, Madrid
-                </Typography>
+                <Typography variant="body2">{deliveryAddress}</Typography>
                 <Typography variant="subtitle2">Teléfono</Typography>
                 <Typography variant="body2">666 666 666</Typography>
                 <Typography variant="subtitle2">Nº de productos</Typography>
                 <Typography variant="body2">{getTotalItems(products)}</Typography>
-                <Typography variant="subtitle2">Total compra</Typography>
-                <Typography variant="body2">{totalCost}€</Typography>
                 {handleManageOrder && (
                     <IonButton
                         size="small"

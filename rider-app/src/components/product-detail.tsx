@@ -13,11 +13,12 @@ import {
     IonInput,
     IonList,
     IonItemDivider,
+    IonAlert,
 } from '@ionic/react';
 import {addCircleOutline, removeCircleOutline} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {OrderStatus, Product, ProductOrderStatus} from '../models';
+import {Product, ProductOrderStatus} from '../models';
 import palette from '../theme/palette';
 import Typography from './typography';
 
@@ -61,10 +62,12 @@ const useStyles = createUseStyles(() => ({
 
 const Units = ({
     units,
+    maxUnits,
     handleOnChange,
     label,
 }: {
     units: number;
+    maxUnits?: number;
     label: ReadonlyArray<string>;
     handleOnChange: (units: number) => void;
 }) => {
@@ -92,7 +95,13 @@ const Units = ({
                 icon={addCircleOutline}
                 role="button"
                 onClick={() => {
-                    handleOnChange(units + 1);
+                    if (!maxUnits) {
+                        handleOnChange(units + 1);
+                    } else {
+                        if (units < maxUnits) {
+                            handleOnChange(units + 1);
+                        }
+                    }
                 }}
             />
         </div>
@@ -130,9 +139,10 @@ type Props = {
 const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
     const classes = useStyles();
     const {name, price, cost, img, brand, note, items = []} = product;
-    const [currentPrice, setCurrentPrice] = React.useState(Number(price.final));
+    const [currentPrice, setCurrentPrice] = React.useState<number | null>();
     const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);
     const [daysAfterOpened, setDaysAfterOpened] = React.useState(0);
+    const [showAlert, setShowAlert] = React.useState(false);
     const changeUnits = (index: number, value: string) => {
         setUnits([...units.slice(0, index), {date: value}, ...units.slice(index + 1)]);
     };
@@ -169,6 +179,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                         <IonInput
                             type="number"
                             value={currentPrice}
+                            placeholder={`${price.final}€ (actualizar)`}
                             onIonChange={(e) => {
                                 e && setCurrentPrice(Number(e.detail.value));
                             }}
@@ -178,13 +189,14 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
 
                     <IonItem>
                         <div>
-                            <Typography gutterBottom={8}>Unidades cogidas:</Typography>
-                            <Typography style={{display: 'block'}} gutterBottom={8} variant="subtitle2">
+                            <Typography>{`Unidades a recoger: (${items.length})`}</Typography>
+                            <Typography gutterBottom={8} variant="subtitle2">
                                 Si no están disponibles las unidades requeridas marcar la cantidad cogida
                             </Typography>
                             <Units
                                 label={['ud recogida', 'ud recogidas']}
                                 units={units.length}
+                                maxUnits={items.length}
                                 handleOnChange={(ud) => {
                                     if (ud > units.length) {
                                         setUnits([...units, {date: null}]);
@@ -212,7 +224,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                     <IonItem lines="none">
                         <div>
                             <Typography>Una vez abierto consumir en:</Typography>
-                            <Typography style={{display: 'block'}} gutterBottom={8} variant="subtitle2">
+                            <Typography gutterBottom={8} variant="subtitle2">
                                 Mirar fecha en producto si corresponde
                             </Typography>
                             <Units
@@ -232,11 +244,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                                 expand="block"
                                 color="danger"
                                 onClick={() => {
-                                    updateProduct({
-                                        ...product,
-                                        statusOrder: 'not-available',
-                                    });
-                                    closeModal();
+                                    setShowAlert(true);
                                 }}
                             >
                                 No disponible en tienda
@@ -245,6 +253,32 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                     )}
                     <IonItemDivider />
                 </IonList>
+
+                <IonAlert
+                    isOpen={showAlert}
+                    onDidDismiss={() => setShowAlert(false)}
+                    cssClass="my-custom-class"
+                    header={'Confirmar que el pedido no está disponible'}
+                    message={'¿Estás seguro que el pedido no está disponible?'}
+                    buttons={[
+                        {
+                            text: 'Cancelar',
+                            role: 'cancel',
+                            cssClass: 'secondary',
+                            handler: () => {},
+                        },
+                        {
+                            text: 'Aceptar',
+                            handler: () => {
+                                updateProduct({
+                                    ...product,
+                                    statusOrder: 'not-available',
+                                });
+                                closeModal();
+                            },
+                        },
+                    ]}
+                />
             </IonContent>
 
             {product.statusOrder && (
@@ -260,7 +294,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                                             ...product,
                                             items: units,
                                             daysAfterOpened,
-                                            price: {final: String(currentPrice)},
+                                            price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,
                                         });
                                         closeModal();

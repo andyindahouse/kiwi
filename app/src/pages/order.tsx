@@ -10,7 +10,6 @@ import {
     IonModal,
     IonButtons,
     IonButton,
-    IonIcon,
     IonList,
     IonAlert,
     IonFooter,
@@ -20,7 +19,7 @@ import Typography from '../components/typography';
 import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
-import {useHistory, useParams} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 import {statusOrderMap} from '../utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '../models';
@@ -66,11 +65,14 @@ const useStyles = createUseStyles(() => ({
         gridTemplateColumns: '1fr auto',
         gridGap: 8,
     },
+    p16: {
+        padding: '8px 16px',
+    },
 }));
 
 const getMesaggeStatus = (status: OrderStatus) => {
     if (status === 'pending') {
-        return 'Podrás modificar tu pedido mientras tu personal shopper no haya empezado a realizar tu compra';
+        return 'Podrás cancelar tu pedido mientras tu personal shopper no haya empezado a realizar tu compra (normalmente empezara dos horas antes de la fecha de entrega)';
     }
 
     if (status === 'cancelled') {
@@ -90,12 +92,13 @@ const getMesaggeStatus = (status: OrderStatus) => {
     }
 };
 
-const Order = () => {
+const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) => {
     const classes = useStyles();
-    const {id = null} = useParams<{id: string}>();
+    const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
+    const [showAlert, setShowAlert] = React.useState(false);
     const updateOrderProduct = (product: Product) => {
         kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
             setOrder(res);
@@ -150,16 +153,26 @@ const Order = () => {
                 {order?.products && (
                     <IonList>
                         <div className={classes.list}>
-                            {order.products.map((product) => (
-                                <ProductItem
-                                    key={product.id}
-                                    product={product}
-                                    handleClickDetail={() => setSelected(product)}
-                                    handleAddNote={() => setProductWithNote(product)}
-                                    handleRemoveProduct={handleRemoveOrderProduct}
-                                    disabled={order.status !== 'pending'}
-                                />
-                            ))}
+                            {order.products.map((product) => {
+                                const {name, price, img, brand} = product;
+                                const getUnits = (product: Product) => product.units ?? product.items?.length;
+                                return (
+                                    <ProductItem
+                                        key={product.id}
+                                        img={img}
+                                        title={name.replace(brand, '').trim()}
+                                        subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                        handleClickDetail={() => setSelected(product)}
+                                        disableSwipeOptions
+                                    >
+                                        <div>
+                                            <Typography color={palette.secondary.main} variant="caption">
+                                                {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                            </Typography>
+                                        </div>
+                                    </ProductItem>
+                                );
+                            })}
                         </div>
                         {order.products.length === 0 && (
                             <>
@@ -207,13 +220,33 @@ const Order = () => {
                 <IonModal isOpen={!!selected}>
                     {selected && (
                         <ProductDetail
-                            disabled={order?.status !== 'pending'}
+                            disabled
                             updateProduct={handleUpdateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
                         />
                     )}
                 </IonModal>
+                <IonAlert
+                    isOpen={showAlert}
+                    onDidDismiss={() => setShowAlert(false)}
+                    cssClass="my-custom-class"
+                    header={'¿Estás seguro que deseas cancelar tu pedido?'}
+                    buttons={[
+                        {
+                            text: 'Cancelar',
+                            role: 'cancel',
+                            cssClass: 'secondary',
+                            handler: (blah) => {},
+                        },
+                        {
+                            text: 'Aceptar',
+                            handler: () => {
+                                handleCancelledOrder();
+                            },
+                        },
+                    ]}
+                />
             </IonContent>
             {order && (
                 <IonFooter>
@@ -232,18 +265,17 @@ const Order = () => {
                             <Typography variant="subtitle2">Total</Typography>
                             <Typography variant="body2">{order.totalCost}€</Typography>
                         </div>
+                        <div className={classes.p16}>
+                            <Typography variant="subtitle2">{getMesaggeStatus(order.status)}</Typography>
+                        </div>
                         <IonButton
                             color="danger"
                             expand="block"
-                            size="small"
                             onClick={handleCancelledOrder}
                             disabled={order.status !== 'pending'}
                         >
-                            <Typography>Cancelar pedido</Typography>
+                            Cancelar pedido
                         </IonButton>
-                        <Typography variant="subtitle2" center>
-                            {getMesaggeStatus(order.status)}
-                        </Typography>
                     </IonToolbar>
                 </IonFooter>
             )}
