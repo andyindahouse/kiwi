@@ -1,0 +1,11 @@
+// Export all database
+docker-compose exec -T mongo mongodump -u root -p example --authenticationDatabase "admin" --db kiwi --archive --gzip > ./backups/kiwi.gz
+
+// Import all database
+docker-compose exec -T mongo mongorestore -u root -p example --authenticationDatabase "admin" --db kiwi --archive --gzip < ./backups/kiwi.gz
+
+// Export one collection
+docker-compose exec -T mongo mongodump -u root -p example --authenticationDatabase "admin" --db kiwi --collection products --archive --gzip > ./backups/products.gz
+
+// Import one collection
+docker-compose exec -T mongo mongorestore -u root -p example --authenticationDatabase "admin" --db kiwi --collection products --archive --gzip < ./backups/products.gz
