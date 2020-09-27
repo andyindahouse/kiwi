@@ -97,12 +97,12 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                     <div>
                         <Typography>Precio total compra: {totalCost}€</Typography>
 
-                        <Typography variant="subtitle2" gutterBottom={4}>
+                        {/* <Typography variant="subtitle2" gutterBottom={4}>
                             Fecha de entrega: {deliveryDate && getFormatDate(new Date(deliveryDate))}
                         </Typography>
                         <Typography variant="subtitle2">
-                            Hora de entrega: {deliveryHour && getFormatTime(new Date(deliveryHour))}
-                        </Typography>
+                           Hora de entrega: {deliveryHour && getFormatTime(new Date(deliveryHour))}
+                        </Typography> */}
                     </div>
                 </div>
             </div>

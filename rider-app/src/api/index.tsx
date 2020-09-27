@@ -3,7 +3,7 @@ import {extendRawProducts} from '../utils';
 
 const serverIp = 'http://192.168.1.48:3000';
 const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjNkNmY2MzFlZGY5Mzc4OWUwNzljNTAiLCJleHAiOjE1OTc4NjI5Njk4NTcsImVtYWlsIjoicmlkZXIudGVzdCJ9.XKZZ4THi-AL0NsGbykT19E9EyuiowF0GF1KHDTFHvTY';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjNkM2U2YjljMzNiMjIwMzA2YmIyYzAiLCJleHAiOjE2MDExMzI4NzY3NzEsImVtYWlsIjoiZGFuaWNhbGRlcmErMUBnbWFpbC5jb20ifQ.Ygb_0Pzr9DkbA0ocUAhy2KF9YKeJfUS6tvVw4QVPVkA';
 
 export interface SetCartRequest {
     products: ReadonlyArray<{ean: string; quantity: number}>;

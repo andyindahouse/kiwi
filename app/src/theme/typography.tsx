@@ -45,21 +45,21 @@ export default {
     h6: {
         color: palette.text.primary,
         fontWeight: 500,
-        fontSize: '14px',
+        fontSize: '16px',
         letterSpacing: '-0.05px',
         lineHeight: '20px',
         fontSmoothing: 'antialiased',
     },
     body1: {
         color: palette.text.primary,
-        fontSize: 16,
+        fontSize: 14,
         letterSpacing: 'normal',
         lineHeight: 1.71,
         fontSmoothing: 'antialiased',
     },
     body2: {
         color: palette.text.primary,
-        fontSize: 13,
+        fontSize: 12,
         letterSpacing: '-0.05px',
         lineHeight: 1.3,
         fontSmoothing: 'antialiased',
@@ -67,7 +67,7 @@ export default {
     subtitle1: {
         color: palette.text.secondary,
         fontWeight: 500,
-        fontSize: 16,
+        fontSize: 14,
         letterSpacing: '-0.05px',
         lineHeight: 1,
         fontSmoothing: 'antialiased',
@@ -87,7 +87,7 @@ export default {
     },
     caption: {
         color: palette.text.primary,
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 600,
         letterSpacing: 'normal',
         lineHeight: 1.71,
@@ -103,7 +103,7 @@ export default {
     },
     overline: {
         color: palette.text.secondary,
-        fontSize: '11px',
+        fontSize: 12,
         fontWeight: 500,
         letterSpacing: '0.33px',
         lineHeight: '13px',
