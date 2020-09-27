@@ -48,11 +48,11 @@ export const statusOrderMap: Record<OrderStatus, {color: string; label: string; 
 };
 
 export const getLabelDiscount = (specialOffer: SpecialOffers, specialOfferValue: [string, string]) => {
-    if (specialOffer === 'offerDisscount') {
+    if (specialOffer === 'offerDiscount') {
         return `${specialOfferValue[0]}ª - ${specialOfferValue[1]}%`;
     }
 
-    if (specialOffer === 'quantityDisscount') {
+    if (specialOffer === 'quantityDiscount') {
         return `${specialOfferValue[0]} x ${specialOfferValue[1]}`;
     }
 

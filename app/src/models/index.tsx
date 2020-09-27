@@ -9,7 +9,7 @@ export interface Nutriments {
     salt100g: string;
 }
 
-export type SpecialOffers = 'offerDisscount' | 'quantityDisscount';
+export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
 
 export interface Product {
     id: string;
