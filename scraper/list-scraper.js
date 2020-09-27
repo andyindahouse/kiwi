@@ -28,14 +28,14 @@ const getProductsPage = async (url) => {
                         specialOffer
                     );
                     return {
-                        specialOffer: 'offerDisscount',
+                        specialOffer: 'offerDiscount',
                         specialOfferValue: [valueOne, valueTwo],
                     };
                 }
                 if (/Lleva (\d+) y paga (\d+)/.test(specialOffer)) {
                     const [text, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
                     return {
-                        specialOffer: 'quantityDisscount',
+                        specialOffer: 'quantityDiscount',
                         specialOfferValue: [valueOne, valueTwo],
                     };
                 }
