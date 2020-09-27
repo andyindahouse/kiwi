@@ -28,14 +28,14 @@ const getProductsPage = async (url) => {
                         specialOffer
                     );
                     return {
-                        specialOffer: 'offerDisscount',
+                        specialOffer: 'offerDiscount',
                         specialOfferValue: [valueOne, valueTwo],
                     };
                 }
                 if (/Lleva (\d+) y paga (\d+)/.test(specialOffer)) {
                     const [text, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
                     return {
-                        specialOffer: 'quantityDisscount',
+                        specialOffer: 'quantityDiscount',
                         specialOfferValue: [valueOne, valueTwo],
                     };
                 }
@@ -83,8 +83,11 @@ const getProductsPage = async (url) => {
             urlWithPage = `${url}${i}`;
             const prods = await getProductsPage(urlWithPage);
             prods.forEach(async (product) => {
+                console.log(product);
+                product.img = product.img;
                 const productData = {
                     ...product,
+                    img: product.img.replace('40x40.', '325x325.'),
                     updateDate: new Date(),
                 };
                 await collection.findOne({id: productData.id});
