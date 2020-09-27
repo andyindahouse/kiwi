@@ -83,8 +83,11 @@ const getProductsPage = async (url) => {
             urlWithPage = `${url}${i}`;
             const prods = await getProductsPage(urlWithPage);
             prods.forEach(async (product) => {
+                console.log(product);
+                product.img = product.img;
                 const productData = {
                     ...product,
+                    img: product.img.replace('40x40.', '325x325.'),
                     updateDate: new Date(),
                 };
                 await collection.findOne({id: productData.id});
