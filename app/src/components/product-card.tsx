@@ -1,10 +1,12 @@
-import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
+import {addCircleSharp, removeCircleSharp, pricetag} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles, useTheme} from 'react-jss';
 import {IonIcon} from '@ionic/react';
-import {Product} from '../models';
+import {Product, SpecialOffers} from '../models';
 import {IonSpinner} from '@ionic/react';
 import Typography from './typography';
+import palette from '../theme/palette';
+import {getLabelDiscount} from '../utils';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -40,6 +42,12 @@ const useStyles = createUseStyles(() => ({
         height: 32,
         color: 'white',
     },
+    discountIcon: {
+        width: 16,
+        height: 16,
+        color: palette.secondary.contrastText,
+        marginRight: 4,
+    },
     content: {
         padding: 8,
     },
@@ -54,20 +62,20 @@ const useStyles = createUseStyles(() => ({
         display: 'box',
         boxOrient: 'vertical',
     },
-    price: {
-        fontWeight: 600,
-    },
-    subtitle: {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        lineClamp: 1,
-        display: 'box',
-        boxOrient: 'vertical',
-    },
     spinner: {
         width: 24,
         height: 24,
         color: 'white',
+    },
+    footer: {
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: palette.secondary.main,
+        position: 'absolute',
+        width: '100%',
+        left: '0',
+        bottom: '0',
+        justifyContent: 'center',
     },
 }));
 
@@ -78,7 +86,7 @@ interface Props {
 }
 
 const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
-    const {name, price, img, units: initialUnits} = product;
+    const {name, price, img, units: initialUnits, specialOffer, specialOfferValue, discount} = product;
     const theme = useTheme();
     const classes = useStyles({theme});
     const [units, setUnits] = React.useState(initialUnits);
@@ -162,16 +170,37 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
             <div role="button" onClick={handleClickDetail}>
                 <div className={classes.image} style={{backgroundImage: `url(${img})`}}></div>
                 <div className={classes.content}>
-                    <Typography className={classes.price}>
-                        {price.final}€ <Typography variant="subtitle2"> / ud</Typography>
+                    <Typography
+                        variant="h6"
+                        gutterBottom={4}
+                        {...(discount ? {color: palette.secondary.main} : {})}
+                    >
+                        {price.final} € <Typography variant="subtitle2"> / ud</Typography>
                     </Typography>
-                    <Typography variant="body2" gutterBottom={4} className={classes.name}>
+                    <Typography variant="body2" ellipsis lineClamp={3} className={classes.name}>
                         {name}
                     </Typography>
-                    <Typography variant="subtitle2" className={classes.subtitle}>
-                        PROMO
-                    </Typography>
                 </div>
+                {discount && (
+                    <div className={classes.footer}>
+                        <IonIcon icon={pricetag} className={classes.discountIcon} />
+                        <Typography
+                            variant="caption1"
+                            color={palette.secondary.contrastText}
+                            style={{textDecoration: 'line-through'}}
+                        >
+                            {price.original} €
+                        </Typography>
+                    </div>
+                )}
+                {specialOffer && specialOfferValue && (
+                    <div className={classes.footer}>
+                        <IonIcon icon={pricetag} className={classes.discountIcon} />
+                        <Typography variant="caption1" color={palette.secondary.contrastText}>
+                            {getLabelDiscount(specialOffer, specialOfferValue)}
+                        </Typography>
+                    </div>
+                )}
             </div>
         </div>
     );

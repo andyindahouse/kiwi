@@ -166,7 +166,7 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                                         disableSwipeOptions
                                     >
                                         <div>
-                                            <Typography color={palette.secondary.main} variant="caption">
+                                            <Typography color={palette.secondary.main} variant="caption1">
                                                 {(getUnits(product) * Number(price.final)).toFixed(2)}€
                                             </Typography>
                                         </div>

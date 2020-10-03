@@ -143,7 +143,7 @@ const ProductList = ({
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
     const classes = useStyles();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
-        searchText: '',
+        searchText: 'ace',
         pageNumber: 0,
     });
     const [products, setProducts] = React.useState<ReadonlyArray<Product> | null>(null);

@@ -198,7 +198,7 @@ const ShoppingCart = () => {
                                         }
                                     >
                                         <div>
-                                            <Typography color={palette.secondary.main} variant="caption">
+                                            <Typography color={palette.secondary.main} variant="caption1">
                                                 {(getUnits(product) * Number(price.final)).toFixed(2)}€
                                             </Typography>
                                         </div>
@@ -362,7 +362,7 @@ const ShoppingCart = () => {
                                     <Typography variant="subtitle1">Envío a domicilio</Typography>
                                     <Typography>{deliverFee}€</Typography>
                                     <Typography variant="subtitle1">Total</Typography>
-                                    <Typography variant="caption">{totalCost}€</Typography>
+                                    <Typography variant="caption1">{totalCost}€</Typography>
                                 </div>
                                 <IonItemDivider />
                             </IonList>

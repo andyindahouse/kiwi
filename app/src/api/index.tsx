@@ -3,7 +3,8 @@ import {extendRawProducts} from '../utils';
 
 const serverIp = 'http://192.168.1.48:3000';
 const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjJlNjQzNzQ2YTJjMTA4NjViMDM0NTYiLCJleHAiOjE1OTY4NzU5NzUzMTIsImVtYWlsIjoiZmFrZS50ZXN0In0.gFm_dDgcpsLJPT9gYxNtn5uMF89qIGY_EwZB17RdOi0';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjJhZDRlYWYyZTZhZTJiNTRjYzk4ZGIiLCJleHAiOjE2MDA4ODc0MTY1MjQsImVtYWlsIjoiZGFuaWNhbGRlcmFAZ21haWwuY29tIn0.6QyGT3HB-qtZYyFqUDRiMGV3u-jybX3fyIosrvNOxWQ';
+const PAGE_SIZE = 5;
 
 export interface SetCartRequest {
     products: ReadonlyArray<{ean: string; quantity: number}>;
@@ -54,7 +55,7 @@ const api = {
     }): Promise<PaginatedResponse<ReadonlyArray<Product>>> => {
         console.log('API GET PRODUCTS req:', queryParams);
         return fetch(
-            `${serverIp}/api/products?searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`
+            `${serverIp}/api/products?pageSize=${PAGE_SIZE}&searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`
         )
             .then((e) => e.json())
             .catch((error) => {
@@ -148,15 +149,9 @@ const api = {
                 return res;
             });
     },
-    getOrders: ({
-        pageNumber,
-        pageSize,
-    }: {
-        pageNumber: number;
-        pageSize: number;
-    }): Promise<PaginatedResponse<ReadonlyArray<Order>>> => {
-        console.log('API GET ORDERS req:', pageNumber, pageSize);
-        return fetch(`${serverIp}/api/orders?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+    getOrders: ({pageNumber}: {pageNumber: number}): Promise<PaginatedResponse<ReadonlyArray<Order>>> => {
+        console.log('API GET ORDERS req:', pageNumber);
+        return fetch(`${serverIp}/api/orders?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -256,15 +251,18 @@ const api = {
             });
     },
     getPantry: (queryParams: {
+        pageNumber: number;
         searchText?: string;
         inStorage?: PantryProductStatus;
-        pageNumber: number;
+        pageSize?: number;
     }): Promise<PaginatedResponse<ReadonlyArray<PantryProduct>>> => {
         console.log('API GET PANTRY req:', queryParams);
         const searchTextParam = queryParams.searchText ? `&searchText=${queryParams.searchText}` : '';
         const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
         return fetch(
-            `${serverIp}/api/pantry?pageSize=200&pageNumber=${queryParams.pageNumber}${searchTextParam}${inStorageParam}`,
+            `${serverIp}/api/pantry?pageSize=${queryParams.pageSize || 200}&pageNumber=${
+                queryParams.pageNumber
+            }${searchTextParam}${inStorageParam}`,
             {
                 method: 'GET',
                 headers: {

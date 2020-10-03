@@ -19,6 +19,7 @@ const useStyles = createUseStyles(() => ({
         padding: '8px 0',
     },
     nameProduct: {
+        display: 'block',
         '&::first-letter': {
             textTransform: 'uppercase',
         },

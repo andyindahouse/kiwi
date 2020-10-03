@@ -46,7 +46,7 @@ const OrderList = ({
     refresh,
 }: {
     isLoading: boolean;
-    orders: ReadonlyArray<Order> | null;
+    orders: ReadonlyArray<Order>;
     disableInfiniteScroll: boolean;
     handleScrollEvent: () => void;
     refresh: (event: CustomEvent<RefresherEventDetail>) => void;
@@ -55,7 +55,7 @@ const OrderList = ({
     const history = useHistory();
     const [selected, setSelected] = React.useState<Order | null>(null);
 
-    if (orders && orders.length === 0 && !isLoading) {
+    if (orders.length === 0 && !isLoading) {
         return (
             <>
                 <Typography variant="h2" gutterBottom={16} className={classes.center}>
@@ -67,81 +67,96 @@ const OrderList = ({
     }
 
     return (
-        orders && (
-            <>
-                <IonRefresher slot="fixed" onIonRefresh={refresh}>
-                    <IonRefresherContent
-                        pullingIcon={chevronDownCircleOutline}
-                        pullingText=""
-                        refreshingSpinner="circles"
-                        refreshingText="Cargando..."
-                    ></IonRefresherContent>
-                </IonRefresher>
+        <>
+            <IonRefresher slot="fixed" onIonRefresh={refresh}>
+                <IonRefresherContent
+                    pullingIcon={chevronDownCircleOutline}
+                    pullingText=""
+                    refreshingSpinner="circles"
+                    refreshingText="Cargando..."
+                ></IonRefresherContent>
+            </IonRefresher>
 
-                <IonList className={classes.container}>
-                    {orders.map((order) => (
-                        <OrderCard
-                            key={order._id}
-                            order={order}
-                            selected={order._id === selected?._id}
-                            handleOpen={() => {
-                                if (selected && order._id === selected?._id) {
-                                    setSelected(null);
-                                } else {
-                                    setSelected(order);
-                                }
-                            }}
-                            handleManageOrder={() => {
-                                history.push(`/others/orders/${order._id}`);
-                            }}
-                        />
-                    ))}
-                </IonList>
+            <IonList className={classes.container}>
+                {orders.map((order) => (
+                    <OrderCard
+                        key={order._id}
+                        order={order}
+                        selected={order._id === selected?._id}
+                        handleOpen={() => {
+                            if (selected && order._id === selected?._id) {
+                                setSelected(null);
+                            } else {
+                                setSelected(order);
+                            }
+                        }}
+                        handleManageOrder={() => {
+                            history.push(`/others/orders/${order._id}`);
+                        }}
+                    />
+                ))}
+            </IonList>
 
-                <InfiniteScroll
-                    isLoading={isLoading}
-                    disabled={disableInfiniteScroll}
-                    handleScrollEvent={handleScrollEvent}
-                />
-            </>
-        )
+            <InfiniteScroll
+                isLoading={isLoading}
+                disabled={disableInfiniteScroll}
+                handleScrollEvent={handleScrollEvent}
+            />
+        </>
     );
 };
 
 const Orders: React.FC = () => {
-    const classes = useStyles();
-    const [filter, setFilter] = React.useState<{pageNumber: number; pageSize: number}>({
+    const [orders, setOrders] = React.useState<{
+        isLoading: boolean;
+        pageNumber: number;
+        totalSize: number;
+        data: ReadonlyArray<OrderModel>;
+    }>({
+        isLoading: false,
         pageNumber: 0,
-        pageSize: 5,
+        totalSize: 0,
+        data: [],
     });
-    const [orders, setOrders] = React.useState<ReadonlyArray<OrderModel> | null>(null);
-    const [isLoading, setLoading] = React.useState(false);
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
-    const [totalSize, setTotalSize] = React.useState<number | null>(null);
     const refresh = (event: CustomEvent<RefresherEventDetail>) => {
-        setLoading(true);
-        kiwiApi.getOrders(filter).then((res) => {
-            setLoading(false);
+        setOrders({
+            ...orders,
+            isLoading: true,
+        });
+        kiwiApi.getOrders({pageNumber: 0}).then((res) => {
             event.detail.complete();
-            setTotalSize(res.totalSize);
-            setOrders(res.content);
+            setOrders({
+                pageNumber: 0,
+                isLoading: false,
+                totalSize: res.totalSize,
+                data: res.content,
+            });
         });
     };
 
     React.useEffect(() => {
-        if (orders && orders.length === totalSize) {
+        if (orders.data.length === orders.totalSize) {
             setDisableInfiniteScroll(true);
+        } else {
+            setDisableInfiniteScroll(false);
         }
-    }, [orders, totalSize]);
+    }, [orders.data.length, orders.totalSize]);
 
     React.useEffect(() => {
-        setLoading(true);
-        kiwiApi.getOrders(filter).then((res) => {
-            setLoading(false);
-            setTotalSize(res.totalSize);
-            setOrders((orders) => (orders ? orders : []).concat(res.content));
+        setOrders({
+            ...orders,
+            isLoading: true,
         });
-    }, [filter]);
+        kiwiApi.getOrders({pageNumber: orders.pageNumber}).then((res) => {
+            setOrders((orders) => ({
+                pageNumber: orders.pageNumber,
+                isLoading: false,
+                totalSize: res.totalSize,
+                data: orders.data.concat(res.content),
+            }));
+        });
+    }, [orders.pageNumber]);
 
     return (
         <IonPage>
@@ -152,12 +167,12 @@ const Orders: React.FC = () => {
             </IonHeader>
             <IonContent>
                 <OrderList
-                    orders={orders}
-                    isLoading={isLoading}
+                    orders={orders.data}
+                    isLoading={orders.isLoading}
                     handleScrollEvent={() => {
-                        setFilter({
-                            ...filter,
-                            pageNumber: filter.pageNumber + 1,
+                        setOrders({
+                            ...orders,
+                            pageNumber: orders.pageNumber + 1,
                         });
                     }}
                     refresh={refresh}

@@ -9,15 +9,20 @@ export interface Nutriments {
     salt100g: string;
 }
 
+export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
+
 export interface Product {
     id: string;
     brand: string;
     category: ReadonlyArray<string>;
     name: string;
     price: {
+        original?: string;
         final: string;
     };
     discount: boolean;
+    specialOffer?: SpecialOffers;
+    specialOfferValue?: [string, string];
     status: string;
     quantity: number;
     currency: string;

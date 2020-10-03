@@ -8,10 +8,6 @@ import {
     IonToolbar,
     IonSearchbar,
     IonModal,
-    IonItem,
-    IonItemSliding,
-    IonItemOptions,
-    IonItemOption,
     IonFabButton,
     IonFab,
     IonIcon,
@@ -33,8 +29,9 @@ import kiwiApi from '../api';
 import {getFormatDate} from '../utils/format-date';
 import {differenceInDays, isSameDay} from 'date-fns';
 import {RouteComponentProps, useHistory} from 'react-router';
-import {useShoppingCart} from '../contexts/shopping-cart';
+import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import ProductItem from '../components/product-item';
+import {getExpiryObj} from '../utils';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -96,38 +93,6 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const getExpiryObj = (date: string) => {
-    const expiryDate = new Date(date);
-    const currentDate = new Date();
-    const daysDiff = differenceInDays(expiryDate, currentDate);
-
-    if (isSameDay(expiryDate, currentDate)) {
-        return {
-            color: palette.error.main,
-            label: 'Hoy',
-        };
-    }
-
-    if (daysDiff < 0) {
-        return {
-            color: palette.error.main,
-            label: 'Caducado',
-        };
-    }
-
-    if (daysDiff <= 3) {
-        return {
-            color: palette.warning.dark,
-            label: `${daysDiff} días`,
-        };
-    }
-
-    return {
-        color: palette.primary.dark,
-        label: `${daysDiff} días`,
-    };
-};
-
 const segmentMap: Record<PantryProductStatus, {emptyMessage: string}> = {
     pending: {
         emptyMessage:
@@ -178,7 +143,7 @@ const ProductList = ({
 }) => {
     const classes = useStyles();
     const history = useHistory();
-    const {products: shoppingCartProducts} = useShoppingCart();
+    const {products: shoppingCartProducts, dispatch} = useShoppingCart();
     const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
     const [selectedPantryProduct, setSelectedPantryProduct] = React.useState<PantryProduct | null>(null);
     const [showClassifyAlert, setShowClassifyAlert] = React.useState(false);
@@ -187,36 +152,43 @@ const ProductList = ({
     const listRef = React.useRef<HTMLIonListElement | null>(null);
 
     const getProduct = (ean: string) => kiwiApi.getProductDetail(ean);
-    const consumedProduct = async (consumedDate: string) => {
-        if (selectedPantryProduct) {
-            try {
-                const {data} = await updatePantryProduct({
-                    ...selectedPantryProduct,
-                    inStorage: 'consumed',
-                    consumedDate: consumedDate,
-                });
-                const product = await getProduct(data.ean);
-                const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
-                await kiwiApi.setShoppingCart({
-                    products:
-                        productIndex === -1
-                            ? [
-                                  ...shoppingCartProducts,
-                                  {
-                                      ...product,
-                                      units: 1,
+    const consumedProduct = async (selected: PantryProduct, consumedDate: string) => {
+        try {
+            const {data} = await updatePantryProduct({
+                ...selected,
+                inStorage: 'consumed',
+                consumedDate: consumedDate,
+            });
+            const product = await getProduct(data.ean);
+            const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
+            const shoppingCart = await kiwiApi.setShoppingCart({
+                products:
+                    productIndex === -1
+                        ? [
+                              ...shoppingCartProducts,
+                              {
+                                  ...product,
+                                  units: 1,
+                              },
+                          ]
+                        : [
+                              ...shoppingCartProducts.slice(0, productIndex),
+                              {
+                                  ...{
+                                      ...shoppingCartProducts[productIndex],
+                                      units: shoppingCartProducts[productIndex].units + 1,
                                   },
-                              ]
-                            : shoppingCartProducts
-                                  .slice(0, productIndex)
-                                  .concat(shoppingCartProducts.slice(productIndex + 1)),
-                });
-                setShowToast(true);
-            } catch (err) {
-                console.log(err);
-            }
-        } else {
-            throw Error('selectedPantryProduct should have a value');
+                              },
+                              ...shoppingCartProducts.slice(productIndex + 1),
+                          ],
+            });
+            dispatch({
+                type: SYNC_SHOPPING_CART,
+                shoppingCart,
+            });
+            setShowToast(true);
+        } catch (err) {
+            console.log(err);
         }
     };
     const updatePantryProduct = async (product: PantryProduct) =>
@@ -258,11 +230,11 @@ const ProductList = ({
                             }}
                             disableSwipeOptions={segment === 'consumed'}
                             handleClickRightAction={() => {
+                                setSelectedPantryProduct(product);
                                 if (hasExpiredDate(product.date)) {
-                                    setSelectedPantryProduct(product);
                                     setShowExpiryDateAlert(true);
                                 } else {
-                                    consumedProduct(new Date().toISOString());
+                                    consumedProduct(product, new Date().toISOString());
                                 }
                             }}
                         >
@@ -278,7 +250,6 @@ const ProductList = ({
                     );
                 })}
             </IonList>
-
             <IonAlert
                 isOpen={showClassifyAlert}
                 onDidDismiss={() => setShowClassifyAlert(false)}
@@ -358,7 +329,7 @@ const ProductList = ({
             />
 
             <IonAlert
-                isOpen={showExpiryDateAlert}
+                isOpen={showExpiryDateAlert && !!selectedPantryProduct}
                 onDidDismiss={() => setShowExpiryDateAlert(false)}
                 cssClass="my-custom-class"
                 header="El producto aparece como caducado"
@@ -367,14 +338,16 @@ const ProductList = ({
                     {
                         text: 'No',
                         handler: () => {
-                            consumedProduct(new Date().toISOString());
+                            if (selectedPantryProduct) {
+                                consumedProduct(selectedPantryProduct, new Date().toISOString());
+                            }
                         },
                     },
                     {
                         text: 'Sí',
                         handler: () => {
                             if (selectedPantryProduct) {
-                                consumedProduct(selectedPantryProduct.date);
+                                consumedProduct(selectedPantryProduct, selectedPantryProduct.date);
                             }
                         },
                     },
@@ -436,7 +409,6 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
             });
     };
     const refreshSegment = (segment: PantryProductStatus) => {
-        console.log(segment, 'andy');
         switch (segment) {
             case 'cooled':
                 refresh('cooled', setCooledProducts, searchText);
