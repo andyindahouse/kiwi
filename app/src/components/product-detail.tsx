@@ -7,8 +7,6 @@ import {
     IonButton,
     IonFooter,
     IonIcon,
-    useIonViewDidEnter,
-    IonPage,
 } from '@ionic/react';
 import {addCircleSharp, pricetag, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
@@ -18,6 +16,26 @@ import palette from '../theme/palette';
 import {getLabelDiscount} from '../utils';
 import ChartistGraph from './chartist-graph';
 import Typography from './typography';
+import classnames from 'classnames';
+
+const novaMap = {
+    '1': {
+        label: 'No procesado o mínimamente procesado',
+        color: '#01AA00',
+    },
+    '2': {
+        label: 'Ingrediente culinario procesado',
+        color: '#FFCC01',
+    },
+    '3': {
+        label: 'Alimento procesado',
+        color: '#FF6601',
+    },
+    '4': {
+        label: 'Alimento ultraprocesado',
+        color: '#FF0000',
+    },
+};
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -78,27 +96,95 @@ const useStyles = createUseStyles(() => ({
         },
     },
     section: {
-        padding: '16px 0',
+        padding: (paddingSides) => (!paddingSides ? '16px 0' : 16),
     },
     sectionTitle: {
-        padding: '0 16px',
+        padding: (paddingSides) => (!paddingSides ? '0 16px' : 0),
     },
     jsfe: {
         justifySelf: 'flex-end',
     },
     discountSection: {
+        marginTop: 16,
         display: 'flex',
         alignItems: 'center',
+    },
+    novaContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    nova: {
+        borderRadius: 8,
+        backgroundColor: (value: '1' | '2' | '3' | '4') => novaMap[value]?.color,
+        color: 'white',
+        width: 48,
+        height: 48,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 32,
+        fontWeight: 600,
+    },
+    nutriScoreContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 16,
+    },
+    nutriScoreBar: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    letter: {
+        width: 32,
+        height: 32,
+        fontSize: 16,
+        fontWeight: 600,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    nutriA: {
+        backgroundColor: '#048141',
+        color: '#84BC9D',
+        borderRadius: '8px 0 0 8px',
+    },
+    nutriB: {
+        backgroundColor: '#85BB2F',
+        color: '#BEDA98',
+    },
+    nutriC: {
+        backgroundColor: '#FECB02',
+        color: '#FEE291',
+    },
+    nutriD: {
+        backgroundColor: '#EE8101',
+        color: '#F5BB8B',
+    },
+    nutriE: {
+        backgroundColor: '#E63E11',
+        color: '#F19B8B',
+        borderRadius: ' 0 8px 8px 0',
+    },
+    selected: {
+        width: 64,
+        height: 64,
+        fontSize: 32,
+        borderRadius: 16,
+        color: 'white',
     },
 }));
 
 type SectionProps = {
     title: string;
     children: React.ReactNode;
+    paddingSides?: boolean;
 };
 
-const Section = ({title, children}: SectionProps) => {
-    const classes = useStyles();
+const Section = ({title, paddingSides, children}: SectionProps) => {
+    const classes = useStyles(paddingSides);
 
     return (
         <div className={classes.section}>
@@ -106,6 +192,68 @@ const Section = ({title, children}: SectionProps) => {
                 {title}
             </Typography>
             {children}
+        </div>
+    );
+};
+
+const NovaGroup = ({value}: {value: '1' | '2' | '3' | '4'}) => {
+    const classes = useStyles(value);
+    return (
+        <div className={classes.novaContainer}>
+            <Typography>{novaMap[value].label}</Typography>
+            <div>
+                <Typography variant="caption2">NOVA</Typography>
+                <div className={classes.nova}>{value}</div>
+            </div>
+        </div>
+    );
+};
+
+const NutriScoreBar = ({value}: {value: 'A' | 'B' | 'C' | 'D' | 'E'}) => {
+    const classes = useStyles();
+    return (
+        <div className={classes.nutriScoreContainer}>
+            <Typography variant="caption2">NUTRI-SCORE</Typography>
+            <Typography variant="subtitle2" center gutterBottom={8}>
+                Grado determinado por la cantidad de nutrientes saludables y no saludables
+            </Typography>
+            <div className={classes.nutriScoreBar}>
+                <div
+                    className={classnames(classes.letter, classes.nutriA, {
+                        [classes.selected]: value === 'A',
+                    })}
+                >
+                    A
+                </div>
+                <div
+                    className={classnames(classes.letter, classes.nutriB, {
+                        [classes.selected]: value === 'B',
+                    })}
+                >
+                    B
+                </div>
+                <div
+                    className={classnames(classes.letter, classes.nutriC, {
+                        [classes.selected]: value === 'C',
+                    })}
+                >
+                    C
+                </div>
+                <div
+                    className={classnames(classes.letter, classes.nutriD, {
+                        [classes.selected]: value === 'D',
+                    })}
+                >
+                    D
+                </div>
+                <div
+                    className={classnames(classes.letter, classes.nutriE, {
+                        [classes.selected]: value === 'E',
+                    })}
+                >
+                    E
+                </div>
+            </div>
         </div>
     );
 };
@@ -119,10 +267,9 @@ interface Props {
     updateProduct?: (product: Product) => void;
     closeModal: () => void;
     disabled?: boolean;
-    viewDidEnter?: boolean;
 }
 
-const ProductDetail = ({product, closeModal, updateProduct, disabled = false, viewDidEnter}: Props) => {
+const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
     const classes = useStyles();
     const {
         name,
@@ -136,15 +283,9 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, vi
         specialOfferValue,
     } = product;
     const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
-    const loadedModal = React.useRef(false);
-
-    useIonViewDidEnter(() => {
-        console.log('first effect', loadedModal.current);
-        loadedModal.current = true;
-    }, []);
 
     return (
-        <IonPage>
+        <>
             <IonHeader translucent>
                 <IonToolbar>
                     <IonTitle>Detalle</IonTitle>
@@ -170,11 +311,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, vi
                     <Typography className={classes.nameProduct} variant="h3" gutterBottom={8}>
                         {name.replace(brand, '').trim()}
                     </Typography>
-                    <Typography
-                        variant="h1"
-                        gutterBottom={16}
-                        {...(discount ? {color: palette.secondary.main} : {})}
-                    >
+                    <Typography variant="h1" {...(discount ? {color: palette.secondary.main} : {})}>
                         {price.final} € <Typography variant="subtitle1">/ ud</Typography>
                     </Typography>
 
@@ -182,7 +319,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, vi
                         <div className={classes.discountSection}>
                             <IonIcon icon={pricetag} className={classes.discountIcon} />
                             <Typography variant="h3" style={{textDecoration: 'line-through', marginRight: 8}}>
-                                {price.original}
+                                {price.original} €
                             </Typography>
                             <Typography color={palette.secondary.main}>
                                 (rebajado un {getDiscountPercentage(price.original, price.final)}%)
@@ -200,6 +337,11 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, vi
                         </div>
                     )}
                 </div>
+
+                <Section title="Observaciones" paddingSides>
+                    <NovaGroup value="3" />
+                    <NutriScoreBar value="A" />
+                </Section>
 
                 <Section title="Información nutricional">
                     <>
@@ -301,7 +443,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, vi
                     </IonToolbar>
                 </IonFooter>
             )}
-        </IonPage>
+        </>
     );
 };
 

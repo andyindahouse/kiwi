@@ -75,43 +75,45 @@ const ChartistGraph = ({series}: Props) => {
     const chartRef = React.useRef<HTMLDivElement | null>(null);
     const chartist = React.useRef<Chartist.IChartistPieChart | null>(null);
 
-    useIonViewDidEnter(() => {
-        if (chartRef.current) {
-            chartist.current = new Chartist.Pie(
-                chartRef.current,
-                {
-                    series: [
-                        {
-                            value: series.proteins,
-                            name: 'Proteins',
-                            className: classes.proteins,
-                            meta: 'proteins',
-                        },
-                        {
-                            value: series.fat,
-                            name: 'Fat',
-                            className: classes.fat,
-                            meta: 'fat',
-                        },
-                        {
-                            value: series.carboHydrates,
-                            name: 'Carbohydrates',
-                            className: classes.carboHydrates,
-                            meta: 'carbo-hydrate',
-                        },
-                    ],
-                },
-                {
-                    donut: true,
-                    donutWidth: 40,
-                    donutSolid: true,
-                    startAngle: 270,
-                    total: 200,
-                    showLabel: true,
-                }
-            );
-        }
-    }, [chartRef.current]);
+    React.useEffect(() => {
+        setTimeout(() => {
+            if (chartRef.current) {
+                chartist.current = new Chartist.Pie(
+                    chartRef.current,
+                    {
+                        series: [
+                            {
+                                value: series.proteins,
+                                name: 'Proteins',
+                                className: classes.proteins,
+                                meta: 'proteins',
+                            },
+                            {
+                                value: series.fat,
+                                name: 'Fat',
+                                className: classes.fat,
+                                meta: 'fat',
+                            },
+                            {
+                                value: series.carboHydrates,
+                                name: 'Carbohydrates',
+                                className: classes.carboHydrates,
+                                meta: 'carbo-hydrate',
+                            },
+                        ],
+                    },
+                    {
+                        donut: true,
+                        donutWidth: 40,
+                        donutSolid: true,
+                        startAngle: 270,
+                        total: 200,
+                        showLabel: true,
+                    }
+                );
+            }
+        }, 1000);
+    }, []);
 
     return (
         <div ref={chartRef} className={classnames(['ct-golden-section', classes.custom])}>
