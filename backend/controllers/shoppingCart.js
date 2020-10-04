@@ -14,13 +14,16 @@ const controller = {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
-                const shoppingCartWithProducts = products.map((product, index) => {
-                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
+                const shoppingCartWithProducts = products.map((product) => {
+                    const productInCart = shopppingCart.products.find(
+                        (prodInCart) => prodInCart.ean === product.ean
+                    );
+                    const costProduct = utils.getPrice(product._doc, productInCart.units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
-                        units: shopppingCart.products[index].units,
-                        note: shopppingCart.products[index].note,
+                        units: productInCart.units,
+                        note: productInCart.note,
                         cost: costProduct,
                     };
                 });
@@ -66,13 +69,16 @@ const controller = {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
-                const shoppingCartWithProducts = products.map((product, index) => {
-                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
+                const shoppingCartWithProducts = products.map((product) => {
+                    const productInCart = shopppingCart.products.find(
+                        (prodInCart) => prodInCart.ean === product.ean
+                    );
+                    const costProduct = utils.getPrice(product._doc, productInCart.units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
-                        units: shopppingCart.products[index].units,
-                        note: shopppingCart.products[index].note,
+                        units: productInCart.units,
+                        note: productInCart.note,
                         cost: costProduct,
                     };
                 });
