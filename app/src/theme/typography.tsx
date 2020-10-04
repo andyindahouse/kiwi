@@ -54,14 +54,14 @@ export default {
         color: palette.text.primary,
         fontSize: 14,
         letterSpacing: 'normal',
-        lineHeight: 1.71,
+        lineHeight: 1.3,
         fontSmoothing: 'antialiased',
     },
     body2: {
         color: palette.text.primary,
         fontSize: 12,
         letterSpacing: '-0.05px',
-        lineHeight: 1.3,
+        lineHeight: 1.2,
         fontSmoothing: 'antialiased',
     },
     subtitle1: {
@@ -69,7 +69,7 @@ export default {
         fontWeight: 500,
         fontSize: 14,
         letterSpacing: '-0.05px',
-        lineHeight: 1,
+        lineHeight: 1.3,
         fontSmoothing: 'antialiased',
     },
     subtitle2: {
@@ -77,12 +77,12 @@ export default {
         fontWeight: 500,
         fontSize: 12,
         letterSpacing: '-0.05px',
-        lineHeight: 1.3,
+        lineHeight: 1.2,
         fontSmoothing: 'antialiased',
     },
     button: {
         color: palette.text.primary,
-        fontSize: '14px',
+        fontSize: 14,
         fontSmoothing: 'antialiased',
     },
     caption: {
@@ -90,7 +90,7 @@ export default {
         fontSize: 14,
         fontWeight: 600,
         letterSpacing: 'normal',
-        lineHeight: 1.71,
+        lineHeight: 1.5,
         fontSmoothing: 'antialiased',
     },
     caption2: {
@@ -106,7 +106,7 @@ export default {
         fontSize: 12,
         fontWeight: 500,
         letterSpacing: '0.33px',
-        lineHeight: '13px',
+        lineHeight: 13,
         textTransform: 'uppercase',
         fontSmoothing: 'antialiased',
     },

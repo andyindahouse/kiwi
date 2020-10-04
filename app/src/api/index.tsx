@@ -4,7 +4,7 @@ import {extendRawProducts} from '../utils';
 const serverIp = 'http://192.168.1.48:3000';
 const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjJhZDRlYWYyZTZhZTJiNTRjYzk4ZGIiLCJleHAiOjE2MDA4ODc0MTY1MjQsImVtYWlsIjoiZGFuaWNhbGRlcmFAZ21haWwuY29tIn0.6QyGT3HB-qtZYyFqUDRiMGV3u-jybX3fyIosrvNOxWQ';
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 20;
 
 export interface SetCartRequest {
     products: ReadonlyArray<{ean: string; quantity: number}>;

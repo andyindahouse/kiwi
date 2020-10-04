@@ -2,7 +2,7 @@ import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import Fragment from '../components/fragment';
-import Container from '../components/container';
+import Box from '../components/box';
 import {restaurantOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
@@ -16,15 +16,20 @@ const Others: React.FC = () => {
 
     return (
         <IonPage>
-            <IonHeader collapse="condense">
+            <IonHeader>
                 <IonToolbar>
-                    <IonTitle size="large">Otros</IonTitle>
+                    <IonTitle>Otros</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <Container>
+                <IonHeader collapse="condense">
+                    <IonToolbar>
+                        <IonTitle size="large">Otros</IonTitle>
+                    </IonToolbar>
+                </IonHeader>
+                <Box>
                     <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/others/pantry" />
-                </Container>
+                </Box>
             </IonContent>
         </IonPage>
     );

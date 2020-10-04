@@ -63,6 +63,7 @@ const useStyles = createUseStyles(() => ({
     },
     logo: {
         width: 64,
+        height: 64,
     },
     feeSection: {
         display: 'grid',

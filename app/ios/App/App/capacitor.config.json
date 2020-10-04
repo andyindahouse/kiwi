@@ -1,5 +1,5 @@
 {
-    "appId": "io.ionic.starter",
+    "appId": "io.kiwi.starter",
     "appName": "app",
     "bundledWebRuntime": false,
     "npmClient": "npm",
@@ -11,9 +11,9 @@
     },
     "cordova": {},
     "server": {
-        "url": "http://localhost:8100",
+        "url": "http://192.168.1.48:8100",
         "cleartext": true,
-        "originalUrl": "http://localhost:8100",
+        "originalUrl": "http://192.168.1.48:8100",
         "originalCleartext": true
     }
 }

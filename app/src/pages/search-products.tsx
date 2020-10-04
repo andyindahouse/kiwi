@@ -15,7 +15,7 @@ import kiwiApi from '../api';
 import {Product} from '../models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import Container from '../components/container';
+import Box from '../components/box';
 import {
     UpdateShoppingCartProduct,
     UPDATE_SHOPPING_CART_PRODUCT,
@@ -27,6 +27,7 @@ import Fragment from '../components/fragment';
 import {extendRawProducts} from '../utils';
 import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {RouteComponentProps} from 'react-router';
+import {Plugins, Capacitor} from '@capacitor/core';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -195,7 +196,11 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 <IonToolbar>
                     <IonSearchbar
                         value={filter.searchText}
+                        inputMode="search"
                         onIonChange={(e) => {
+                            if (Capacitor.isNative) {
+                                Plugins.Keyboard.hide();
+                            }
                             if (products && products.length > 0) {
                                 setProducts(null);
                                 setTotalSize(null);
@@ -215,7 +220,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 </IonToolbar>
             </IonHeader>
             <IonContent ref={contentRef} scrollEvents={true}>
-                <Container>
+                <Box>
                     {products ? (
                         <ProductList
                             products={products}
@@ -238,7 +243,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                             </Typography>
                         </>
                     )}
-                </Container>
+                </Box>
             </IonContent>
         </IonPage>
     );

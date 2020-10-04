@@ -55,13 +55,6 @@ const useStyles = createUseStyles(() => ({
         height: 100,
         backgroundSize: 'cover',
     },
-    name: {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        lineClamp: 3,
-        display: 'box',
-        boxOrient: 'vertical',
-    },
     spinner: {
         width: 24,
         height: 24,
@@ -86,7 +79,7 @@ interface Props {
 }
 
 const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
-    const {name, price, img, units: initialUnits, specialOffer, specialOfferValue, discount} = product;
+    const {name, brand, price, img, units: initialUnits, specialOffer, specialOfferValue, discount} = product;
     const theme = useTheme();
     const classes = useStyles({theme});
     const [units, setUnits] = React.useState(initialUnits);
@@ -171,14 +164,14 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
                 <div className={classes.image} style={{backgroundImage: `url(${img})`}}></div>
                 <div className={classes.content}>
                     <Typography
-                        variant="h6"
+                        variant="caption1"
                         gutterBottom={4}
                         {...(discount ? {color: palette.secondary.main} : {})}
                     >
-                        {price.final} € <Typography variant="subtitle2"> / ud</Typography>
+                        {price.final}€ <Typography variant="subtitle2"> / ud</Typography>
                     </Typography>
-                    <Typography variant="body2" ellipsis lineClamp={3} className={classes.name}>
-                        {name}
+                    <Typography variant="body2" ellipsis lineClamp={3}>
+                        {name.replace(brand, '').trim()}
                     </Typography>
                 </div>
                 {discount && (

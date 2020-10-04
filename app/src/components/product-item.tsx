@@ -1,7 +1,17 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {documentTextOutline, trashOutline} from 'ionicons/icons';
-import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
+import {
+    IonIcon,
+    IonItemSliding,
+    IonItem,
+    IonItemOptions,
+    IonItemOption,
+    IonThumbnail,
+    IonSkeletonText,
+    IonLabel,
+    IonList,
+} from '@ionic/react';
 import {Product} from '../models';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
@@ -25,6 +35,31 @@ const useStyles = createUseStyles(() => ({
         },
     },
 }));
+
+export const ProductListItemSkeleton = ({rows}: {rows: number}) => {
+    return (
+        <IonList>
+            {Array.from(Array(rows).keys()).map((e) => (
+                <IonItem key={e}>
+                    <IonThumbnail slot="start">
+                        <IonSkeletonText animated />
+                    </IonThumbnail>
+                    <IonLabel>
+                        <h3>
+                            <IonSkeletonText animated style={{width: '50%'}} />
+                        </h3>
+                        <p>
+                            <IonSkeletonText animated style={{width: '80%'}} />
+                        </p>
+                        <p>
+                            <IonSkeletonText animated style={{width: '60%'}} />
+                        </p>
+                    </IonLabel>
+                </IonItem>
+            ))}
+        </IonList>
+    );
+};
 
 type Props = {
     img: string;
