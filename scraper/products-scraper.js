@@ -12,7 +12,9 @@ const getProductDetail = async (url) => {
     await page.goto(url);
     await page.waitFor(config.timeout);
     const product = await page.evaluate(() => {
-        const ean = document.querySelector('.reference-container.pdp-reference > .hidden').textContent;
+        const ean = document.querySelector('.reference-container.pdp-reference > .hidden')
+            ? document.querySelector('.reference-container.pdp-reference > .hidden').textContent
+            : null;
         return {
             ean,
         };
@@ -26,15 +28,19 @@ const getOpenFoodDataByEan = async (ean) => {
     const {product} = openFoodData.data;
     return {
         nutriments: {
-            nutritionDataPer: `${product['nutrition_data_per']}`,
-            energyKcal100g: `${product.nutriments['energy-kcal_100g']}${product.nutriments['energy-kcal_unit']}`,
-            fat100g: `${product.nutriments['fat_100g']}${product.nutriments['fat_unit']}`,
-            saturedFat100g: `${product.nutriments['saturated-fat_100g']}${product.nutriments['saturated-fat_unit']}`,
-            carbohydrates100g: `${product.nutriments['carbohydrates_100g']}${product.nutriments['carbohydrates_unit']}`,
-            sugar100g: `${product.nutriments['sugars_100g']}${product.nutriments['sugars_unit']}`,
-            proteins100g: `${product.nutriments['proteins_100g']}${product.nutriments['proteins_unit']}`,
-            salt100g: `${product.nutriments['salt_100g']}${product.nutriments['salt_unit']}`,
+            nutritionDataPer: parseInt(product['nutrition_data_per']),
+            energyKcal100g: parseInt(product.nutriments['energy-kcal_100g']),
+            fat100g: parseInt(product.nutriments['fat_100g']),
+            saturedFat100g: parseInt(product.nutriments['saturated-fat_100g']),
+            carbohydrates100g: parseInt(product.nutriments['carbohydrates_100g']),
+            sugar100g: parseInt(product.nutriments['sugars_100g']),
+            proteins100g: parseInt(product.nutriments['proteins_100g']),
+            salt100g: parseInt(product.nutriments['salt_100g']),
         },
+        allergensFromIngredients: product['allergens_from_ingredients'],
+        nutriscoreGrade: product['nutriscore_grade'],
+        ingredientsTextEs: product['ingredients_text_es'],
+        novaGroups: product['nova_groups'],
     };
 };
 
@@ -51,19 +57,23 @@ const getOpenFoodDataByEan = async (ean) => {
         const cursor = collection.find();
         for (let product = await cursor.next(); product; product = await cursor.next()) {
             const productData = await getProductDetail(`${config.marketUrl}${product.url}`);
-            const openFoodData = await getOpenFoodDataByEan(productData.ean);
             const objectId = product._id;
-            await collection.updateOne(
-                {_id: objectId},
-                {
-                    $set: {
-                        ean: productData.ean,
-                        ...openFoodData,
-                        updatedDate: new Date(),
-                    },
-                }
-            );
-            console.log(objectId, 'updated');
+            if (productData.ean) {
+                const openFoodData = await getOpenFoodDataByEan(productData.ean);
+                await collection.updateOne(
+                    {_id: objectId},
+                    {
+                        $set: {
+                            ean: productData.ean,
+                            ...openFoodData,
+                            updatedDate: new Date(),
+                        },
+                    }
+                );
+                console.log(objectId, 'updated');
+            } else {
+                console.log(objectId, 'not ean found');
+            }
         }
     } catch (e) {
         console.log(e);

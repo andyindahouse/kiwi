@@ -20,9 +20,12 @@ const controller = {
                     ? {inStorage: Array.isArray(query.inStorage) ? query.inStorage : [query.inStorage]}
                     : {}),
             };
+            const order = {
+                ...(query.orderBy ? {[query.orderBy]: query.orderDir === 'asc' ? 1 : -1} : {_id: -1}),
+            };
             try {
                 const totalSize = await Pantry.find(findPantryProducts).countDocuments();
-                const result = await Pantry.find(findPantryProducts).sort({_id: -1}).skip(skip).limit(limit);
+                const result = await Pantry.find(findPantryProducts).sort(order).skip(skip).limit(limit);
                 res.json({
                     pageNumber,
                     pageSize,

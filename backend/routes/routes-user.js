@@ -13,6 +13,7 @@ router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 
 router.get('/products', ProductsController.products);
+router.get('/products/nutriments', ProductsController.getNutrimentsFromProducts);
 router.get('/products/:ean', ProductsController.productByEan);
 
 router.get('/shoppingCart', customMdw.ensureAuthenticated, ShoppingCartController.get);

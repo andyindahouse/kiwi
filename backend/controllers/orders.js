@@ -56,13 +56,16 @@ const controller = {
                 const productsId = shopppingCart.products.map((product) => product.ean);
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
-                const orderWithProducts = products.map((product, index) => {
-                    const costProduct = utils.getPrice(product._doc, shopppingCart.products[index].units);
+                const orderWithProducts = products.map((product) => {
+                    const productInCart = shopppingCart.products.find(
+                        (prodInCart) => prodInCart.ean === product.ean
+                    );
+                    const costProduct = utils.getPrice(product._doc, productInCart.units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     return {
                         ...product._doc,
-                        items: new Array(shopppingCart.products[index].units).fill({date: null}),
-                        note: shopppingCart.products[index].note,
+                        items: new Array(productInCart.units).fill({date: null}),
+                        note: productInCart.note,
                         cost: costProduct,
                     };
                 });
