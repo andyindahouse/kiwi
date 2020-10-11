@@ -14,7 +14,15 @@ const configMongo = {
 };
 const marketUrl = 'https://www.elcorteingles.es';
 const scrapingUrl = [
-    {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: 'products', openFood: true},
+    {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/lacteos/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/congelados/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/dieteticos/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/bebidas/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/frescos/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/bebes/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/cuidado-e-higiene-personal/`, collection: 'products'},
     {url: `${marketUrl}/supermercado/drogueria-y-limpieza/`, collection: 'products'},
 ];
 
@@ -26,7 +34,7 @@ module.exports = {
     timeout,
     pupetterOptions,
     marketUrl,
-    scrapingUrl: selectedScrapingUrl,
+    scrapingUrl: scrapingUrl,
     configMongo,
     openFoodApi,
 };

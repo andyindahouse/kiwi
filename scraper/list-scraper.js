@@ -68,48 +68,49 @@ const getProductsPage = async (url) => {
 
 (async () => {
     console.log('Starting scraping list...');
-    const url = config.scrapingUrl.url;
-    const pages = await getTotalPages(url);
-    console.log(`Scraping category ${config.scrapingUrl.collection}...`);
-    let urlWithPage = `${url}`;
-    let client;
-    try {
-        client = await mongodb.MongoClient.connect(config.configMongo.url, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        const collection = await client.db(config.configMongo.db).collection(config.scrapingUrl.collection);
-        for (let i = 1; i <= pages; i++) {
-            urlWithPage = `${url}${i}`;
-            const prods = await getProductsPage(urlWithPage);
-            prods.forEach(async (product) => {
-                console.log(product);
-                product.img = product.img;
-                const productData = {
-                    ...product,
-                    img: product.img.replace('40x40.', '325x325.'),
-                    updateDate: new Date(),
-                };
-                await collection.findOne({id: productData.id});
-                const result = await collection.updateOne(
-                    {id: productData.id},
-                    {
-                        $set: {...productData},
-                    }
-                );
-                if (result.matchedCount === 0) {
-                    await collection.insertOne({
-                        ...productData,
-                        createDate: new Date(),
-                    });
-                }
+    const urls = config.scrapingUrl;
+    for (let i = 0; i <= urls.length; i++) {
+        const url = urls[i].url;
+        const pages = await getTotalPages(url);
+        console.log(`Scraping category ${url}...`);
+        let urlWithPage = `${url}`;
+        let client;
+        try {
+            client = await mongodb.MongoClient.connect(config.configMongo.url, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
             });
-            console.log(`${pages - i} pages left.`);
+            const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
+            for (let j = 1; j <= pages; j++) {
+                urlWithPage = `${url}${j}`;
+                const prods = await getProductsPage(urlWithPage);
+                prods.forEach(async (product) => {
+                    const productData = {
+                        ...product,
+                        img: product.img.replace('40x40.', '325x325.'),
+                        updateDate: new Date(),
+                    };
+                    await collection.findOne({id: productData.id});
+                    const result = await collection.updateOne(
+                        {id: productData.id},
+                        {
+                            $set: {...productData},
+                        }
+                    );
+                    if (result.matchedCount === 0) {
+                        await collection.insertOne({
+                            ...productData,
+                            createDate: new Date(),
+                        });
+                    }
+                });
+                console.log(`${pages - j} pages left.`);
+            }
+            console.log(`Scraper finished.`);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            client.close();
         }
-        console.log(`Scraper finished.`);
-    } catch (e) {
-        console.log(e);
-    } finally {
-        client.close();
     }
 })();
