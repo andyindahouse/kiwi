@@ -150,6 +150,7 @@ const ProductList = ({
     const [showExpiryDateAlert, setShowExpiryDateAlert] = React.useState(false);
     const [showToast, setShowToast] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
+    const [showChart, setShowChart] = React.useState(false);
 
     const getProduct = (ean: string) => kiwiApi.getProductDetail(ean);
     const consumedProduct = async (selected: PantryProduct, consumedDate: string) => {
@@ -354,9 +355,17 @@ const ProductList = ({
                 ]}
             />
 
-            <IonModal isOpen={!!selectedProduct}>
+            <IonModal
+                isOpen={!!selectedProduct}
+                onDidPresent={() => setShowChart(true)}
+                onDidDismiss={() => setShowChart(false)}
+            >
                 {selectedProduct && (
-                    <ProductDetail closeModal={() => setSelectedProduct(null)} product={selectedProduct} />
+                    <ProductDetail
+                        closeModal={() => setSelectedProduct(null)}
+                        product={selectedProduct}
+                        showChart={showChart}
+                    />
                 )}
             </IonModal>
         </>

@@ -262,7 +262,7 @@ const api = {
         return fetch(
             `${serverIp}/api/pantry?pageSize=${queryParams.pageSize || 200}&pageNumber=${
                 queryParams.pageNumber
-            }${searchTextParam}${inStorageParam}`,
+            }${searchTextParam}${inStorageParam}&orderBy=date&orderDir=asc`,
             {
                 method: 'GET',
                 headers: {

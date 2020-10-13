@@ -85,6 +85,7 @@ const ProductList = ({
 }) => {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<Product | null>(null);
+    const [showChart, setShowChart] = React.useState(false);
     const {products: shoppingCart} = useShoppingCart();
 
     React.useEffect(() => {
@@ -123,7 +124,11 @@ const ProductList = ({
                 handleScrollEvent={handleScrollEvent}
             />
 
-            <IonModal isOpen={!!selected}>
+            <IonModal
+                isOpen={!!selected}
+                onDidPresent={() => setShowChart(true)}
+                onDidDismiss={() => setShowChart(false)}
+            >
                 {selected && (
                     <ProductDetail
                         updateProduct={(product: Product) =>
@@ -134,6 +139,7 @@ const ProductList = ({
                         }
                         closeModal={() => setSelected(null)}
                         product={selected}
+                        showChart={showChart}
                     />
                 )}
             </IonModal>
@@ -196,7 +202,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 <IonToolbar>
                     <IonSearchbar
                         value={filter.searchText}
-                        inputMode="search"
+                        enterkeyhint="search"
                         onIonChange={(e) => {
                             if (Capacitor.isNative) {
                                 Plugins.Keyboard.hide();
