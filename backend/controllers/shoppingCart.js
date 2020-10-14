@@ -66,7 +66,7 @@ const controller = {
                 }
             );
             if (shopppingCart && shopppingCart.products) {
-                const productsId = shopppingCart.products.map((product) => product.ean);
+                const productsId = shopppingCart.products.map((product) => product.ean).filter(Boolean);
                 const products = await Product.find({ean: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product) => {
