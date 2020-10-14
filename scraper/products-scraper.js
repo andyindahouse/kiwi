@@ -7,20 +7,39 @@ const config = require('./config');
 puppeteer.use(StealthPlugin());
 
 const getProductDetail = async (url) => {
+    let ean;
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
-    await page.goto(url);
-    await page.waitFor(config.timeout);
-    const product = await page.evaluate(() => {
-        const ean = document.querySelector('.reference-container.pdp-reference > .hidden')
-            ? document.querySelector('.reference-container.pdp-reference > .hidden').textContent
-            : null;
+    console.log(url);
+    await page.goto(url, {waitUntil: 'networkidle0'});
+    await page.waitFor(1000); // wait for a possible redirect (when detail url doesn't exist)
+
+    console.log('pageurl', page.url());
+    if (page.url() !== url) {
+        console.log('INFO: detail page not found');
         return {
-            ean,
+            ean: null,
         };
-    });
+    }
+
+    try {
+        console.log('looking for ean...');
+        const elementHandle = await page.waitForSelector('.reference-container.pdp-reference > .hidden', {
+            timeout: 1000,
+        });
+        ean = await page.evaluate((el) => el.textContent, elementHandle);
+        console.log(ean);
+    } catch (error) {
+        console.log('INFO: ean not found', error);
+        return {
+            ean: null,
+        };
+    }
+
     await browser.close();
-    return product;
+    return {
+        ean,
+    };
 };
 
 const getOpenFoodDataByEan = async (ean) => {
