@@ -8,13 +8,14 @@ import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '../models';
 import Box from './box';
+import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles((theme) => ({
     container: {
         margin: '32px 0px',
     },
     title: {
-        padding: 16,
+        padding: '16px 16px 0 16px',
         display: 'flex',
         alignItems: 'center',
         marginBottom: 16,
@@ -69,7 +70,7 @@ const NextShopping = () => {
             ) : (
                 <div className={classes.list}>
                     <IonList>
-                        {products.map((product) => {
+                        {products.slice(0, 5).map((product) => {
                             const {name, price, img, brand} = product;
                             const getUnits = (product: Product) => product.units ?? product.items?.length;
                             return (
@@ -89,6 +90,9 @@ const NextShopping = () => {
                             );
                         })}
                     </IonList>
+                    <Box>
+                        <Link to="/search/cart">Ver más</Link>
+                    </Box>
                 </div>
             )}
         </div>

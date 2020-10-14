@@ -119,6 +119,7 @@ const ShoppingCart = () => {
     const [deliveryNote, setDeliveryNote] = React.useState('');
     const [showAlert, setShowAlert] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
+    const [showChart, setShowChart] = React.useState(false);
 
     const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
         kiwiApi
@@ -269,9 +270,14 @@ const ShoppingCart = () => {
                         },
                     ]}
                 />
-                <IonModal isOpen={!!selected}>
+                <IonModal
+                    isOpen={!!selected}
+                    onDidPresent={() => setShowChart(true)}
+                    onDidDismiss={() => setShowChart(false)}
+                >
                     {selected && (
                         <ProductDetail
+                            showChart={showChart}
                             updateProduct={(product) => {
                                 const productIndex = products.findIndex((e) => e.id === product.id);
                                 if (product.units === 0) {

@@ -246,3 +246,7 @@ h6 {
 ion-segment-button {
     min-width: auto;
 }
+
+a {
+    text-decoration: none;
+}

@@ -1,12 +1,12 @@
 export interface Nutriments {
-    nutritionDataPer: string;
-    energyKcal100g: string;
-    fat100g: string;
-    saturedFat100g: string;
-    carbohydrates100g: string;
-    sugar100g: string;
-    proteins100g: string;
-    salt100g: string;
+    nutritionDataPer: number;
+    energyKcal100g: number;
+    fat100g: number;
+    saturedFat100g: number;
+    carbohydrates100g: number;
+    sugar100g: number;
+    proteins100g: number;
+    salt100g: number;
 }
 
 export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
@@ -29,10 +29,12 @@ export interface Product {
     img: string;
     url: string;
     ean: string;
-    nutriments: Nutriments;
     units: number;
     note?: string;
     items?: ReadonlyArray<string>;
+    nutriments?: Nutriments;
+    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
+    novaGroups: '1' | '2' | '3' | '4';
 }
 
 export interface ShoppingCart {

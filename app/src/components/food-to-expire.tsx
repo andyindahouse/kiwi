@@ -10,6 +10,7 @@ import {getExpiryObj} from '../utils';
 import {getFormatDate} from '../utils/format-date';
 import kiwiApi from '../api';
 import Box from './box';
+import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles((theme) => ({
     container: {
@@ -125,6 +126,9 @@ const FoodToExpire = () => {
                             );
                         })}
                     </IonList>
+                    <Box>
+                        <Link to="/others/pantry">Ver más</Link>
+                    </Box>
                 </div>
             )}
         </div>

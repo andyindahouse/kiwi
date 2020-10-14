@@ -99,6 +99,7 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
     const [showAlert, setShowAlert] = React.useState(false);
+    const [showChart, setShowChart] = React.useState(false);
     const updateOrderProduct = (product: Product) => {
         kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
             setOrder(res);
@@ -217,13 +218,18 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                         },
                     ]}
                 />
-                <IonModal isOpen={!!selected}>
+                <IonModal
+                    isOpen={!!selected}
+                    onDidPresent={() => setShowChart(true)}
+                    onDidDismiss={() => setShowChart(false)}
+                >
                     {selected && (
                         <ProductDetail
                             disabled
                             updateProduct={handleUpdateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
+                            showChart={showChart}
                         />
                     )}
                 </IonModal>

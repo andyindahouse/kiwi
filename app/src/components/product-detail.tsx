@@ -209,7 +209,7 @@ const NovaGroup = ({value}: {value: '1' | '2' | '3' | '4'}) => {
     );
 };
 
-const NutriScoreBar = ({value}: {value: 'A' | 'B' | 'C' | 'D' | 'E'}) => {
+const NutriScoreBar = ({value}: {value: 'a' | 'b' | 'c' | 'd' | 'e'}) => {
     const classes = useStyles();
     return (
         <div className={classes.nutriScoreContainer}>
@@ -220,35 +220,35 @@ const NutriScoreBar = ({value}: {value: 'A' | 'B' | 'C' | 'D' | 'E'}) => {
             <div className={classes.nutriScoreBar}>
                 <div
                     className={classnames(classes.letter, classes.nutriA, {
-                        [classes.selected]: value === 'A',
+                        [classes.selected]: value === 'a',
                     })}
                 >
                     A
                 </div>
                 <div
                     className={classnames(classes.letter, classes.nutriB, {
-                        [classes.selected]: value === 'B',
+                        [classes.selected]: value === 'b',
                     })}
                 >
                     B
                 </div>
                 <div
                     className={classnames(classes.letter, classes.nutriC, {
-                        [classes.selected]: value === 'C',
+                        [classes.selected]: value === 'c',
                     })}
                 >
                     C
                 </div>
                 <div
                     className={classnames(classes.letter, classes.nutriD, {
-                        [classes.selected]: value === 'D',
+                        [classes.selected]: value === 'd',
                     })}
                 >
                     D
                 </div>
                 <div
                     className={classnames(classes.letter, classes.nutriE, {
-                        [classes.selected]: value === 'E',
+                        [classes.selected]: value === 'e',
                     })}
                 >
                     E
@@ -266,10 +266,11 @@ interface Props {
     product: Product;
     updateProduct?: (product: Product) => void;
     closeModal: () => void;
+    showChart: boolean;
     disabled?: boolean;
 }
 
-const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
+const ProductDetail = ({product, closeModal, updateProduct, disabled = false, showChart}: Props) => {
     const classes = useStyles();
     const {
         name,
@@ -277,10 +278,12 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
         img,
         brand,
         units: initialUnits,
-        nutriments,
         discount,
         specialOffer,
         specialOfferValue,
+        nutriments,
+        nutriscoreGrade,
+        novaGroups,
     } = product;
     const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
 
@@ -338,63 +341,69 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                     )}
                 </div>
 
-                <Section title="Observaciones" paddingSides>
-                    <NovaGroup value="3" />
-                    <NutriScoreBar value="A" />
-                </Section>
+                {(nutriscoreGrade || novaGroups) && (
+                    <Section title="Observaciones" paddingSides>
+                        {novaGroups && <NovaGroup value={novaGroups} />}
+                        {nutriscoreGrade && <NutriScoreBar value={nutriscoreGrade} />}
+                    </Section>
+                )}
 
-                <Section title="Información nutricional">
-                    <>
-                        <div className={classes.nutriments}>
-                            <div></div>
-                            <Typography variant="subtitle1" className={classes.jsfe}>
-                                por {nutriments.nutritionDataPer}
-                            </Typography>
-                            <Typography variant="subtitle1">Valor energético</Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.energyKcal100g}
-                            </Typography>
-                            <Typography variant="subtitle1">Grasas</Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.fat100g}
-                            </Typography>
-                            <Typography variant="subtitle1" className={classes.ml}>
-                                de las cuales saturadas
-                            </Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.saturedFat100g}
-                            </Typography>
-                            <Typography variant="subtitle1">Hidratos de carbono</Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.carbohydrates100g}
-                            </Typography>
-                            <Typography variant="subtitle1" className={classes.ml}>
-                                de los cuales azúcares
-                            </Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.sugar100g}
-                            </Typography>
-                            <Typography variant="subtitle1">Proteínas</Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.proteins100g}
-                            </Typography>
-                            <Typography variant="subtitle1">Sal</Typography>
-                            <Typography variant="caption1" className={classes.jsfe}>
-                                {nutriments.salt100g}
-                            </Typography>
-                        </div>
-                    </>
-                </Section>
+                {nutriments && (
+                    <Section title="Información nutricional">
+                        <>
+                            <div className={classes.nutriments}>
+                                <div></div>
+                                <Typography variant="subtitle1" className={classes.jsfe}>
+                                    por {nutriments.nutritionDataPer}g
+                                </Typography>
+                                <Typography variant="subtitle1">Valor energético</Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.energyKcal100g}kcal
+                                </Typography>
+                                <Typography variant="subtitle1">Grasas</Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.fat100g}g
+                                </Typography>
+                                <Typography variant="subtitle1" className={classes.ml}>
+                                    de las cuales saturadas
+                                </Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.saturedFat100g}g
+                                </Typography>
+                                <Typography variant="subtitle1">Hidratos de carbono</Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.carbohydrates100g}g
+                                </Typography>
+                                <Typography variant="subtitle1" className={classes.ml}>
+                                    de los cuales azúcares
+                                </Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.sugar100g}g
+                                </Typography>
+                                <Typography variant="subtitle1">Proteínas</Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.proteins100g}g
+                                </Typography>
+                                <Typography variant="subtitle1">Sal</Typography>
+                                <Typography variant="caption1" className={classes.jsfe}>
+                                    {nutriments.salt100g}g
+                                </Typography>
+                            </div>
+                        </>
+                    </Section>
+                )}
 
-                <Section title="Macronutrientes">
-                    <ChartistGraph
-                        series={{
-                            proteins: 30,
-                            fat: 20,
-                            carboHydrates: 50,
-                        }}
-                    />
-                </Section>
+                {nutriments && showChart && (
+                    <Section title="Macronutrientes">
+                        <ChartistGraph
+                            series={{
+                                proteins: nutriments.proteins100g,
+                                fat: nutriments.fat100g,
+                                carboHydrates: nutriments.carbohydrates100g,
+                            }}
+                        />
+                    </Section>
+                )}
             </IonContent>
             {updateProduct && !disabled && (
                 <IonFooter>

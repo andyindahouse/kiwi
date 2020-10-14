@@ -1,7 +1,7 @@
 import {OrderStatus, Product, SpecialOffers} from '../models';
 import palette from '../theme/palette';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
-import {differenceInDays, isSameDay} from 'date-fns';
+import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {
     return products.map((product: Product) => {
@@ -65,6 +65,13 @@ export const getExpiryObj = (date: string) => {
     const currentDate = new Date();
     const daysDiff = differenceInDays(expiryDate, currentDate);
 
+    if (daysDiff < 0) {
+        return {
+            color: palette.error.main,
+            label: 'Caducado',
+        };
+    }
+
     if (isSameDay(expiryDate, currentDate)) {
         return {
             color: palette.error.main,
@@ -72,10 +79,10 @@ export const getExpiryObj = (date: string) => {
         };
     }
 
-    if (daysDiff < 0) {
+    if (isTomorrow(expiryDate)) {
         return {
-            color: palette.error.main,
-            label: 'Caducado',
+            color: palette.warning.main,
+            label: 'Mañana',
         };
     }
 
