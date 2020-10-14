@@ -19,6 +19,7 @@ const controller = {
                 ...(query.inStorage
                     ? {inStorage: Array.isArray(query.inStorage) ? query.inStorage : [query.inStorage]}
                     : {}),
+                ...(query.perishable ? {$nor: [{inStorage: 'consumed'}, {date: null}]} : {}),
             };
             const order = {
                 ...(query.orderBy ? {[query.orderBy]: query.orderDir === 'asc' ? 1 : -1} : {_id: -1}),
