@@ -7,36 +7,34 @@ const config = require('./config');
 puppeteer.use(StealthPlugin());
 
 const getProductDetail = async (url) => {
-    let ean;
+    console.time('TOTAL TIME');
+    let ean = null;
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
     console.log(url);
     await page.goto(url, {waitUntil: 'networkidle0'});
     await page.waitFor(1000); // wait for a possible redirect (when detail url doesn't exist)
 
-    console.log('pageurl', page.url());
+    console.log('PAGE-URL', page.url());
     if (page.url() !== url) {
         console.log('INFO: detail page not found');
-        return {
-            ean: null,
-        };
+    } else {
+        try {
+            console.log('INFO: looking for ean...');
+            console.time('TIME WAITING');
+            const elementHandle = await page.waitForSelector('.reference-container.pdp-reference > .hidden', {
+                timeout: 5000,
+            });
+            console.timeEnd('TIME WAITING');
+            ean = await page.evaluate((el) => el.textContent, elementHandle);
+            console.log(ean);
+        } catch (error) {
+            console.log('INFO: ean not found', error);
+            console.timeEnd('TIME WAITING');
+        }
     }
-
-    try {
-        console.log('looking for ean...');
-        const elementHandle = await page.waitForSelector('.reference-container.pdp-reference > .hidden', {
-            timeout: 1000,
-        });
-        ean = await page.evaluate((el) => el.textContent, elementHandle);
-        console.log(ean);
-    } catch (error) {
-        console.log('INFO: ean not found', error);
-        return {
-            ean: null,
-        };
-    }
-
     await browser.close();
+    console.timeEnd('TOTAL TIME');
     return {
         ean,
     };
@@ -75,11 +73,15 @@ const getOpenFoodDataByEan = async (ean) => {
         });
         const collection = await client.db(config.configMongo.db).collection(config.scrapingUrl.collection);
 
-        const cursor = collection.find({ean: {$exists: false}});
+        const cursor = collection.find({ean: {$exists: false}}).addCursorFlag('noCursorTimeout', true);
+
         for (let product = await cursor.next(); product; product = await cursor.next()) {
+            console.log('------------------------------------------------------------');
+            console.count();
             const productData = await getProductDetail(`${config.marketUrl}${product.url}`);
             const objectId = product._id;
             if (productData.ean) {
+                console.time('OPEN FOODS');
                 const openFoodData = await getOpenFoodDataByEan(productData.ean);
                 await collection.updateOne(
                     {_id: objectId},
@@ -92,10 +94,10 @@ const getOpenFoodDataByEan = async (ean) => {
                     }
                 );
                 console.log(objectId, 'updated');
-            } else {
-                console.log(objectId, 'not ean found');
+                console.timeEnd('OPEN FOODS');
             }
         }
+        console.log('end collection');
     } catch (e) {
         console.log(e);
     } finally {
