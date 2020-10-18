@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const PantrySchema = Schema({
     email: String,
     inStorage: String,
+    id: String,
     ean: String,
     img: String,
     name: String,

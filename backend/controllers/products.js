@@ -30,12 +30,12 @@ const controller = {
             next(err);
         }
     },
-    productByEan: async ({params}, res, next) => {
-        if (!params.ean) {
-            next(new errorTypes.Error400('Falta parametro ean.'));
+    productById: async ({params}, res, next) => {
+        if (!params.id) {
+            next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
-            const result = await Product.findOne({ean: params.ean});
+            const result = await Product.findOne({id: params.id});
             if (!result) {
                 next(new errorTypes.Error404('Product not found.'));
             } else {
@@ -46,10 +46,10 @@ const controller = {
         }
     },
     getNutrimentsFromProducts: async ({query}, res, next) => {
-        const productsEan = query.ean && query.ean.length ? query.ean : [query.ean];
+        const productsEan = query.id && query.id.length ? query.id : [query.id];
         console.log(productsEan);
         try {
-            const result = await Product.find({ean: {$in: productsEan}});
+            const result = await Product.find({id: {$in: productsEan}});
             const nutriments = result.reduce(
                 (acum, prod) => {
                     const product = prod._doc;

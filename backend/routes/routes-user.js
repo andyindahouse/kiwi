@@ -14,7 +14,7 @@ router.post('/register', UserController.register);
 
 router.get('/products', ProductsController.products);
 router.get('/products/nutriments', ProductsController.getNutrimentsFromProducts);
-router.get('/products/:ean', ProductsController.productByEan);
+router.get('/products/:id', ProductsController.productById);
 
 router.get('/shoppingCart', customMdw.ensureAuthenticated, ShoppingCartController.get);
 router.post('/shoppingCart', customMdw.ensureAuthenticated, ShoppingCartController.update);
@@ -27,7 +27,7 @@ router.get('/orders', customMdw.ensureAuthenticated, OrdersController.get);
 router.get('/orders/:id', customMdw.ensureAuthenticated, OrdersController.getById);
 router.post('/orders/:id/status', customMdw.ensureAuthenticated, OrdersController.updateStatus);
 router.put('/orders/:id/products', customMdw.ensureAuthenticated, OrdersController.addProduct);
-router.post('/orders/:id/products/:ean', customMdw.ensureAuthenticated, OrdersController.updateProduct);
-router.delete('/orders/:id/products/:ean', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
+router.post('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.updateProduct);
+router.delete('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
 
 module.exports = router;

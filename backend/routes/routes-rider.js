@@ -35,13 +35,13 @@ router.put(
     OrdersRiderController.addProduct
 );
 router.post(
-    '/orders/:id/products/:ean',
+    '/orders/:orderId/products/:id',
     customMdw.ensureAuthenticated,
     customMdw.ensureRider,
     OrdersRiderController.updateProduct
 );
 router.delete(
-    '/orders/:id/products/:ean',
+    '/orders/:orderId/products/:id',
     customMdw.ensureAuthenticated,
     customMdw.ensureRider,
     OrdersRiderController.deleteProduct

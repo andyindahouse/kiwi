@@ -142,19 +142,19 @@ const controller = {
     },
     addProduct: async ({params, body, user}, res, next) => {
         try {
-            if (!body.ean) {
-                return next(new errorTypes.Error400('Falta parametro ean.'));
+            if (!body.id) {
+                return next(new errorTypes.Error400('Falta parametro id.'));
             } else if (!body.units) {
                 return next(new errorTypes.Error400('Falta parametro units.'));
             }
             const id = new ObjectID(params.id);
             const order = await Order.findById(id);
-            const productsExist = order.products.find((product) => body.ean === product.ean);
+            const productsExist = order.products.find((product) => body.id === product.id);
             if (productsExist) {
                 return next(new errorTypes.Error400('El producto ya existe en el pedido.'));
             }
             if (order) {
-                const product = await Product.findOne({ean: body.ean});
+                const product = await Product.findOne({id: body.id});
                 if (!product) {
                     next(new errorTypes.Error404('Product not found.'));
                 }
@@ -196,13 +196,13 @@ const controller = {
     },
     updateProduct: async ({params, body, user}, res, next) => {
         try {
-            const id = new ObjectID(params.id);
-            const order = await Order.findById(id);
+            const orderId = new ObjectID(params.orderId);
+            const order = await Order.findById(orderId);
             if (order) {
                 if (!body.items || !body.items.length) {
                     return next(new errorTypes.Error400('Items cannot have length 0'));
                 }
-                const productIndex = order.products.findIndex((product) => params.ean === product.ean);
+                const productIndex = order.products.findIndex((product) => params.id === product.id);
                 const products = [...order.products];
                 const newProduct = {
                     ...products[productIndex],
@@ -233,7 +233,7 @@ const controller = {
 
                 if (productIndex > -1) {
                     const updatedOrder = await Order.findOneAndUpdate(
-                        {_id: id, rider: user.email},
+                        {_id: orderId, rider: user.email},
                         {
                             products,
                             updatedDate: new Date(),
@@ -263,14 +263,14 @@ const controller = {
     },
     deleteProduct: async ({params, body, user}, res, next) => {
         try {
-            const id = new ObjectID(params.id);
-            const order = await Order.findById(id);
+            const orderId = new ObjectID(params.orderId);
+            const order = await Order.findById(orderId);
             if (order) {
-                const productToDelete = order.products.find((product) => params.ean === product.ean);
+                const productToDelete = order.products.find((product) => params.id === product.id);
                 if (!productToDelete) {
                     return next(new errorTypes.Error404('Product not found.'));
                 }
-                const products = order.products.filter((product) => params.ean !== product.ean);
+                const products = order.products.filter((product) => params.id !== product.id);
                 const newTotalShoppingCart = parseFloat(
                     (order.totalShoppingCart - productToDelete.cost).toFixed(2)
                 );
@@ -279,7 +279,7 @@ const controller = {
                 );
 
                 const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: id, rider: user.email},
+                    {_id: orderId, rider: user.email},
                     {
                         products,
                         updatedDate: new Date(),
@@ -329,7 +329,7 @@ const controller = {
                         return {
                             ...item,
                             inStorage: 'pending',
-                            ean: product.ean,
+                            id: product.id,
                             img: product.img,
                             name: product.name,
                             buyedDate: new Date(),

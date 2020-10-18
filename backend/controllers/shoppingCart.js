@@ -11,12 +11,12 @@ const controller = {
         try {
             const shopppingCart = await ShoppingCart.findOne({email: req.user.email});
             if (shopppingCart && shopppingCart.products) {
-                const productsId = shopppingCart.products.map((product) => product.ean);
-                const products = await Product.find({ean: {$in: productsId}});
+                const productsId = shopppingCart.products.map((product) => product.id);
+                const products = await Product.find({id: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product) => {
                     const productInCart = shopppingCart.products.find(
-                        (prodInCart) => prodInCart.ean === product.ean
+                        (prodInCart) => prodInCart.id === product.id
                     );
                     const costProduct = utils.getPrice(product._doc, productInCart.units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
@@ -66,12 +66,12 @@ const controller = {
                 }
             );
             if (shopppingCart && shopppingCart.products) {
-                const productsId = shopppingCart.products.map((product) => product.ean).filter(Boolean);
-                const products = await Product.find({ean: {$in: productsId}});
+                const productsId = shopppingCart.products.map((product) => product.id).filter(Boolean);
+                const products = await Product.find({id: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product) => {
                     const productInCart = shopppingCart.products.find(
-                        (prodInCart) => prodInCart.ean === product.ean
+                        (prodInCart) => prodInCart.id === product.id
                     );
                     const costProduct = utils.getPrice(product._doc, productInCart.units);
                     totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));

@@ -7,7 +7,7 @@ const ShoppingCartSchema = Schema({
     email: String,
     products: [
         {
-            ean: String,
+            id: String,
             units: Number,
             note: String,
         },
