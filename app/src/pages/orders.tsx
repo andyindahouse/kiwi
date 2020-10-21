@@ -9,6 +9,8 @@ import {
     IonRefresher,
     IonRefresherContent,
     IonList,
+    IonButtons,
+    IonBackButton,
 } from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
@@ -162,6 +164,9 @@ const Orders: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonBackButton text="Volver" defaultHref="/others" />
+                    </IonButtons>
                     <IonTitle>Pedidos</IonTitle>
                 </IonToolbar>
             </IonHeader>

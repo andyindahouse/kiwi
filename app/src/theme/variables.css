@@ -250,3 +250,12 @@ ion-segment-button {
 a {
     text-decoration: none;
 }
+
+ion-toast::part(container) {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+}
+
+ion-toast::part(message) {
+    color: white;
+}

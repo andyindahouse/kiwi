@@ -184,7 +184,7 @@ const ShoppingCart = () => {
                                     <ProductItem
                                         key={product.id}
                                         img={img}
-                                        title={name.replace(brand, '').trim()}
+                                        title={name}
                                         subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
                                         handleClickDetail={() => setSelected(product)}
                                         labelLeftAction={

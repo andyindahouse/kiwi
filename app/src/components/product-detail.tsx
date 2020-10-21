@@ -259,7 +259,7 @@ const NutriScoreBar = ({value}: {value: 'a' | 'b' | 'c' | 'd' | 'e'}) => {
 };
 
 const getDiscountPercentage = (original: string, final: string) => {
-    return Math.abs((Number(final) / Number(original)) * 100 - 100);
+    return Math.abs((Number(final) / Number(original)) * 100 - 100).toFixed(2);
 };
 
 interface Props {
@@ -336,7 +336,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                             <Typography variant="h3" color={palette.secondary.main} style={{marginRight: 8}}>
                                 {getLabelDiscount(specialOffer, specialOfferValue)}
                             </Typography>
-                            <Typography>(La unidad te sale a 1,77 €)</Typography>
+                            <Typography>(La unidad te sale a X €)</Typography>
                         </div>
                     )}
                 </div>

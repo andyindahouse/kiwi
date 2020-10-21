@@ -1,7 +1,7 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
 import {IonIcon, IonList, useIonViewDidEnter} from '@ionic/react';
-import {alarmOutline} from 'ionicons/icons';
+import {alarmOutline, play} from 'ionicons/icons';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
 import {PantryProduct} from '../models';
@@ -11,8 +11,10 @@ import {getFormatDate} from '../utils/format-date';
 import kiwiApi from '../api';
 import Box from './box';
 import {Link} from 'react-router-dom';
+import {Plugins, Capacitor} from '@capacitor/core';
+import {isFuture, isPast, subDays} from 'date-fns';
 
-const useStyles = createUseStyles((theme) => ({
+const useStyles = createUseStyles(() => ({
     container: {
         margin: '32px 0px',
     },
@@ -54,9 +56,69 @@ const useStyles = createUseStyles((theme) => ({
     },
 }));
 
+const DAYS_BEFORE_TO_NOTIFY = 2;
+const HOUR_TO_NOTIFY = 20;
+
+const refreshLocalNotifications = async (pantryProducts: ReadonlyArray<PantryProduct>) => {
+    if (Capacitor.isNative && (await Plugins.LocalNotifications.areEnabled())) {
+        const {granted} = await Plugins.LocalNotifications.requestPermission();
+
+        if (granted) {
+            const {notifications} = await Plugins.LocalNotifications.getPending();
+
+            if (notifications.length > 0) {
+                await Plugins.LocalNotifications.cancel({notifications});
+            }
+
+            const newNotifications = pantryProducts
+                .filter((product) => {
+                    const expiredDate = new Date(product.date);
+                    const dateToNotify = subDays(
+                        new Date(
+                            expiredDate.getFullYear(),
+                            expiredDate.getMonth(),
+                            expiredDate.getDate(),
+                            HOUR_TO_NOTIFY
+                        ),
+                        DAYS_BEFORE_TO_NOTIFY
+                    );
+
+                    return isFuture(dateToNotify);
+                })
+                .map((product, index) => {
+                    const expiredDate = new Date(product.date);
+                    const dateToNotify = subDays(
+                        new Date(
+                            expiredDate.getFullYear(),
+                            expiredDate.getMonth(),
+                            expiredDate.getDate(),
+                            HOUR_TO_NOTIFY
+                        ),
+                        DAYS_BEFORE_TO_NOTIFY
+                    );
+                    return {
+                        id: index,
+                        title: 'Alerta de caducidad',
+                        body: `${product.name} caduca pasado mañana`,
+                        schedule: {
+                            at: dateToNotify,
+                        },
+                    };
+                });
+
+            Plugins.LocalNotifications.schedule({
+                notifications: newNotifications,
+            });
+        } else {
+            console.log(`INFO: local notifications don't have permissions`);
+        }
+    } else {
+        console.log(`INFO: local notifications can't setted`);
+    }
+};
+
 const FoodToExpire = () => {
     const classes = useStyles();
-
     const [pantryProducts, setPantryProducts] = React.useState<{
         data: ReadonlyArray<PantryProduct>;
         isLoading: boolean;
@@ -70,9 +132,15 @@ const FoodToExpire = () => {
         kiwiApi
             .getPantry({
                 pageNumber: 0,
-                pageSize: 5,
+                pageSize: 6,
+                perishable: true,
             })
             .then((res) => {
+                refreshLocalNotifications(
+                    res.content.filter((e) => {
+                        return !isPast(new Date(e.date));
+                    })
+                );
                 setPantryProducts({
                     data: res.content,
                     isLoading: false,
@@ -127,7 +195,7 @@ const FoodToExpire = () => {
                         })}
                     </IonList>
                     <Box>
-                        <Link to="/others/pantry">Ver más</Link>
+                        <Link to="/nutrition">Ver más</Link>
                     </Box>
                 </div>
             )}

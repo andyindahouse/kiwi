@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import Fragment from '../components/fragment';
 import Box from '../components/box';
-import {restaurantOutline} from 'ionicons/icons';
+import {rocketOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
     test: {
@@ -27,9 +27,13 @@ const Others: React.FC = () => {
                         <IonTitle size="large">Otros</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <Box>
-                    <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/others/pantry" />
-                </Box>
+                <Fragment
+                    icon={rocketOutline}
+                    color="secondary"
+                    text="Ver pedido en curso"
+                    link="/others/orders"
+                ></Fragment>
+                <Box>Perfil de usuario</Box>
             </IonContent>
         </IonPage>
     );

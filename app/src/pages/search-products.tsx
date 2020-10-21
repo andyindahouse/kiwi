@@ -150,7 +150,7 @@ const ProductList = ({
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
     const classes = useStyles();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
-        searchText: 'ace',
+        searchText: '',
         pageNumber: 0,
     });
     const [products, setProducts] = React.useState<ReadonlyArray<Product> | null>(null);
@@ -217,7 +217,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                             });
                             scrollToTop();
                         }}
-                        debounce={1000}
+                        debounce={3000}
                         animated
                         placeholder="Busca tus productos aquí"
                         showCancelButton="focus"

@@ -27,8 +27,7 @@ $ npx cap open ios
 ```
 
 ```javascript
-> ionic cap run ios --livereload // run and and sync files to build in xcode
-> ionic cap run android --livereload --external // run and and sync files to build in android studio
+> ionic cap run android -l --external // run and and sync files to build in android studio
 ```
 
 ### To install plugin in ionic react

@@ -10,7 +10,7 @@ import {Product} from '../models';
 import Box from './box';
 import {Link} from 'react-router-dom';
 
-const useStyles = createUseStyles((theme) => ({
+const useStyles = createUseStyles(() => ({
     container: {
         margin: '32px 0px',
     },
@@ -33,14 +33,6 @@ const useStyles = createUseStyles((theme) => ({
         gridTemplateColumns: '80px 1fr 80px',
         gridGap: 8,
     },
-    name: {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        lineClamp: 2,
-        display: 'box',
-        boxOrient: 'vertical',
-    },
-
     date: {
         display: 'flex',
         flexDirection: 'column',
@@ -65,7 +57,7 @@ const NextShopping = () => {
 
             {products.length === 0 ? (
                 <Box>
-                    <Typography>Ahora mismo no tienes productos en tu despensa</Typography>
+                    <Typography>Ahora mismo no tienes productos en tu carrito</Typography>
                 </Box>
             ) : (
                 <div className={classes.list}>
@@ -77,7 +69,7 @@ const NextShopping = () => {
                                 <ProductItem
                                     key={product.id}
                                     img={img}
-                                    title={name.replace(brand, '').trim()}
+                                    title={name}
                                     subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
                                     handleClickDetail={() => console.log()}
                                 >

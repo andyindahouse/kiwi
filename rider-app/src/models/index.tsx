@@ -26,7 +26,7 @@ export interface Product {
     currency: string;
     img: string;
     url: string;
-    ean: string;
+    ean?: string;
     nutriments: Nutriments;
     units: number;
     note?: string;

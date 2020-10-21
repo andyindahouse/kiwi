@@ -28,7 +28,7 @@ export interface Product {
     currency: string;
     img: string;
     url: string;
-    ean: string;
+    ean?: string;
     units: number;
     note?: string;
     items?: ReadonlyArray<string>;
@@ -64,7 +64,7 @@ export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' |
 export interface PantryProduct {
     buyedDate: string;
     date: string;
-    ean: string;
+    id: string;
     email: string;
     img: string;
     inStorage: PantryProductStatus;

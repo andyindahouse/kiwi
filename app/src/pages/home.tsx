@@ -10,6 +10,7 @@ const useStyles = createUseStyles(() => ({}));
 
 const Home: React.FC = () => {
     const classes = useStyles();
+
     return (
         <IonPage>
             <IonHeader>

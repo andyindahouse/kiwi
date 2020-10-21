@@ -5,7 +5,7 @@ import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {
     return products.map((product: Product) => {
-        const shoppingCartProduct = shoppingCart.find((e) => e.ean === product.ean);
+        const shoppingCartProduct = shoppingCart.find((e) => e.id === product.id);
 
         return {
             ...product,
@@ -63,7 +63,10 @@ export const getLabelDiscount = (specialOffer: SpecialOffers, specialOfferValue:
 export const getExpiryObj = (date: string) => {
     const expiryDate = new Date(date);
     const currentDate = new Date();
-    const daysDiff = differenceInDays(expiryDate, currentDate);
+    const daysDiff = differenceInDays(
+        new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate()),
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+    );
 
     if (daysDiff < 0) {
         return {

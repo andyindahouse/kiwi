@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {documentTextOutline, trashOutline} from 'ionicons/icons';
+
 import {
-    IonIcon,
     IonItemSliding,
     IonItem,
     IonItemOptions,
@@ -12,9 +11,7 @@ import {
     IonLabel,
     IonList,
 } from '@ionic/react';
-import {Product} from '../models';
 import Typography from '../components/typography';
-import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     card: {
@@ -27,12 +24,6 @@ const useStyles = createUseStyles(() => ({
     img: {
         width: 64,
         padding: '8px 0',
-    },
-    nameProduct: {
-        display: 'block',
-        '&::first-letter': {
-            textTransform: 'uppercase',
-        },
     },
 }));
 
@@ -93,13 +84,7 @@ const ProductItem = ({
                 <div className={classes.card}>
                     <img className={classes.img} alt="product" src={img} />
                     <div>
-                        <Typography
-                            variant="body2"
-                            gutterBottom={4}
-                            className={classes.nameProduct}
-                            ellipsis
-                            lineClamp={2}
-                        >
+                        <Typography variant="body2" gutterBottom={4} ellipsis lineClamp={2}>
                             {title}
                         </Typography>
                         <Typography variant="subtitle2">{subtitle}</Typography>

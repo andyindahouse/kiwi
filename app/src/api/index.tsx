@@ -1,14 +1,9 @@
 import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart} from '../models';
-import {extendRawProducts} from '../utils';
 
 const serverIp = 'http://192.168.1.48:3000';
 const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjJhZDRlYWYyZTZhZTJiNTRjYzk4ZGIiLCJleHAiOjE2MDA4ODc0MTY1MjQsImVtYWlsIjoiZGFuaWNhbGRlcmFAZ21haWwuY29tIn0.6QyGT3HB-qtZYyFqUDRiMGV3u-jybX3fyIosrvNOxWQ';
 const PAGE_SIZE = 20;
-
-export interface SetCartRequest {
-    products: ReadonlyArray<{ean: string; quantity: number}>;
-}
 
 export type PaginatedResponse<T> = {
     content: T;
@@ -66,9 +61,9 @@ const api = {
                 return res;
             });
     },
-    getProductDetail: (ean: string): Promise<Product> => {
-        console.log('API GET PRODUCT DETAIL req:', ean);
-        return fetch(`${serverIp}/api/products/${ean}`)
+    getProductDetail: (id: string): Promise<Product> => {
+        console.log('API GET PRODUCT DETAIL req:', id);
+        return fetch(`${serverIp}/api/products/${id}`)
             .then((e) => e.json())
             .catch((error) => {
                 throw Error(`API GET PRODUCT DETAIL error: ${error}`);
@@ -190,7 +185,7 @@ const api = {
     },
     updateOrderProduct: (product: Product, id: string) => {
         console.log('API POST ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/orders/${id}/products/${product.id}`, {
             method: 'POST',
             body: JSON.stringify(product),
             headers: {
@@ -234,7 +229,7 @@ const api = {
     },
     deleteOrderProduct: (product: Product, id: string) => {
         console.log('API DELETE ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/orders/${id}/products/${product.id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -255,14 +250,16 @@ const api = {
         searchText?: string;
         inStorage?: PantryProductStatus;
         pageSize?: number;
+        perishable?: boolean;
     }): Promise<PaginatedResponse<ReadonlyArray<PantryProduct>>> => {
         console.log('API GET PANTRY req:', queryParams);
         const searchTextParam = queryParams.searchText ? `&searchText=${queryParams.searchText}` : '';
         const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
+        const perishableParam = queryParams.perishable ? `&perishable=true` : '';
         return fetch(
             `${serverIp}/api/pantry?pageSize=${queryParams.pageSize || 200}&pageNumber=${
                 queryParams.pageNumber
-            }${searchTextParam}${inStorageParam}&orderBy=date&orderDir=asc`,
+            }${searchTextParam}${inStorageParam}${perishableParam}&orderBy=date&orderDir=asc`,
             {
                 method: 'GET',
                 headers: {

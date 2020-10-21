@@ -5,10 +5,6 @@ const serverIp = 'http://192.168.1.48:3000';
 const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjNkM2U2YjljMzNiMjIwMzA2YmIyYzAiLCJleHAiOjE2MDExMzI4NzY3NzEsImVtYWlsIjoiZGFuaWNhbGRlcmErMUBnbWFpbC5jb20ifQ.Ygb_0Pzr9DkbA0ocUAhy2KF9YKeJfUS6tvVw4QVPVkA';
 
-export interface SetCartRequest {
-    products: ReadonlyArray<{ean: string; quantity: number}>;
-}
-
 export type PaginatedResponse<T> = {
     content: T;
     pageNumber: number;
@@ -112,7 +108,7 @@ const api = {
     },
     updateOrderProduct: (product: Product, id: string) => {
         console.log('API POST ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.id}`, {
             method: 'POST',
             body: JSON.stringify(product),
             headers: {
@@ -152,7 +148,7 @@ const api = {
     },
     deleteOrderProduct: (product: Product, id: string) => {
         console.log('API DELETE ORDER PRODUCT res:', id, product);
-        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.ean}`, {
+        return fetch(`${serverIp}/api/rider/orders/${id}/products/${product.id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,

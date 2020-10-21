@@ -8,26 +8,20 @@ import {
     IonToolbar,
     IonSearchbar,
     IonModal,
-    IonFabButton,
-    IonFab,
-    IonIcon,
     IonSegment,
     IonSegmentButton,
     IonBadge,
     IonList,
     IonAlert,
     IonToast,
-    IonButtons,
-    IonBackButton,
 } from '@ionic/react';
-import {scanSharp} from 'ionicons/icons';
 import {Product, PantryProductStatus, PantryProduct} from '../models';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
 import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';
 import {getFormatDate} from '../utils/format-date';
-import {differenceInDays, isSameDay} from 'date-fns';
+import {differenceInDays} from 'date-fns';
 import {RouteComponentProps, useHistory} from 'react-router';
 import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import ProductItem from '../components/product-item';
@@ -152,7 +146,7 @@ const ProductList = ({
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
 
-    const getProduct = (ean: string) => kiwiApi.getProductDetail(ean);
+    const getProduct = (id: string) => kiwiApi.getProductDetail(id);
     const consumedProduct = async (selected: PantryProduct, consumedDate: string) => {
         try {
             const {data} = await updatePantryProduct({
@@ -160,7 +154,7 @@ const ProductList = ({
                 inStorage: 'consumed',
                 consumedDate: consumedDate,
             });
-            const product = await getProduct(data.ean);
+            const product = await getProduct(data.id);
             const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
             const shoppingCart = await kiwiApi.setShoppingCart({
                 products:
@@ -219,7 +213,7 @@ const ProductList = ({
                             title={product.name}
                             subtitle={`Comprado el ${getFormatDate(product.buyedDate)}`}
                             handleClickDetail={() => {
-                                getProduct(product.ean).then((res) => {
+                                getProduct(product.id).then((res) => {
                                     setSelectedProduct(res);
                                 });
                             }}
@@ -239,14 +233,18 @@ const ProductList = ({
                                 }
                             }}
                         >
-                            <div className={classes.date}>
-                                <Typography style={{color: expiryObj.color}}>{expiryObj.label}</Typography>
-                                <Typography variant="subtitle2">
-                                    caducidad
-                                    <br />
-                                    {new Date(product.date).toLocaleDateString()}
-                                </Typography>
-                            </div>
+                            {product.date && (
+                                <div className={classes.date}>
+                                    <Typography style={{color: expiryObj.color}}>
+                                        {expiryObj.label}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        caducidad
+                                        <br />
+                                        {new Date(product.date).toLocaleDateString()}
+                                    </Typography>
+                                </div>
+                            )}
                         </ProductItem>
                     );
                 })}
@@ -453,9 +451,9 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
+                    {/* <IonButtons slot="start">
                         <IonBackButton text="Volver" defaultHref="/others" />
-                    </IonButtons>
+                    </IonButtons> */}
                     <IonTitle>Tu despensa</IonTitle>
                 </IonToolbar>
                 <IonToolbar>
@@ -465,7 +463,7 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                             setSearchText(e.detail.value ?? '');
                         }}
                         animated
-                        debounce={1000}
+                        debounce={3000}
                         placeholder="Buscar en tu despensa"
                         showCancelButton="focus"
                         cancelButtonText="Borrar"
@@ -473,11 +471,11 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                {/* <IonFab vertical="bottom" horizontal="end" slot="fixed">
                     <IonFabButton>
                         <IonIcon icon={scanSharp} />
                     </IonFabButton>
-                </IonFab>
+                </IonFab> */}
                 <IonToolbar>
                     <IonSegment
                         scrollable

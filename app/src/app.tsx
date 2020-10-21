@@ -34,42 +34,43 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const App: React.FC = () => (
-    <IonApp>
-        <ThemeProvider theme={{palette}}>
-            <ShoppingProvider>
-                <IonReactRouter>
-                    <IonTabs>
-                        <IonRouterOutlet>
-                            <Route path="/home" component={Home} exact />
-                            <Route path="/search" component={SearchProducts} exact />
-                            <Route path="/search/cart" component={ShoppingCart} exact />
-                            <Route path="/nutrition" component={Nutrition} exact />
-                            <Route path="/others" component={Others} exact />
-                            <Route path="/others/pantry" component={Pantry} exact />
-                            <Route path="/others/orders" component={Orders} exact />
-                            <Route path="/others/orders/:id" component={Order} exact />
-                            <Route path="/" render={() => <Redirect to="/home" />} exact />
-                        </IonRouterOutlet>
-                        <IonTabBar slot="bottom">
-                            <IonTabButton tab="home" href="/home">
-                                <IonIcon icon={homeSharp} />
-                            </IonTabButton>
-                            <IonTabButton tab="shopping" href="/search">
-                                <IonIcon icon={cartSharp} />
-                            </IonTabButton>
-                            <IonTabButton tab="nutrition" href="/nutrition">
-                                <IonIcon icon={nutritionSharp} />
-                            </IonTabButton>
-                            <IonTabButton tab="others" href="/others">
-                                <IonIcon icon={menuSharp} />
-                            </IonTabButton>
-                        </IonTabBar>
-                    </IonTabs>
-                </IonReactRouter>
-            </ShoppingProvider>
-        </ThemeProvider>
-    </IonApp>
-);
+const App: React.FC = () => {
+    return (
+        <IonApp>
+            <ThemeProvider theme={{palette}}>
+                <ShoppingProvider>
+                    <IonReactRouter>
+                        <IonTabs>
+                            <IonRouterOutlet>
+                                <Route path="/home" component={Home} exact />
+                                <Route path="/search" component={SearchProducts} exact />
+                                <Route path="/search/cart" component={ShoppingCart} exact />
+                                <Route path="/nutrition" component={Pantry} exact />
+                                <Route path="/others" component={Others} exact />
+                                <Route path="/others/orders" component={Orders} exact />
+                                <Route path="/others/orders/:id" component={Order} exact />
+                                <Route path="/" render={() => <Redirect to="/home" />} exact />
+                            </IonRouterOutlet>
+                            <IonTabBar slot="bottom">
+                                <IonTabButton tab="home" href="/home">
+                                    <IonIcon icon={homeSharp} />
+                                </IonTabButton>
+                                <IonTabButton tab="shopping" href="/search">
+                                    <IonIcon icon={cartSharp} />
+                                </IonTabButton>
+                                <IonTabButton tab="nutrition" href="/nutrition">
+                                    <IonIcon icon={nutritionSharp} />
+                                </IonTabButton>
+                                <IonTabButton tab="others" href="/others">
+                                    <IonIcon icon={menuSharp} />
+                                </IonTabButton>
+                            </IonTabBar>
+                        </IonTabs>
+                    </IonReactRouter>
+                </ShoppingProvider>
+            </ThemeProvider>
+        </IonApp>
+    );
+};
 
 export default App;
