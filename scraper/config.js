@@ -1,7 +1,7 @@
 const chromePathWindows = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const chromePathMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const chromePath = chromePathMac;
+const chromePath = chromePathWindows;
 const timeout = 20000;
 const pupetterOptions = {
     executablePath: chromePath,
@@ -34,7 +34,7 @@ module.exports = {
     timeout,
     pupetterOptions,
     marketUrl,
-    scrapingUrl: selectedScrapingUrl,
+    scrapingUrl: scrapingUrl,
     configMongo,
     openFoodApi,
 };

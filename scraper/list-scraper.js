@@ -50,7 +50,9 @@ const getProductsPage = async (url) => {
                             ...JSON.parse(elem.getAttribute('data-json')),
                             img: 'https:' + elem.querySelector(' * > img').getAttribute('src'),
                             url: elem.querySelector('a').getAttribute('href'),
-                            ...(offerData && {...getDiscountType(offerData.textContent)}),
+                            ...(offerData
+                                ? {...getDiscountType(offerData.textContent)}
+                                : {specialOffer: null, specialOfferValue: null}),
                         };
                     }
                     return null;
