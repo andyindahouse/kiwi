@@ -18,8 +18,14 @@ const controller = {
         const textQuery = searchText ? {name: new RegExp(searchText, 'gi')} : {};
 
         try {
-            const totalSize = await Product.find(textQuery).countDocuments();
-            const result = await Product.find(textQuery).sort({discount: -1, _id: 1}).skip(skip).limit(limit);
+            const totalSize = await Product.find({
+                ...textQuery,
+                ...{available: {$ne: false}},
+            }).countDocuments();
+            const result = await Product.find({...textQuery, ...{available: {$ne: false}}})
+                .sort({discount: -1, _id: 1})
+                .skip(skip)
+                .limit(limit);
             res.json({
                 pageNumber,
                 pageSize,
