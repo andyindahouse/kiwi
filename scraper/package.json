@@ -6,6 +6,7 @@
     "scripts": {
         "list": "node ./list-scraper.js",
         "products": "node ./products-scraper.js",
+        "markNotFound": "node ./mark-not-found.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",

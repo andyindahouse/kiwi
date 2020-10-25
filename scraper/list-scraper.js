@@ -103,6 +103,7 @@ const getProductsPage = async (url) => {
                         await collection.insertOne({
                             ...productData,
                             createDate: new Date(),
+                            available: true,
                         });
                     }
                 });

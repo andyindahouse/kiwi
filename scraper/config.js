@@ -13,17 +13,18 @@ const configMongo = {
     db: 'kiwi',
 };
 const marketUrl = 'https://www.elcorteingles.es';
+const collectionProducts = 'products';
 const scrapingUrl = [
-    {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/lacteos/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/congelados/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/dieteticos/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/bebidas/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/frescos/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/bebes/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/cuidado-e-higiene-personal/`, collection: 'products'},
-    {url: `${marketUrl}/supermercado/drogueria-y-limpieza/`, collection: 'products'},
+    {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/lacteos/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/congelados/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/dieteticos/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/bebidas/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/frescos/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/bebes/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/cuidado-e-higiene-personal/`, collection: collectionProducts},
+    {url: `${marketUrl}/supermercado/drogueria-y-limpieza/`, collection: collectionProducts},
 ];
 
 const selectedScrapingUrl = scrapingUrl[0];
@@ -37,4 +38,5 @@ module.exports = {
     scrapingUrl: scrapingUrl,
     configMongo,
     openFoodApi,
+    collectionProducts,
 };
