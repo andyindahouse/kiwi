@@ -6,8 +6,11 @@ const Schema = mongoose.Schema;
 const UserSchema = Schema({
     email: {type: String, required: true},
     password: {type: String, required: true},
-    first_name: String,
-    last_name: String,
+    firstName: String,
+    lastName: String,
+    deliveryAddress: String,
+    deliveryWeekDay: String,
+    deliveryHour: String,
     phone: String,
     rider: Boolean,
 });

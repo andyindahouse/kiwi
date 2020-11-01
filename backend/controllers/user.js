@@ -18,14 +18,29 @@ const controller = {
                     const document = new User({
                         email: req.body.email,
                         password: hash,
-                        first_name: req.body.first_name || '',
-                        last_name: req.body.last_name || '',
+                        firstName: req.body.firstName || '',
+                        lastName: req.body.lastName || '',
+                        deliveryAddress: req.body.deliveryAddress || '',
+                        deliveryWeekDay: req.body.deliveryWeekDay || '',
+                        deliveryHour: req.body.deliveryHour || '',
+                        phone: req.body.phone || '',
                     });
                     return document.save();
                 }
             })
             .then((data) => {
-                res.json({data: data});
+                res.json({
+                    data: {
+                        email: data.email,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        deliveryAddress: data.deliveryAddress,
+                        deliveryWeekDay: data.deliveryWeekDay,
+                        deliveryHour: data.deliveryHour,
+                        phone: data.phone,
+                        rider: data.rider,
+                    },
+                });
             })
             .catch((err) => {
                 next(err);
@@ -47,6 +62,40 @@ const controller = {
                 res.json({data: {token: token}});
             }
         })(req, res);
+    },
+    isEmailTaken: async ({query}, res, next) => {
+        if (!query.email) {
+            next(new errorTypes.Error400('Query param email not recibed.'));
+        }
+        try {
+            const user = await User.findOne({email: query.email});
+            res.json({
+                data: {
+                    isTaken: !!user,
+                },
+            });
+        } catch (err) {
+            next(err);
+        }
+    },
+    getUserInfo: async (req, res, next) => {
+        try {
+            const user = await User.findOne({email: req.user.email});
+            res.json({
+                data: {
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    deliveryAddress: user.deliveryAddress,
+                    deliveryWeekDay: user.deliveryWeekDay,
+                    deliveryHour: user.deliveryHour,
+                    phone: user.phone,
+                    rider: user.rider,
+                },
+            });
+        } catch (err) {
+            next(err);
+        }
     },
 };
 

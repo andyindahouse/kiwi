@@ -7,6 +7,7 @@ const UserController = require('../controllers/user');
 const OrdersRiderController = require('../controllers/orders-rider');
 
 router.post('/login', UserController.login);
+router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
 
 router.get('/orders', customMdw.ensureAuthenticated, customMdw.ensureRider, OrdersRiderController.get);
 router.get(

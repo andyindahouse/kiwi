@@ -11,6 +11,8 @@ const OrdersController = require('../controllers/orders');
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
+router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
+router.get('/emailTaken', customMdw.ensureAuthenticated, UserController.isEmailTaken);
 
 router.get('/products', ProductsController.products);
 router.get('/products/nutriments', ProductsController.getNutrimentsFromProducts);
