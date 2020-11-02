@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const {PASSPORT_CONFIG} = require('../config');
+const {PASSPORT_CONFIG, POSTAL_CODES_ALLOWED} = require('../config');
 const User = require('../models/user');
 const errorTypes = require('./errorTypes');
 
@@ -24,6 +24,8 @@ const controller = {
                         deliveryWeekDay: req.body.deliveryWeekDay || '',
                         deliveryHour: req.body.deliveryHour || '',
                         phone: req.body.phone || '',
+                        deliveryPostalCode: req.body.deliveryPostalCode || '',
+                        actve: false,
                     });
                     return document.save();
                 }
@@ -37,6 +39,7 @@ const controller = {
                         deliveryAddress: data.deliveryAddress,
                         deliveryWeekDay: data.deliveryWeekDay,
                         deliveryHour: data.deliveryHour,
+                        deliveryPostalCode: data.deliveryPostalCode,
                         phone: data.phone,
                         rider: data.rider,
                     },
@@ -50,6 +53,8 @@ const controller = {
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
                 next(new errorTypes.Error401('Username or password not correct.'));
+            } else if(!user.active) {
+                next(new errorTypes.Error401('User is not active.'));
             } else {
                 const payload = {
                     sub: user._id,
@@ -78,6 +83,16 @@ const controller = {
             next(err);
         }
     },
+    isPostalCodeAllowed: async ({query}, res, next) => {
+        if (!query.postalCode) {
+            next(new errorTypes.Error400('Query param postalCode not recibed.'));
+        }
+        return {
+            data: {
+                isAllowed: POSTAL_CODES_ALLOWED.indexOf(query.postalCode) > -1;
+            }
+        }
+    },
     getUserInfo: async (req, res, next) => {
         try {
             const user = await User.findOne({email: req.user.email});
@@ -89,8 +104,10 @@ const controller = {
                     deliveryAddress: user.deliveryAddress,
                     deliveryWeekDay: user.deliveryWeekDay,
                     deliveryHour: user.deliveryHour,
+                    deliveryPostalCode: user.deliveryPostalCode,
                     phone: user.phone,
                     rider: user.rider,
+                    active: user.active,
                 },
             });
         } catch (err) {

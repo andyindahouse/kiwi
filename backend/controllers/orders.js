@@ -87,6 +87,7 @@ const controller = {
                     status: 'pending',
                     note: body.note,
                     deliveryAddress: body.deliveryAddress,
+                    deliveryPostalCode: body.deliveryPostalCode,
                     deliveryDate: body.deliveryDate,
                     deliveryHour: body.deliveryHour,
                 };

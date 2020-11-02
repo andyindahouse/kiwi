@@ -19,6 +19,7 @@ const OrderSchema = Schema({
     totalShoppingCart: Number,
     totalCost: Number,
     deliveryAddress: String,
+    deliveryPostalCode: String,
     deliveryDate: Date,
     deliveryHour: String,
 });

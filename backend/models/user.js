@@ -11,8 +11,10 @@ const UserSchema = Schema({
     deliveryAddress: String,
     deliveryWeekDay: String,
     deliveryHour: String,
+    deliveryPostalCode: String,
     phone: String,
     rider: Boolean,
+    active: Boolean,
 });
 
 module.exports = mongoose.model('User', UserSchema, 'users');
