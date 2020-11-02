@@ -1,4 +1,4 @@
-import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart} from '../models';
+import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart, User} from '../models';
 
 const serverIp = 'http://192.168.1.48:3000';
 const token =
@@ -13,36 +13,98 @@ export type PaginatedResponse<T> = {
 };
 
 const api = {
-    registerUser: async ({
-        email,
-        first_name,
-        last_name,
-        password,
-    }: {
-        email: string;
-        first_name: string;
-        password: string;
-        last_name: string;
-    }) => {
-        console.log('API POST USER req:', email, first_name, password, last_name);
+    login: ({email, password}: {email: string; password: string}) => {
+        console.log('API POST LOGIN req:', email, password);
         return fetch(`${serverIp}/api/register`, {
             method: 'POST',
             body: JSON.stringify({
-                email: 'rider.test',
-                first_name: 'rider',
-                last_name: 'surname',
-                password: '1234',
+                email,
+                password,
             }),
             headers: {'Content-Type': 'application/json'},
         })
             .then((e) => e.json())
             .catch((error) => {
-                throw Error(`API POST USER res: ${error}`);
+                throw Error(`API POST LOGIN res: ${error}`);
             })
             .then((res) => {
-                console.log('API POST USER res:', res);
+                console.log('API POST LOGIN res:', res);
                 return res;
             });
+    },
+    registerUser: ({
+        email,
+        firstName,
+        password,
+        deliveryAddress,
+        deliveryHour,
+        deliveryWeekDay,
+        deliveryCp,
+        phone,
+    }: User & {password: string}) => {
+        console.log('API POST REGISTER USER req:', email, firstName, password);
+        return fetch(`${serverIp}/api/register`, {
+            method: 'POST',
+            body: JSON.stringify({
+                email,
+                password,
+                firstName,
+                deliveryAddress,
+                deliveryWeekDay,
+                deliveryHour,
+                deliveryCp,
+                phone,
+            }),
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then((e) => e.json())
+            .catch((error) => {
+                throw Error(`API POST REGISTER USER res: ${error}`);
+            })
+            .then((res) => {
+                console.log('API POST REGISTER USER res:', res);
+                return res;
+            });
+    },
+    emailTaken: (email: string) => {
+        console.log('API GET EMAIL TAKEN req:', email);
+        return fetch(`${serverIp}/api/emailTaken?email=${email}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then((e) => e.json())
+            .catch((error) => {
+                throw Error(`API EMAIL TAKEN res: ${error}`);
+            })
+            .then((res: {data: {isTaken: boolean}}) => {
+                console.log('API GET EMAIL TAKEN USER res:', res);
+                return res.data;
+            });
+    },
+    getUser: async (): Promise<User> => {
+        return Promise.resolve({
+            email: 'andy@kiwi.com',
+            firstName: 'andy',
+            phone: '670677651',
+            deliveryAddress: 'C/ Antonio Suarez 10 28802 Edificio B 116',
+            deliveryCp: '28805',
+            deliveryWeekDay: '1',
+            deliveryHour: '18:00',
+        });
+
+        // console.log('API POST GET USER req:', email, password);
+        // return fetch(`${serverIp}/api/user`, {
+        //     method: 'GET',
+        //     headers: {'Content-Type': 'application/json'},
+        // })
+        //     .then((e) => e.json())
+        //     .catch((error) => {
+        //         throw Error(`API POST GET USER res: ${error}`);
+        //     })
+        //     .then((res) => {
+        //         console.log('API POST GET USER res:', res);
+        //         return res;
+        //     });
     },
     getProducts: (queryParams: {
         searchText: string | null;

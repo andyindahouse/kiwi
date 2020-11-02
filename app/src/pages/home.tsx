@@ -27,15 +27,15 @@ const Home: React.FC = () => {
                 <Fragment
                     icon={rocketOutline}
                     color="secondary"
-                    text="Ver pedido en curso"
+                    text="Ver pedidos en curso"
                     link="/others/orders"
                 ></Fragment>
-                <Fragment
+                {/* <Fragment
                     icon={barcodeOutline}
                     color="secondary"
                     text="Escanea un producto"
                     link="/others/orders"
-                ></Fragment>
+                ></Fragment> */}
                 <FoodToExpire />
                 <NextShopping />
             </IonContent>
