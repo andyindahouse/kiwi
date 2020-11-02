@@ -36,7 +36,7 @@ const FoodToExpireContext = React.createContext<
     FoodToExpire & {setFoodToExpire: (state: FoodToExpire) => void}
 >({
     ...initialState,
-    setFoodToExpire: (state: FoodToExpire) => null,
+    setFoodToExpire: (state: FoodToExpire) => {},
 });
 
 export const FoodToExpireProvider = ({children}: {children: React.ReactNode}) => {

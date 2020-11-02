@@ -10,7 +10,7 @@ import {getExpiryObj} from '../utils';
 import {getFormatDate} from '../utils/format-date';
 import kiwiApi from '../api';
 import Box from './box';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {Plugins, Capacitor} from '@capacitor/core';
 import {isFuture, isPast, subDays} from 'date-fns';
 
@@ -119,6 +119,7 @@ const refreshLocalNotifications = async (pantryProducts: ReadonlyArray<PantryPro
 
 const FoodToExpire = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [pantryProducts, setPantryProducts] = React.useState<{
         data: ReadonlyArray<PantryProduct>;
         isLoading: boolean;
@@ -173,11 +174,7 @@ const FoodToExpire = () => {
                                     title={product.name}
                                     subtitle={`Comprado el ${getFormatDate(product.buyedDate)}`}
                                     handleClickDetail={() => {
-                                        console.log(product);
-                                    }}
-                                    labelRightAction="Consumido"
-                                    handleClickRightAction={() => {
-                                        console.log('asdfg');
+                                        history.push('/nutrition');
                                     }}
                                 >
                                     <div className={classes.date}>

@@ -1,3 +1,14 @@
+export type User = {
+    firstName: string;
+    email: string;
+    phone: string;
+    deliveryAddress: string;
+    deliveryCp: string;
+    deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
+    deliveryHour: string;
+    password?: string;
+};
+
 export interface Nutriments {
     nutritionDataPer: number;
     energyKcal100g: number;

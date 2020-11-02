@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
+import classnames from 'classnames';
 
 const useStyles = createUseStyles(() => ({
     container: ({padding, paddingTop, paddingLeft, paddingBottom, paddingRight}) => ({
@@ -18,9 +19,18 @@ type Props = {
     paddingLeft?: number | string;
     paddingBottom?: number | string;
     paddingRight?: number | string;
+    cssClass?: string;
 };
 
-const Box = ({children, padding = 16, paddingTop, paddingLeft, paddingBottom, paddingRight}: Props) => {
+const Box = ({
+    children,
+    padding = 16,
+    paddingTop,
+    paddingLeft,
+    paddingBottom,
+    paddingRight,
+    cssClass,
+}: Props) => {
     const classes = useStyles({
         padding,
         paddingTop,
@@ -29,7 +39,7 @@ const Box = ({children, padding = 16, paddingTop, paddingLeft, paddingBottom, pa
         paddingRight,
     });
 
-    return <div className={classes.container}>{children}</div>;
+    return <div className={classnames(classes.container, cssClass)}>{children}</div>;
 };
 
 export default Box;

@@ -259,3 +259,7 @@ ion-toast::part(container) {
 ion-toast::part(message) {
     color: white;
 }
+
+ion-slides {
+    height: 100%;
+}
