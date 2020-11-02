@@ -154,7 +154,7 @@ const controller = {
                 return next(new errorTypes.Error400('El producto ya existe en el pedido.'));
             }
             if (order) {
-                const product = await Product.findOne({id: body.id});
+                const product = await Product.eci.findOne({id: body.id});
                 if (!product) {
                     next(new errorTypes.Error404('Product not found.'));
                 }
@@ -208,7 +208,7 @@ const controller = {
                     ...products[productIndex],
                     ...body,
                 };
-                const newCostProduct = utils.getPrice(newProduct, newProduct.items.length);
+                const newCostProduct = utils.getPrice(newProduct, newProduct.eci.items.length);
                 products[productIndex] = {
                     ...newProduct,
                     cost: newCostProduct,

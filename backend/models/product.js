@@ -10,4 +10,4 @@ const ProductSchema = Schema({
     ean: {type: String},
 });
 
-module.exports = mongoose.model('Product', ProductSchema, PRODUCTS_COLLECTION);
+module.exports = {eci: mongoose.model('Product', ProductSchema, PRODUCTS_COLLECTION.eci)};

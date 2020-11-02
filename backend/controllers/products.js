@@ -18,11 +18,17 @@ const controller = {
         const textQuery = searchText ? {name: new RegExp(searchText, 'gi')} : {};
 
         try {
-            const totalSize = await Product.find({
-                ...textQuery,
-                ...{available: {$ne: false}},
-            }).countDocuments();
-            const result = await Product.find({...textQuery, ...{available: {$ne: false}}})
+            const totalSize = await Product.eci
+                .find({
+                    ...textQuery,
+                    ...{available: {$ne: false}},
+                })
+                .countDocuments();
+            const result = await Product.eci
+                .find({
+                    ...textQuery,
+                    ...{available: {$ne: false}},
+                })
                 .sort({discount: -1, _id: 1})
                 .skip(skip)
                 .limit(limit);
@@ -41,7 +47,7 @@ const controller = {
             next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
-            const result = await Product.findOne({id: params.id});
+            const result = await Product.eci.findOne({id: params.id});
             if (!result) {
                 next(new errorTypes.Error404('Product not found.'));
             } else {
@@ -55,7 +61,7 @@ const controller = {
         const productsEan = query.id && query.id.length ? query.id : [query.id];
         console.log(productsEan);
         try {
-            const result = await Product.find({id: {$in: productsEan}});
+            const result = await Product.eci.find({id: {$in: productsEan}});
             const nutriments = result.reduce(
                 (acum, prod) => {
                     const product = prod._doc;

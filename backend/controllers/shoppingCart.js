@@ -12,7 +12,7 @@ const controller = {
             const shopppingCart = await ShoppingCart.findOne({email: req.user.email});
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.id);
-                const products = await Product.find({id: {$in: productsId}});
+                const products = await Product.eci.find({id: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product) => {
                     const productInCart = shopppingCart.products.find(
@@ -67,7 +67,7 @@ const controller = {
             );
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.id).filter(Boolean);
-                const products = await Product.find({id: {$in: productsId}});
+                const products = await Product.eci.find({id: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const shoppingCartWithProducts = products.map((product) => {
                     const productInCart = shopppingCart.products.find(

@@ -54,7 +54,7 @@ const controller = {
             const shopppingCart = await ShoppingCart.findOne({email: user.email});
             if (shopppingCart && shopppingCart.products) {
                 const productsId = shopppingCart.products.map((product) => product.id);
-                const products = await Product.find({id: {$in: productsId}});
+                const products = await Product.eci.find({id: {$in: productsId}});
                 let totalShoppingCart = 0;
                 const orderWithProducts = products.map((product) => {
                     const productInCart = shopppingCart.products.find(
@@ -148,7 +148,7 @@ const controller = {
                 return next(new errorTypes.Error400('El producto ya existe en el pedido.'));
             }
             if (order) {
-                const product = await Product.findOne({id: body.id});
+                const product = await Product.eci.findOne({id: body.id});
                 if (!product) {
                     next(new errorTypes.Error404('Product not found.'));
                 }

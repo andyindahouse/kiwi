@@ -10,7 +10,9 @@ const CONFIG_MONGO = {
     DB: 'kiwi',
 };
 
-const PRODUCTS_COLLECTION = 'products';
+const PRODUCTS_COLLECTION = {
+    eci: 'productsEci',
+};
 
 // Passport config
 const PASSPORT_CONFIG = {
