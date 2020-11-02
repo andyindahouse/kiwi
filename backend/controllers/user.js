@@ -53,7 +53,7 @@ const controller = {
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
                 next(new errorTypes.Error401('Username or password not correct.'));
-            } else if(!user.active) {
+            } else if (!user.active) {
                 next(new errorTypes.Error401('User is not active.'));
             } else {
                 const payload = {
@@ -87,11 +87,11 @@ const controller = {
         if (!query.postalCode) {
             next(new errorTypes.Error400('Query param postalCode not recibed.'));
         }
-        return {
+        res.json({
             data: {
-                isAllowed: POSTAL_CODES_ALLOWED.indexOf(query.postalCode) > -1;
-            }
-        }
+                isAllowed: POSTAL_CODES_ALLOWED.indexOf(parseInt(query.postalCode)) > -1,
+            },
+        });
     },
     getUserInfo: async (req, res, next) => {
         try {
