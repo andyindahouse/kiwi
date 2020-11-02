@@ -13,7 +13,7 @@ const configMongo = {
     db: 'kiwi',
 };
 const marketUrl = 'https://www.elcorteingles.es';
-const collectionProducts = 'products';
+const collectionProducts = 'productsEci';
 const scrapingUrl = [
     {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: collectionProducts},
     {url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`, collection: collectionProducts},
