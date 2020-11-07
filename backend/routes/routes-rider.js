@@ -8,6 +8,8 @@ const OrdersRiderController = require('../controllers/orders-rider');
 
 router.post('/login', UserController.login);
 router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
+router.patch('/me', customMdw.ensureAuthenticated, UserController.editUserInfo);
+router.post('/me/password', customMdw.ensureAuthenticated, UserController.editUserPassword);
 
 router.get('/orders', customMdw.ensureAuthenticated, customMdw.ensureRider, OrdersRiderController.get);
 router.get(

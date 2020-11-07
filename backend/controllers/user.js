@@ -52,9 +52,9 @@ const controller = {
     login: (req, res, next) => {
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
-                next(new errorTypes.Error401('Username or password not correct.'));
+                return next(new errorTypes.Error401('Username or password not correct.'));
             } else if (!user.active) {
-                next(new errorTypes.Error401('User is not active.'));
+                return next(new errorTypes.Error401('User is not active.'));
             } else {
                 const payload = {
                     sub: user._id,
@@ -70,7 +70,7 @@ const controller = {
     },
     isEmailTaken: async ({query}, res, next) => {
         if (!query.email) {
-            next(new errorTypes.Error400('Query param email not recibed.'));
+            return next(new errorTypes.Error400('Query param email not recibed.'));
         }
         try {
             const user = await User.findOne({email: query.email});
@@ -85,7 +85,7 @@ const controller = {
     },
     isPostalCodeAllowed: async ({query}, res, next) => {
         if (!query.postalCode) {
-            next(new errorTypes.Error400('Query param postalCode not recibed.'));
+            return next(new errorTypes.Error400('Query param postalCode not recibed.'));
         }
         res.json({
             data: {
@@ -95,7 +95,7 @@ const controller = {
     },
     getUserInfo: async (req, res, next) => {
         try {
-            const user = await User.findOne({email: req.user.email});
+            const user = req.user;
             res.json({
                 data: {
                     email: user.email,
@@ -147,6 +147,47 @@ const controller = {
                         phone: updatedUser.phone,
                         rider: updatedUser.rider,
                         active: updatedUser.active,
+                    },
+                });
+            } else {
+                next(new errorTypes.Error404('User not found.'));
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
+    editUserPassword: async (req, res, next) => {
+        if (!req.body.newPassword || !req.body.oldPassword) {
+            return next(new errorTypes.Error400('Passwords not recived.'));
+        }
+        if (!bcrypt.compareSync(req.body.oldPassword, req.user.password)) {
+            return next(new errorTypes.Error400('Password error.'));
+        }
+        try {
+            const updatedUserPassword = await User.findOneAndUpdate(
+                {email: req.user.email},
+                {
+                    password: bcrypt.hashSync(req.body.newPassword, parseInt(PASSPORT_CONFIG.BCRYPT_ROUNDS)),
+                },
+                {
+                    new: true,
+                    upsert: false,
+                    useFindAndModify: false,
+                }
+            );
+            if (updatedUserPassword) {
+                res.json({
+                    data: {
+                        email: updatedUserPassword.email,
+                        firstName: updatedUserPassword.firstName,
+                        lastName: updatedUserPassword.lastName,
+                        deliveryAddress: updatedUserPassword.deliveryAddress,
+                        deliveryWeekDay: updatedUserPassword.deliveryWeekDay,
+                        deliveryHour: updatedUserPassword.deliveryHour,
+                        deliveryPostalCode: updatedUserPassword.deliveryPostalCode,
+                        phone: updatedUserPassword.phone,
+                        rider: updatedUserPassword.rider,
+                        active: updatedUserPassword.active,
                     },
                 });
             } else {
