@@ -12,6 +12,7 @@ const OrdersController = require('../controllers/orders');
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
+router.patch('/me', customMdw.ensureAuthenticated, UserController.editUserInfo);
 router.get('/emailTaken', UserController.isEmailTaken);
 router.get('/postalCodeAllowed', UserController.isPostalCodeAllowed);
 

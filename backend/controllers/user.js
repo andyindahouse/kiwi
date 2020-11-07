@@ -114,6 +114,48 @@ const controller = {
             next(err);
         }
     },
+    editUserInfo: async (req, res, next) => {
+        const userInfo = req.body;
+        try {
+            const updatedUser = await User.findOneAndUpdate(
+                {email: req.user.email},
+                {
+                    ...(userInfo.firstName && {firstName: userInfo.firstName}),
+                    ...(userInfo.lastName && {lastName: userInfo.lastName}),
+                    ...(userInfo.deliveryAddress && {deliveryAddress: userInfo.deliveryAddress}),
+                    ...(userInfo.deliveryWeekDay && {deliveryWeekDay: userInfo.deliveryWeekDay}),
+                    ...(userInfo.deliveryHour && {deliveryHour: userInfo.deliveryHour}),
+                    ...(userInfo.deliveryPostalCode && {deliveryPostalCode: userInfo.deliveryPostalCode}),
+                    ...(userInfo.phone && {phone: userInfo.phone}),
+                },
+                {
+                    new: true,
+                    upsert: false,
+                    useFindAndModify: false,
+                }
+            );
+            if (updatedUser) {
+                res.json({
+                    data: {
+                        email: updatedUser.email,
+                        firstName: updatedUser.firstName,
+                        lastName: updatedUser.lastName,
+                        deliveryAddress: updatedUser.deliveryAddress,
+                        deliveryWeekDay: updatedUser.deliveryWeekDay,
+                        deliveryHour: updatedUser.deliveryHour,
+                        deliveryPostalCode: updatedUser.deliveryPostalCode,
+                        phone: updatedUser.phone,
+                        rider: updatedUser.rider,
+                        active: updatedUser.active,
+                    },
+                });
+            } else {
+                next(new errorTypes.Error404('User not found.'));
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
 };
 
 module.exports = controller;
