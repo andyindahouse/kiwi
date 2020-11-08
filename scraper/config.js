@@ -13,18 +13,37 @@ const configMongo = {
     db: 'kiwi',
 };
 const marketUrl = 'https://www.elcorteingles.es';
-const collectionProducts = 'productsEci';
+const indexCollection = 0;
+const collectionProducts = [{market: 'eci', collection: 'productsEci'}];
 const scrapingUrl = [
-    {url: `${marketUrl}/supermercado/alimentacion-general/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/lacteos/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/congelados/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/dieteticos/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/bebidas/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/frescos/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/bebes/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/cuidado-e-higiene-personal/`, collection: collectionProducts},
-    {url: `${marketUrl}/supermercado/drogueria-y-limpieza/`, collection: collectionProducts},
+    {
+        url: `${marketUrl}/supermercado/alimentacion-general/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
+    {
+        url: `${marketUrl}/supermercado/desayunos-dulces-y-pan/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
+    {url: `${marketUrl}/supermercado/lacteos/`, collection: collectionProducts[indexCollection].collection},
+    {
+        url: `${marketUrl}/supermercado/congelados/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
+    {
+        url: `${marketUrl}/supermercado/dieteticos/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
+    {url: `${marketUrl}/supermercado/bebidas/`, collection: collectionProducts[indexCollection].collection},
+    {url: `${marketUrl}/supermercado/frescos/`, collection: collectionProducts[indexCollection].collection},
+    {url: `${marketUrl}/supermercado/bebes/`, collection: collectionProducts[indexCollection].collection},
+    {
+        url: `${marketUrl}/supermercado/cuidado-e-higiene-personal/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
+    {
+        url: `${marketUrl}/supermercado/drogueria-y-limpieza/`,
+        collection: collectionProducts[indexCollection].collection,
+    },
 ];
 
 const selectedScrapingUrl = scrapingUrl[0];
@@ -39,4 +58,5 @@ module.exports = {
     configMongo,
     openFoodApi,
     collectionProducts,
+    indexCollection,
 };

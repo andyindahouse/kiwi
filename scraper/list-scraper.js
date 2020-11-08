@@ -89,9 +89,11 @@ const getProductsPage = async (url) => {
                 prods.forEach(async (product) => {
                     const productData = {
                         ...product,
+                        market: config.collectionProducts[config.indexCollection].market,
                         img: product.img.replace('40x40.', '325x325.'),
                         updateDate: new Date(),
                     };
+                    console.log(productData);
                     await collection.findOne({id: productData.id});
                     const result = await collection.updateOne(
                         {id: productData.id},
