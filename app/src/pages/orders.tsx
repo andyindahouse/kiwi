@@ -16,10 +16,10 @@ import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order, Order as OrderModel} from '../models';
 import OrderCard from '../components/order-card';
-import {chevronDownCircleOutline} from 'ionicons/icons';
-import Typography from '../components/typography';
+import {chevronDownCircleOutline, rocketOutline} from 'ionicons/icons';
 import InfiniteScroll from '../components/infinite-scroll';
 import {useHistory} from 'react-router-dom';
+import EmptyCase from '../components/empty-case';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -27,13 +27,6 @@ const useStyles = createUseStyles(() => ({
         '& > div': {
             marginBottom: 16,
         },
-    },
-    center: {
-        marginTop: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
     },
     orderList: {
         '& > div': {},
@@ -59,12 +52,11 @@ const OrderList = ({
 
     if (orders.length === 0 && !isLoading) {
         return (
-            <>
-                <Typography variant="h2" gutterBottom={16} className={classes.center}>
-                    No tienes pedidos <br />
-                    Cuando realices compras aquí podrás hacer seguimiento de tus pedidos
-                </Typography>
-            </>
+            <EmptyCase
+                title1="No tienes pedidos"
+                subtitle="Cuando realices compras aquí podrás hacer un seguimiento de tus pedidos"
+                icon={rocketOutline}
+            />
         );
     }
 
@@ -146,10 +138,10 @@ const Orders: React.FC = () => {
     }, [orders.data.length, orders.totalSize]);
 
     React.useEffect(() => {
-        setOrders({
+        setOrders((orders) => ({
             ...orders,
             isLoading: true,
-        });
+        }));
         kiwiApi.getOrders({pageNumber: orders.pageNumber}).then((res) => {
             setOrders((orders) => ({
                 pageNumber: orders.pageNumber,
@@ -158,7 +150,7 @@ const Orders: React.FC = () => {
                 data: orders.data.concat(res.content),
             }));
         });
-    }, [orders.pageNumber]);
+    }, []);
 
     return (
         <IonPage>

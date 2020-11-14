@@ -21,13 +21,12 @@ import {
     UPDATE_SHOPPING_CART_PRODUCT,
     useShoppingCart,
 } from '../contexts/shopping-cart';
-import {cartOutline} from 'ionicons/icons';
-import Typography from '../components/typography';
+import {cartOutline, searchOutline} from 'ionicons/icons';
 import Fragment from '../components/fragment';
 import {extendRawProducts} from '../utils';
 import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {RouteComponentProps} from 'react-router';
-import {Plugins, Capacitor} from '@capacitor/core';
+import EmptyCase from '../components/empty-case';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -148,7 +147,6 @@ const ProductList = ({
 };
 
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
-    const classes = useStyles();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
         searchText: '',
         pageNumber: 0,
@@ -204,9 +202,9 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                         value={filter.searchText}
                         enterkeyhint="search"
                         onIonChange={(e) => {
-                            if (Capacitor.isNative) {
-                                Plugins.Keyboard.hide();
-                            }
+                            // if (Capacitor.isNative) {
+                            //     Plugins.Keyboard.hide();
+                            // }
                             if (products && products.length > 0) {
                                 setProducts(null);
                                 setTotalSize(null);
@@ -215,9 +213,9 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                                 pageNumber: 0,
                                 searchText: e.detail.value || null,
                             });
-                            scrollToTop();
+                            // scrollToTop();
                         }}
-                        debounce={3000}
+                        debounce={500}
                         animated
                         placeholder="Busca tus productos aquí"
                         showCancelButton="focus"
@@ -243,10 +241,11 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                     ) : (
                         <>
                             <Fragment icon={cartOutline} text="Tu compra actual" link="/search/cart" />
-                            <Typography variant="h2" gutterBottom={16} className={classes.center}>
-                                Busca tus productos <br />
-                                directamente en el buscador
-                            </Typography>
+                            <EmptyCase
+                                icon={searchOutline}
+                                title1="Busca tus productos"
+                                title2="directamente en el buscador"
+                            />
                         </>
                     )}
                 </Box>

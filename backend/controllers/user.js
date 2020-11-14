@@ -25,7 +25,7 @@ const controller = {
                         deliveryHour: req.body.deliveryHour || '',
                         phone: req.body.phone || '',
                         deliveryPostalCode: req.body.deliveryPostalCode || '',
-                        actve: false,
+                        active: false,
                     });
                     return document.save();
                 }

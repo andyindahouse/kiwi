@@ -1,16 +1,11 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import Fragment from '../components/fragment';
-import {rocketOutline, barcodeOutline} from 'ionicons/icons';
+import {rocketOutline} from 'ionicons/icons';
 import FoodToExpire from '../components/food-to-expire';
 import NextShopping from '../components/next-shopping';
 
-const useStyles = createUseStyles(() => ({}));
-
 const Home: React.FC = () => {
-    const classes = useStyles();
-
     return (
         <IonPage>
             <IonHeader>

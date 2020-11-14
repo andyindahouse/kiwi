@@ -11,7 +11,7 @@ import {
 import {addCircleSharp, pricetag, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Product, SpecialOffers} from '../models';
+import {Product} from '../models';
 import palette from '../theme/palette';
 import {getLabelDiscount} from '../utils';
 import ChartistGraph from './chartist-graph';

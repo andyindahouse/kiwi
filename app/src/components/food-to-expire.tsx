@@ -1,7 +1,7 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
 import {IonIcon, IonList, useIonViewDidEnter} from '@ionic/react';
-import {alarmOutline, play} from 'ionicons/icons';
+import {alarmOutline} from 'ionicons/icons';
 import Typography from '../components/typography';
 import palette from '../theme/palette';
 import {PantryProduct} from '../models';

@@ -7,52 +7,57 @@ type Auth = {
     user: null | User;
     setUser: (user: User) => void;
     logout: () => void;
+    login: (data: {email: string; password: string}) => Promise<null | User>;
 };
 
 const AuthContext = React.createContext<Auth>({
     user: null,
     setUser: (user: User) => {},
     logout: () => {},
+    login: (data: {email: string; password: string}) => Promise.resolve(null),
 });
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [user, setUser] = React.useState<User | null>(null);
-    const [isLoading, setLoading] = React.useState(true);
-    const [isError, setError] = React.useState(false);
+    const login = ({email, password}: {email: string; password: string}) => {
+        return kiwiApi.login({email, password}).then(({token}) => {
+            localStorage.setItem(TOKEN_KEY_LOCAL_STORAGE, token);
+            return getUser();
+        });
+    };
     const logout = () => {
         localStorage.removeItem(TOKEN_KEY_LOCAL_STORAGE);
         setUser(null);
     };
+    const getUser = () => {
+        return kiwiApi.getUser().then((user: User) => {
+            setUser(user);
+            return user;
+        });
+    };
 
     React.useEffect(() => {
-        const token = localStorage.getItem('token-auth');
+        const token = localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE);
         if (token) {
-            kiwiApi
-                .getUser()
-                .then((user: User) => {
-                    setUser(user);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.error('error with token', error);
-                    setError(true);
-                });
-        } else {
-            setLoading(false);
+            getUser().catch(() => {
+                localStorage.removeItem(TOKEN_KEY_LOCAL_STORAGE);
+                setUser(null);
+            });
         }
     }, []);
 
-    if (isLoading) {
-        return <div>Cargando...</div>;
-    }
-
-    if (isError) {
-        return <div>Problems...</div>;
-    }
+    // if (isLoading) {
+    //     return (
+    //         <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+    //             <IonSpinner color="secondary" />
+    //         </div>
+    //     );
+    // }
 
     return (
         <AuthContext.Provider
             value={{
+                login,
                 logout,
                 setUser,
                 user,

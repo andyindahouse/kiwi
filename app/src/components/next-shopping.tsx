@@ -63,7 +63,7 @@ const NextShopping = () => {
                 <div className={classes.list}>
                     <IonList>
                         {products.slice(0, 5).map((product) => {
-                            const {name, price, img, brand} = product;
+                            const {name, price, img} = product;
                             const getUnits = (product: Product) => product.units ?? product.items?.length;
                             return (
                                 <ProductItem

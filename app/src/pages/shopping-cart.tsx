@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {chevronForwardOutline, documentTextOutline, trashOutline} from 'ionicons/icons';
+import {cartOutline, chevronForwardOutline, documentTextOutline, trashOutline} from 'ionicons/icons';
 import {
     IonContent,
     IonHeader,
@@ -33,6 +33,7 @@ import kiwiApi from '../api';
 import {useHistory} from 'react-router-dom';
 import {format, startOfTomorrow, addDays} from 'date-fns';
 import {es} from 'date-fns/locale';
+import EmptyCase from '../components/empty-case';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -178,7 +179,7 @@ const ShoppingCart = () => {
                     <IonList ref={listRef}>
                         <div className={classes.list}>
                             {products.map((product, index) => {
-                                const {name, price, img, brand} = product;
+                                const {name, price, img} = product;
                                 const getUnits = (product: Product) => product.units ?? product.items?.length;
                                 return (
                                     <ProductItem
@@ -208,17 +209,14 @@ const ShoppingCart = () => {
                             })}
                         </div>
                         {products.length === 0 && (
-                            <div className={classes.center}>
-                                <Typography center variant="h3" gutterBottom={32}>
-                                    Tu compra está vacía, puedes añadir productos desde la tab de compra
-                                </Typography>
-
-                                <Typography center>
-                                    Ya sabemos que la primera compra es la más tediosa de hacer, es por eso
-                                    que iremos preparando tus siguientes compras automágicamente en base a tu
-                                    consumo
-                                </Typography>
-                            </div>
+                            <EmptyCase
+                                title1="Tu compra está vacía,"
+                                title2="puedes añadir productos desde el buscador"
+                                icon={cartOutline}
+                                subtitle="Sabemos que hacer tu compra es un poco tedioso, es por eso
+                                que iremos preparando tus siguientes compras automágicamente en base a tu
+                                consumo"
+                            />
                         )}
                     </IonList>
                 )}

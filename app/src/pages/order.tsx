@@ -126,11 +126,6 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
 
         updateOrderProduct(updatedProduct);
     };
-    const handleRemoveOrderProduct = (product: Product) => {
-        kiwiApi.deleteOrderProduct(product, order?._id || '').then((res) => {
-            setOrder(res);
-        });
-    };
 
     React.useEffect(() => {
         if (id) {
@@ -177,7 +172,7 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                         </div>
                         {order.products.length === 0 && (
                             <>
-                                <Typography variant="h2">Añade productos desde la tab de compra</Typography>
+                                <Typography variant="h3">Añade productos desde la tab de compra</Typography>
                             </>
                         )}
                     </IonList>

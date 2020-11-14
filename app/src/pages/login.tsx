@@ -1,5 +1,4 @@
 import React from 'react';
-import kiwiApi from '../api';
 import {createUseStyles} from 'react-jss';
 import {
     IonButton,
@@ -11,12 +10,16 @@ import {
     IonList,
     IonModal,
     IonPage,
+    IonSpinner,
     IonTitle,
     IonToolbar,
 } from '@ionic/react';
 import Register from './register';
 import Box from '../components/box';
 import Typography from '../components/typography';
+import {useAuth} from '../contexts/auth';
+import {useForm} from 'react-hook-form';
+import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -35,14 +38,31 @@ const useStyles = createUseStyles(() => ({
         marginBottom: 16,
     },
     registerLink: {
-        margin: 32,
+        padding: 32,
         alignSelf: 'center',
     },
 }));
 
 const Login: React.FC = () => {
     const classes = useStyles();
+    const {login} = useAuth();
     const [showRegister, setShowRegister] = React.useState(false);
+    const [loginError, setLoginError] = React.useState(false);
+    const [isLoading, setLoading] = React.useState(false);
+    const [showRegisterMessage, setShowRegisterMessage] = React.useState(false);
+    const {handleSubmit, register, errors} = useForm();
+    const onSubmit = (data: {email: string; password: string}) => {
+        if (data.email) {
+            setLoading(true);
+            login(data)
+                .catch(() => {
+                    setLoginError(true);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+    };
 
     return (
         <IonPage>
@@ -52,30 +72,91 @@ const Login: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <Box padding={16} cssClass={classes.container}>
-                    <Typography gutterBottom={32} variant="h2">
-                        Bienvenido a Kiwi,
-                    </Typography>
-                    <div className={classes.image}>image</div>
-                    <IonList className={classes.form} lines="full">
-                        <IonItem>
-                            <IonLabel position="floating">Email</IonLabel>
-                            <IonInput />
-                        </IonItem>
-                        <IonItem>
-                            <IonLabel position="floating">Password</IonLabel>
-                            <IonInput />
-                        </IonItem>
-                    </IonList>
-                    <div className={classes.cta}>
-                        <IonButton onClick={() => {}}>Entrar a Kiwi</IonButton>
-                        <a className={classes.registerLink} onClick={() => setShowRegister(true)}>
-                            Registrame
-                        </a>
-                    </div>
-                </Box>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Box padding={16} cssClass={classes.container}>
+                        <Typography gutterBottom={32} variant="h2">
+                            Bienvenido a Kiwi,
+                        </Typography>
+                        <div className={classes.image}>image</div>
+                        <IonList className={classes.form} lines="full">
+                            <IonItem>
+                                <IonLabel position="floating">Email</IonLabel>
+                                <IonInput
+                                    name="email"
+                                    ref={register({
+                                        required: true,
+                                    })}
+                                />
+                                {errors.email?.type === 'required' && (
+                                    <Typography color={palette.error.main} variant="caption2">
+                                        Tu correo es obligatorio
+                                    </Typography>
+                                )}
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel position="floating">Password</IonLabel>
+                                <IonInput
+                                    name="password"
+                                    type="password"
+                                    ref={register({
+                                        required: true,
+                                    })}
+                                />
+                                {errors.password?.type === 'required' && (
+                                    <Typography color={palette.error.main} variant="caption2">
+                                        Tu contraseña es obligatoria
+                                    </Typography>
+                                )}
+                            </IonItem>
+                        </IonList>
+                        <div className={classes.cta}>
+                            <IonButton disabled={isLoading} type="submit">
+                                {!isLoading ? 'Entrar a Kiwi' : <IonSpinner color="dark" />}
+                            </IonButton>
+                            {!isLoading && (
+                                <a
+                                    className={classes.registerLink}
+                                    onClick={() => {
+                                        setShowRegisterMessage(false);
+                                        setShowRegister(true);
+                                    }}
+                                >
+                                    Registrame
+                                </a>
+                            )}
+                        </div>
+                        {loginError && (
+                            <Typography center color={palette.error.main} gutterBottom={16}>
+                                Usuario no activo o las credeneciales no son correctas
+                            </Typography>
+                        )}
+                        {showRegisterMessage && (
+                            <>
+                                <Typography
+                                    center
+                                    variant="h5"
+                                    color={palette.secondary.main}
+                                    gutterBottom={8}
+                                >
+                                    ¡Enhorabuena! Te has registrado con éxito <br />
+                                </Typography>
+                                <Typography center color={palette.secondary.main}>
+                                    En breves activaremos tu cuenta y te notificaremos por correo para que
+                                    puedas acceder. <br /> Tardaremos poco ;)
+                                </Typography>
+                            </>
+                        )}
+                    </Box>
+                </form>
                 <IonModal isOpen={showRegister}>
-                    <Register closeModal={() => setShowRegister(false)} />
+                    <Register
+                        closeModal={(registerSuccess) => {
+                            if (registerSuccess) {
+                                setShowRegisterMessage(true);
+                            }
+                            setShowRegister(false);
+                        }}
+                    />
                 </IonModal>
             </IonContent>
         </IonPage>

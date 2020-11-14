@@ -26,6 +26,8 @@ import {RouteComponentProps, useHistory} from 'react-router';
 import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import ProductItem from '../components/product-item';
 import {getExpiryObj} from '../utils';
+import EmptyCase from '../components/empty-case';
+import {bandageOutline, cafeOutline, fishOutline, shapesOutline, snowOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -87,30 +89,53 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const segmentMap: Record<PantryProductStatus, {emptyMessage: string}> = {
+const segmentMap: Record<
+    PantryProductStatus,
+    {emptyMessage: {title1: string; title2: string}; icon: string}
+> = {
     pending: {
-        emptyMessage:
-            'Ahora mismo no tienes productos por clasificar. Aquí encontrarás los productos según tu pedido sea entregado.',
+        emptyMessage: {
+            title1: 'No tienes productos por clasificar',
+            title2: 'Aquí encontrarás los productos cuando tus pedidos sean entregados',
+        },
+        icon: shapesOutline,
     },
     cooled: {
-        emptyMessage:
-            'Ahora mismo no tienes alimentos en el frigorífico. Puedes añadir tus alimentos al frigorífico desde la sección de "Por clasificar"',
+        emptyMessage: {
+            title1: 'No tienes alimentos en el frigorífico',
+            title2: 'Puedes añadir tus alimentos al frigorífico desde la sección de "Por clasificar"',
+        },
+        icon: fishOutline,
     },
     frozen: {
-        emptyMessage:
-            'Ahora mismo no tienes alimentos en el congelador. Puedes añadir tus alimentos al congelador desde la sección de "Por clasificar", esto afectará a las notificaciones de proximos a caducar dado que los alimentos congelados resisten más tiempo',
+        emptyMessage: {
+            title1: 'No tienes alimentos en el congelador',
+            title2: 'Puedes añadir tus alimentos al congelador desde la sección de "Por clasificar"',
+        },
+        icon: snowOutline,
     },
     storaged: {
-        emptyMessage:
-            'Ahora mismo no tienes alimentos en tu despensa. Puedes añadir alimentos a tu despensa desde la sección de "Por clasificar"',
+        emptyMessage: {
+            title1: 'No tienes alimentos en tu despensa',
+            title2: 'Puedes añadir alimentos a tu despensa desde la sección de "Por clasificar"',
+        },
+        icon: cafeOutline,
     },
     consumed: {
-        emptyMessage:
-            'Ahora mismo no tienes alimentos consumidos puedes marcar tus alimentos según los vayas consumiendo. Podrás encontrar los mismos en la sección en las que los tengas clasificados o usando el buscador.',
+        emptyMessage: {
+            title1: 'No tienes alimentos consumidos puedes marcar tus alimentos según los vayas consumiendo',
+            title2:
+                'Podrás encontrar los mismos en la sección en las que los tengas clasificados o usando el buscador',
+        },
+        icon: shapesOutline,
     },
     others: {
-        emptyMessage:
-            'Ahora mismo no tienes productos aquí. Usa esta categoría para clasificar todos los productos que no encajen en las otras categorías.',
+        emptyMessage: {
+            title1: 'No tienes productos aquí',
+            title2:
+                'Usa esta categoría para clasificar todos los productos que no encajen en las otras categorías.',
+        },
+        icon: bandageOutline,
     },
 };
 
@@ -195,9 +220,11 @@ const ProductList = ({
 
     if (products.length === 0 && !isLoading) {
         return (
-            <div className={classes.center}>
-                <Typography>{segmentMap[segment].emptyMessage}</Typography>
-            </div>
+            <EmptyCase
+                title1={segmentMap[segment].emptyMessage.title1}
+                subtitle={segmentMap[segment].emptyMessage.title2}
+                icon={segmentMap[segment].icon}
+            />
         );
     }
 
@@ -451,10 +478,7 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    {/* <IonButtons slot="start">
-                        <IonBackButton text="Volver" defaultHref="/others" />
-                    </IonButtons> */}
-                    <IonTitle>Tu despensa</IonTitle>
+                    <IonTitle>Mi despensa</IonTitle>
                 </IonToolbar>
                 <IonToolbar>
                     <IonSearchbar
@@ -464,7 +488,7 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                         }}
                         animated
                         debounce={3000}
-                        placeholder="Buscar en tu despensa"
+                        placeholder="Buscar en mi despensa"
                         showCancelButton="focus"
                         cancelButtonText="Borrar"
                     ></IonSearchbar>

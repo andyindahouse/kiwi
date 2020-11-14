@@ -2,29 +2,23 @@ import {
     IonButton,
     IonButtons,
     IonContent,
-    IonDatetime,
     IonFooter,
     IonHeader,
-    IonIcon,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonSelect,
-    IonSelectOption,
     IonSlide,
     IonSlides,
+    IonSpinner,
     IonTitle,
     IonToolbar,
 } from '@ionic/react';
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import kiwiApi from '../api';
+import {RegisterUser} from '../models';
+import FormUser from '../components/form-user';
+import FormDelivery from '../components/form-delivery';
+import FormPassword from '../components/form-password';
 import Typography from '../components/typography';
-import {useForm, Controller} from 'react-hook-form';
 import palette from '../theme/palette';
-import {User} from '../models';
-import {watch} from 'fs';
 
 const useStyles = createUseStyles(() => ({
     registerForm: {
@@ -46,100 +40,65 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const days = [
-    {
-        label: 'Lunes',
-        value: '1',
-    },
-    {
-        label: 'Martes',
-        value: '2',
-    },
-    {
-        label: 'Miércoles',
-        value: '3',
-    },
-    {
-        label: 'Jueves',
-        value: '4',
-    },
-    {
-        label: 'Viernes',
-        value: '5',
-    },
-    {
-        label: 'Sábado',
-        value: '6',
-    },
-    {
-        label: 'Domingo',
-        value: '0',
-    },
-];
-
-type RegisterUser = User & {password: string; rePassword: string};
-
 type Props = {
-    closeModal: () => void;
+    closeModal: (registerSuccess: boolean) => void;
 };
 
 const Register: React.FC<Props> = ({closeModal}: Props) => {
     const classes = useStyles();
     const sliderRef = React.useRef<HTMLIonSlidesElement | null>(null);
     const [data, setData] = React.useState<RegisterUser>({
+        email: '',
         firstName: '',
         phone: '',
-        email: '',
         deliveryAddress: '',
-        deliveryCp: '',
+        deliveryPostalCode: '',
         deliveryWeekDay: '1',
         deliveryHour: '',
         password: '',
         rePassword: '',
     });
+    const [formUserRef, setFormUserRef] = React.useState<null | {submit: () => void}>();
+    const [formDeliveryRef, setFormDeliveryRef] = React.useState<null | {submit: () => void}>();
+    const [formPasswordRef, setFormPasswordRef] = React.useState<null | {submit: () => void}>();
     const [currentStep, setCurrentStep] = React.useState(0);
-    const {handleSubmit, register, unregister, errors, watch} = useForm({
-        shouldFocusError: true,
-    });
-    const nextStep = async (currentForm: Partial<RegisterUser>) => {
-        console.log('submit');
-        setData({...data, ...currentForm});
-        const lastStep = await sliderRef.current?.isEnd();
-        if (lastStep) {
-            const res = await kiwiApi.registerUser(data);
-        } else {
-            await sliderRef.current?.lockSwipeToNext(false);
-            await sliderRef.current?.slideNext();
-            await sliderRef.current?.lockSwipeToNext(true);
-        }
+    const [isLoading, setLoading] = React.useState(false);
+    const [registerError, setRegisterError] = React.useState(false);
+    const updateData = (stepData: Partial<RegisterUser>) => {
+        setData((data: RegisterUser) => ({
+            ...data,
+            ...stepData,
+        }));
     };
-    const updateFields = () => {
-        if (currentStep === 0) {
-            unregister([
-                'deliveryAddress',
-                'deliveryCp',
-                'deliveryHour',
-                'deliveryWeekDay',
-                'password',
-                'rePassword',
-            ]);
-        } else if (currentStep === 1) {
-            register('deliveryAddress');
-            register('deliveryHour');
-            register('deliveryCp');
-            register('deliveryWeekDay');
-            unregister(['password', 'rePassword']);
-        } else {
-            register('password');
-            register('rePassword');
+
+    React.useEffect(() => {
+        if (data.firstName === '') {
+            return;
         }
-    };
+
+        sliderRef.current?.isEnd().then((lastStep) => {
+            if (lastStep) {
+                setLoading(true);
+                kiwiApi
+                    .registerUser(data)
+                    .then(() => {
+                        setLoading(false);
+                        closeModal(true);
+                    })
+                    .catch(() => {
+                        setRegisterError(true);
+                    });
+            } else {
+                sliderRef.current?.lockSwipeToNext(false);
+                sliderRef.current?.slideNext();
+                sliderRef.current?.lockSwipeToNext(true);
+            }
+        });
+    }, [data]);
 
     React.useEffect(() => {
         sliderRef.current?.lockSwipeToNext(true);
     }, []);
-
-    console.log(errors);
 
     return (
         <>
@@ -147,7 +106,7 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                 <IonToolbar>
                     <IonTitle>Registro</IonTitle>
                     <IonButtons slot="end">
-                        <IonButton onClick={() => closeModal()}>Cerrar</IonButton>
+                        <IonButton onClick={() => closeModal(false)}>Cerrar</IonButton>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
@@ -167,183 +126,39 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         }}
                     >
                         <IonSlide>
-                            <form className={classes.slideContainer}>
-                                <Typography gutterBottom={32} variant="h3">
-                                    Vamos con tus datos,
-                                </Typography>
-                                <div className={classes.image}>image</div>
-                                <IonList lines="full">
-                                    <IonItem>
-                                        <IonLabel position="floating">Email</IonLabel>
-                                        <IonInput
-                                            name="email"
-                                            ref={register({
-                                                required: true,
-                                                validate: async (value: string) => {
-                                                    const {isTaken} = await kiwiApi.emailTaken(value);
-                                                    return !isTaken;
-                                                },
-                                            })}
-                                        />
-                                        {errors.email?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu correo es obligatorio
-                                            </Typography>
-                                        )}
-                                        {errors.email?.type === 'validate' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                Este correo ya está registrado
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                    <IonItem>
-                                        <IonLabel position="floating">Nombre</IonLabel>
-                                        <IonInput name="firstName" ref={register({required: true})} />
-                                        {errors.firstName?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu nombre es obligatorio
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                    <IonItem>
-                                        <IonLabel position="floating">Teléfono</IonLabel>
-                                        <IonInput
-                                            name="phone"
-                                            type="number"
-                                            ref={register({required: true, pattern: /^\d{9}$/g})}
-                                        />
-                                        {errors.phone?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu teléfono es obligatorio
-                                            </Typography>
-                                        )}
-                                        {errors.phone?.type === 'pattern' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                Este teléfono no parece válido
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                </IonList>
-                            </form>
-                             
+                            <FormUser
+                                showHeader
+                                controlRef={(handleSubmit: any) => {
+                                    setFormUserRef({
+                                        submit: handleSubmit(updateData),
+                                    });
+                                }}
+                            />
                         </IonSlide>
                         <IonSlide>
-                            <form className={classes.slideContainer}>
-                                <Typography gutterBottom={32} variant="h3">
-                                    Ahora tu información de entrega,
-                                </Typography>
-                                <div className={classes.image}>image</div>
-                                <IonList lines="full">
-                                    <IonItem>
-                                        <IonLabel position="floating">Dirección</IonLabel>
-                                        <IonInput name="deliveryAddress" ref={register({required: true})} />
-                                        {errors.deliveryAddress?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu teléfono es obligatorio
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                    <IonItem>
-                                        <IonLabel position="floating">Código postal</IonLabel>
-                                        <IonInput
-                                            type="number"
-                                            name="deliveryCp"
-                                            ref={register({required: true, pattern: /^\d{5}$/g})}
-                                        />
-                                        {errors.deliveryCp?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu código postal es obligatorio
-                                            </Typography>
-                                        )}
-                                        {errors.deliveryCp?.type === 'pattern' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                Este código postal no parece válido
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                    <IonItem>
-                                        <IonLabel position="floating">Día semanal de entrega</IonLabel>
-                                        <IonSelect
-                                            name="deliveryWeekDay"
-                                            okText="Ok"
-                                            cancelText="Cancelar"
-                                            ref={register({required: true})}
-                                        >
-                                            {days.map((e: {value: string; label: string}) => (
-                                                <IonSelectOption key={e.value} value={e.value}>
-                                                    {e.label}
-                                                </IonSelectOption>
-                                            ))}
-                                        </IonSelect>
-                                        {errors.deliveryWeekDay?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Debes elegir un día para la entrega de tu compra
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                    <IonItem>
-                                        <IonLabel position="floating">Hora de entrega</IonLabel>
-                                        <IonDatetime
-                                            name="deliveryHour"
-                                            displayFormat="HH:mm"
-                                            minuteValues="0,15,30,45"
-                                            hourValues="11,12,13,14,15,16,17,18,19,20"
-                                            pickerFormat="HH:mm"
-                                            ref={register({required: true})}
-                                        ></IonDatetime>
-                                        {errors.deliveryHour?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Debes elegir una hora para la entrega de tu compra
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                </IonList>
-                            </form>
+                            <FormDelivery
+                                showHeader
+                                controlRef={(handleSubmit: any) => {
+                                    setFormDeliveryRef({
+                                        submit: handleSubmit(updateData),
+                                    });
+                                }}
+                            />
                         </IonSlide>
                         <IonSlide>
-                            <form className={classes.slideContainer}>
-                                <Typography gutterBottom={32} variant="h3">
-                                    Ya casi está, último paso.
+                            <FormPassword
+                                showHeader
+                                controlRef={(handleSubmit: any) => {
+                                    setFormPasswordRef({
+                                        submit: handleSubmit(updateData),
+                                    });
+                                }}
+                            />
+                            {registerError && (
+                                <Typography color={palette.error.main}>
+                                    Ha ocurrido un error desconocido
                                 </Typography>
-                                <div className={classes.image}>image</div>
-                                <IonList lines="full">
-                                    <IonItem>
-                                        <IonLabel position="floating">Tu contraseña</IonLabel>
-                                        <IonInput
-                                            name="password"
-                                            type="password"
-                                            ref={register({required: true})}
-                                        />
-                                        {errors.password?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu contraseña es obligatoria
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-
-                                    <IonItem>
-                                        <IonLabel position="floating">Repite tu contraseña</IonLabel>
-                                        <IonInput
-                                            name="rePassword"
-                                            type="password"
-                                            ref={register({
-                                                required: true,
-                                                validate: (value) => value === watch('password'),
-                                            })}
-                                        />
-                                        {errors.rePassword?.type === 'required' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tienes que confirmar tu contraseña
-                                            </Typography>
-                                        )}
-                                        {errors.rePassword?.type === 'validate' && (
-                                            <Typography color={palette.error.main} variant="caption2">
-                                                ouch! Tu contraseña no coincide
-                                            </Typography>
-                                        )}
-                                    </IonItem>
-                                </IonList>
-                            </form>
+                            )}
                         </IonSlide>
                     </IonSlides>
                 </div>
@@ -355,13 +170,22 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         expand="full"
                         size="large"
                         onClick={() => {
-                            updateFields();
-                            handleSubmit(nextStep, (err: any) => {
-                                console.error(err);
-                            })();
+                            if (currentStep === 0) {
+                                formUserRef && formUserRef.submit();
+                            } else if (currentStep === 1) {
+                                formDeliveryRef && formDeliveryRef.submit();
+                            } else {
+                                formPasswordRef && formPasswordRef.submit();
+                            }
                         }}
                     >
-                        {currentStep === 0 || currentStep === 1 ? 'Siguiente' : 'Registrame'}
+                        {isLoading ? (
+                            <IonSpinner color={palette.secondary.contrastText} />
+                        ) : currentStep === 0 || currentStep === 1 ? (
+                            'Siguiente'
+                        ) : (
+                            'Registrame'
+                        )}
                     </IonButton>
                 </IonToolbar>
             </IonFooter>

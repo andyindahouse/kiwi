@@ -3,11 +3,13 @@ export type User = {
     email: string;
     phone: string;
     deliveryAddress: string;
-    deliveryCp: string;
+    deliveryPostalCode: string;
     deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
     deliveryHour: string;
     password?: string;
 };
+
+export type RegisterUser = User & {password: string; rePassword: string};
 
 export interface Nutriments {
     nutritionDataPer: number;
