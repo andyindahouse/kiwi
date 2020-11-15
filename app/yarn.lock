@@ -1108,14 +1108,14 @@
     to-fast-properties "^2.0.0"
 
 "@capacitor/android@^2.3.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-2.4.0.tgz#e75b01b5ce5b60f4ef400c7867e81fd2c1782b47"
-  integrity sha512-5sJicZjtuBRgtmBuV1kvWnIjlu7bnw2TGGp62UXf0ZrjvMUCYSFHBqIHZ8neffW7a3xM5cdGMUlxJ+HfA9ntAg==
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-2.4.2.tgz#ddc55bf0ea78214a0a760330a439916093792d00"
+  integrity sha512-0OpOmsno6yFyN0tOEhE9LkAqQrnTGUxz49+ZdivieI3axFe3CpxbFhcfIsJtr96q9jhkspkYPMqGNZm3gPKjaA==
 
-"@capacitor/cli@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-2.3.0.tgz#29791c6d7e984cec27e661bf5a5dd8d948198310"
-  integrity sha512-MU6T0L3p4cvpkkPUjh63NVzrGMn+u4AS5TCGquj9wJ4sO/r7g1oTfYvLbqi7TjFqliVwVqUuUa7IUYfNuEAdrw==
+"@capacitor/cli@2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-2.4.2.tgz#3fdb7dedfb2498e2554f757078a0c84ea9aaa76e"
+  integrity sha512-a6fTzv3zdfzBsk7h374yM6qSqwc2nb+LJfkw6hiP5otXwM2HUKSA9s13fdCPrsvsOOrk8srtt7ECi6oYulHAmQ==
   dependencies:
     chalk "^2.3.0"
     commander "^4.1.1"
@@ -1129,17 +1129,17 @@
     which "^1.3.0"
     xml2js "^0.4.19"
 
-"@capacitor/core@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-2.4.0.tgz#5f3741153d87901e5c14c9037b6634bd24df5e77"
-  integrity sha512-zL+3yKjLNkU6QwIB/Fp9rg+qDLsO44/ibrIgaZZRXcDCwScwanjXCgco/jXQl3jGFcZzanm59wKhMcJr9xQH0Q==
+"@capacitor/core@^2.4.0":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-2.4.2.tgz#f11d943febad2bb70f042ac87e354e9602250b82"
+  integrity sha512-xQyJSZo50+aAvX3ZsX5h2xJDjz1LQxGT0A6/qD1pqJVEUeDhzdfYMbxCPWbmqSONZXddHtwrTiIsjq1Wd+ukuQ==
   dependencies:
     tslib "^1.9.0"
 
 "@capacitor/ios@^2.3.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-2.4.0.tgz#41302eee5c0b232755b61f7a978550f191e2a030"
-  integrity sha512-G4WcQHS4RuK94Ncoi5K+r12DWPqkB8yZKupQrJaGT1S/Zyc3mcA9m1f4HwRPlYCwyxQ6lCd8+N9GYxLu7Kv+SA==
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-2.4.2.tgz#cb608c8009a4609f2c654d78bf21967ecf3b0724"
+  integrity sha512-DqfDBrbaVKV2nkjMF7uL58G5QbJHoQVu/qdw/Uh5QSVkHqsY0lBKyi5nxhH3+cqBBMl+oGNB9EMBHovRVdR0EQ==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
@@ -1203,27 +1203,27 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@ionic/core@5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.3.1.tgz#0b5852b0977063ab0c2a4d3da799fae7ff3d6228"
-  integrity sha512-psOiYZbpL5uGKi7MZ9BXCfQIdJVVVW1n8AvrWAiifFE/ebI1x0wbO+D5QLmF2Mc2t/d0nbk4N1V8XyF2bjjiLg==
+"@ionic/core@5.4.4":
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.4.4.tgz#cf9fade2b1cbf6d30a380b5b8b202f38b579b810"
+  integrity sha512-MSA3LJJmOR8S8XDTsHCrnq+nCUmuvgZDTZzrrulpPdyTHNbphhJYw991JfTzFKRfQDQKs+6+xJAovLBaiYyszA==
   dependencies:
     ionicons "^5.1.2"
     tslib "^1.10.0"
 
 "@ionic/react-router@^5.0.7":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-5.3.1.tgz#8be31459de157a7da0e4757f48febb88d470e9bd"
-  integrity sha512-pb61x4APPpH21OjNTUIWDMKVR91rX+io6+xvm9JDsawIwKlI0CfdUo0uAl54WumDQGdC1zc88c6LazwhNG7ojQ==
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-5.4.4.tgz#32d40304e1f166eb7ec62556675ccee01e7b083c"
+  integrity sha512-qixG87HeNjVAvWiOXyD6CCkU2OENETdWIYVjqpB56uoOlKwl8wlYe6lCBksG12gRrvINJgCvIMHMq23LG4LBEg==
   dependencies:
     tslib "*"
 
 "@ionic/react@^5.0.7":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-5.3.1.tgz#3fa16e9e418f128d7fc8ea62a92aa00305970bf7"
-  integrity sha512-G+giFkfWpc6idl7wvFMPX45NDxDZ6nbxXUfzA+bmHum3JZ6+B9rXJzvd8Cqco6DYLz3s7WP+UAvHGDg+MEWpAw==
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-5.4.4.tgz#14b7d40cf37473c26b43945c59dd191dd01daaf3"
+  integrity sha512-vwXr4Lqk9UdDibUVfhbakEbaDyiZuXYf/X+eiJSwdm71DNtfdJaWnHmPMijxJw2K0lCeVAynOI9SmxEU7RKXUw==
   dependencies:
-    "@ionic/core" "5.3.1"
+    "@ionic/core" "5.4.4"
     ionicons "^5.1.2"
     tslib "*"
 
@@ -5682,15 +5682,10 @@ invert-kv@^2.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
 
-ionicons@^5.0.0:
+ionicons@^5.0.0, ionicons@^5.1.2:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-5.2.3.tgz#af4018ea7585b1e9ae11757731c77f2f36e0c7ac"
   integrity sha512-87qtgBkieKVFagwYA9Cf91B3PCahQbEOMwMt8bSvlQSgflZ4eE5qI4MGj2ZlIyadeX0dgo+0CzZsy3ow0CsBAg==
-
-ionicons@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-5.1.2.tgz#f00f17d2f23be94e8a248c9ebbaea236a6132f0d"
-  integrity sha512-zO7ZgbBbXhpA7cXO2rDzTNdcCqErjg1Sprq/ossTvaiV0MriOjRE7JO3EGvYjDTPzF9YALGpvLXqCgsRT0tprA==
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -10713,11 +10708,16 @@ ts-pnp@^1.1.6:
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
 
 tslib@*:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
-  integrity sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
+  integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
 
-tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
+tslib@^1.10.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^1.8.1, tslib@^1.9.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==

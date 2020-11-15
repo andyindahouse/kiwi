@@ -5,29 +5,36 @@
 ```javascript
 // Add android platform
 $ npx cap add android
+
 // Add iOS platform
 $ npx cap add ios
+
 // Build web assets to copy to platforms
-$ ionic build
-// copy the build assets to platforms
+$ npx ionic build
+
+// Copy the build assets to platforms (web stuff)
 $ npx cap copy
-// open android studio to build app
-$ npx cap open android
-// open xcode to build app
-$ npx cap open ios
+
+// The sync command updates dependencies and copy the build assets (web and native stuff)
+$ npx cap sync
+
+// Open android studio or xcode to build app
+$ npx cap open [android|ios]
+
+// Run the app in a local ip of localhost and allow livereloading and sync files
+$ npx ionic cap run [android|ios] -l --external
+
+/*
+    NOTE: to avoid server mode and active setup bundle mode (include all web files in app and get up app without local server)
+
+    1) Delete prop server in [app|rider-app]/capacitor.config.json in root
+    2) Run `npx cap sync` in terminal (this will modify native capacitor files)
+    3) Run app from native ide
 ```
 
 ```javascript
 // This init frontend in http://localhost:8100/
-> ionic serve // build with livereload and up the app in a browser
-```
-
-```javascript
-> ionic cap sync // The sync command updates dependencies, and copies any web assets to your project.
-```
-
-```javascript
-> ionic cap run android -l --external // run and and sync files to build in android studio
+> npx ionic serve // build with livereload and up the app in a browser
 ```
 
 ### To install plugin in ionic react
@@ -37,30 +44,4 @@ $ npx cap open ios
 
 ```javascript
 > yarn add phonegap-plugin-barcodescanner
-```
-
-### Run backend
-
-```javascript
-// This init backend in http://localhost:3000
-> yarn start-backend
-```
-
-### Thisgt to fix in admob-free plugin
-
-- the js code in node_modules/@ionic-native/addmob-free/index.js isn't minify well
-- we can use androidx to fix erros in compile time (NonNull class not found error)
-- we need to modify the next things in node_modules dependecies too:
-
-```javascript
-// Add this line in cordova-admob-sdk/plugin.xml into the platform tag
-<preference name="PLAY_SERVICES_VERSION" default="+" />
-```
-
-```javascript
-// Add the Ad unit id in cordova-admob-plugin-admob-free/plugin.xml into the platform tag
-<meta-data
-  android:name="com.google.android.gms.ads.APPLICATION_ID"
-  android:value="ca-app-pub-3940256099942544~3347511713"
-/>
 ```

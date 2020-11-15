@@ -2,7 +2,7 @@ import {IonDatetime, IonInput, IonItem, IonLabel, IonList, IonSelect, IonSelectO
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import Typography from '../components/typography';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
@@ -62,7 +62,7 @@ type Props = {
 
 const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors} = useForm({
+    const {handleSubmit, register, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -84,7 +84,22 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
             <IonList lines="full">
                 <IonItem>
                     <IonLabel position="floating">Dirección</IonLabel>
-                    <IonInput name="deliveryAddress" ref={register({required: true}) as any} />
+                    <Controller
+                        control={control}
+                        name="deliveryAddress"
+                        rules={{
+                            required: true,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
                     {errors.deliveryAddress?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Tu dirección es obligatoria
@@ -93,10 +108,23 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Código postal</IonLabel>
-                    <IonInput
-                        type="number"
+                    <Controller
+                        control={control}
                         name="deliveryPostalCode"
-                        ref={register({required: true, pattern: /^\d{5}$/g}) as any}
+                        rules={{
+                            required: true,
+                            pattern: /^\d{5}$/g,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                type="number"
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
                     />
                     {errors.deliveryPostalCode?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
@@ -111,18 +139,30 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Día semanal de entrega</IonLabel>
-                    <IonSelect
+                    <Controller
+                        control={control}
                         name="deliveryWeekDay"
-                        okText="Ok"
-                        cancelText="Cancelar"
-                        ref={register({required: true}) as any}
-                    >
-                        {days.map((e: {value: string; label: string}) => (
-                            <IonSelectOption key={e.value} value={e.value}>
-                                {e.label}
-                            </IonSelectOption>
-                        ))}
-                    </IonSelect>
+                        rules={{
+                            required: true,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonSelect
+                                name={name}
+                                value={value}
+                                onBlur={onBlur}
+                                onIonChange={onChange}
+                                okText="Ok"
+                                cancelText="Cancelar"
+                                ref={ref}
+                            >
+                                {days.map((e: {value: string; label: string}) => (
+                                    <IonSelectOption key={e.value} value={e.value}>
+                                        {e.label}
+                                    </IonSelectOption>
+                                ))}
+                            </IonSelect>
+                        )}
+                    />
                     {errors.deliveryWeekDay?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Debes elegir un día para la entrega de tu compra
@@ -131,14 +171,26 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Hora de entrega</IonLabel>
-                    <IonDatetime
+                    <Controller
+                        control={control}
                         name="deliveryHour"
-                        displayFormat="HH:mm"
-                        minuteValues="0,15,30,45"
-                        hourValues="11,12,13,14,15,16,17,18,19,20"
-                        pickerFormat="HH:mm"
-                        ref={register({required: true}) as any}
-                    ></IonDatetime>
+                        rules={{
+                            required: true,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonDatetime
+                                name={name}
+                                onBlur={onBlur}
+                                onIonChange={onChange}
+                                displayFormat="HH:mm"
+                                minuteValues="0,15,30,45"
+                                hourValues="11,12,13,14,15,16,17,18,19,20"
+                                pickerFormat="HH:mm"
+                                value={value}
+                                ref={ref}
+                            />
+                        )}
+                    />
                     {errors.deliveryHour?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Debes elegir una hora para la entrega de tu compra

@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@capacitor/android": "^2.3.0",
-        "@capacitor/core": "2.4.0",
+        "@capacitor/core": "^2.4.0",
         "@capacitor/ios": "^2.3.0",
         "@ionic/react": "^5.0.7",
         "@ionic/react-router": "^5.0.7",
@@ -37,6 +37,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
+        "build-dev": "NODE_ENV=development react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
@@ -63,7 +64,7 @@
         ]
     },
     "devDependencies": {
-        "@capacitor/cli": "2.3.0",
+        "@capacitor/cli": "2.4.2",
         "eslint-plugin-react-hooks": "^4.1.2"
     },
     "description": "An Ionic project"

@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import kiwiApi from '../api';
 import Typography from '../components/typography';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
@@ -28,7 +28,7 @@ type Props = {
 
 const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors} = useForm({
+    const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -50,20 +50,29 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
             <IonList lines="full">
                 <IonItem>
                     <IonLabel position="floating">Email</IonLabel>
-                    <IonInput
+                    <Controller
+                        control={control}
                         name="email"
-                        disabled={disableEmail}
-                        ref={
-                            register({
-                                required: true,
-                                validate: async (value: string) => {
-                                    const {isTaken} = await kiwiApi.emailTaken(value);
-                                    const sameEmail = value === defaultValues?.email;
-                                    return sameEmail || !isTaken;
-                                },
-                            }) as any
-                        }
+                        rules={{
+                            required: true,
+                            validate: async (value: string) => {
+                                const {isTaken} = await kiwiApi.emailTaken(value);
+                                const sameEmail = value === defaultValues?.email;
+                                return sameEmail || !isTaken;
+                            },
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                disabled={disableEmail}
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
                     />
+
                     {errors.email?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Tu correo es obligatorio
@@ -77,7 +86,22 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Nombre</IonLabel>
-                    <IonInput name="firstName" ref={register({required: true}) as any} />
+                    <Controller
+                        control={control}
+                        name="firstName"
+                        rules={{
+                            required: true,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
                     {errors.firstName?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Tu nombre es obligatorio
@@ -86,10 +110,23 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Teléfono</IonLabel>
-                    <IonInput
+                    <Controller
+                        control={control}
                         name="phone"
-                        type="number"
-                        ref={register({required: true, pattern: /^\d{9}$/g}) as any}
+                        rules={{
+                            required: true,
+                            pattern: /^\d{9}$/g,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                onIonChange={onChange}
+                                name={name}
+                                type="number"
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
                     />
                     {errors.phone?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">

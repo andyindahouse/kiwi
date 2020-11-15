@@ -2,7 +2,7 @@ import {IonInput, IonItem, IonLabel, IonList} from '@ionic/react';
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import Typography from '../components/typography';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
@@ -22,7 +22,7 @@ type Props = {controlRef: (handleSubmit: any) => void; showHeader?: boolean; sho
 
 const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors, watch} = useForm({
+    const {handleSubmit, register, errors, watch, control} = useForm({
         shouldFocusError: true,
     });
 
@@ -44,7 +44,23 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                 {showOldPasswordField && (
                     <IonItem>
                         <IonLabel position="floating">Tu contraseña actual</IonLabel>
-                        <IonInput name="oldPassword" type="password" ref={register({required: true})} />
+                        <Controller
+                            control={control}
+                            name="oldPassword"
+                            rules={{
+                                required: true,
+                            }}
+                            render={({onChange, onBlur, value, name, ref}) => (
+                                <IonInput
+                                    type="password"
+                                    onIonChange={onChange}
+                                    name={name}
+                                    ref={ref}
+                                    onBlur={onBlur}
+                                    value={value}
+                                />
+                            )}
+                        />
                         {errors.oldPassword?.type === 'required' && (
                             <Typography color={palette.error.main} variant="caption2">
                                 Tu contraseña actual es obligatoria
@@ -56,7 +72,23 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                     <IonLabel position="floating">
                         {showOldPasswordField ? 'Tu nueva contraseña' : 'Tu contraseña'}
                     </IonLabel>
-                    <IonInput name="password" type="password" ref={register({required: true})} />
+                    <Controller
+                        control={control}
+                        name="password"
+                        rules={{
+                            required: true,
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                type="password"
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
                     {errors.password?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             {showOldPasswordField
@@ -70,14 +102,25 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                     <IonLabel position="floating">
                         {showOldPasswordField ? 'Repite tu nueva contraseña' : 'Repite tu contraseña'}
                     </IonLabel>
-                    <IonInput
+                    <Controller
+                        control={control}
                         name="rePassword"
-                        type="password"
-                        ref={register({
+                        rules={{
                             required: true,
                             validate: (value) => value === watch('password'),
-                        })}
+                        }}
+                        render={({onChange, onBlur, value, name, ref}) => (
+                            <IonInput
+                                type="password"
+                                onIonChange={onChange}
+                                name={name}
+                                ref={ref}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
                     />
+
                     {errors.rePassword?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
                             Tienes que confirmar tu contraseña

@@ -18,7 +18,7 @@ import Register from './register';
 import Box from '../components/box';
 import Typography from '../components/typography';
 import {useAuth} from '../contexts/auth';
-import {useForm} from 'react-hook-form';
+import {useForm, Controller} from 'react-hook-form';
 import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
@@ -50,7 +50,12 @@ const Login: React.FC = () => {
     const [loginError, setLoginError] = React.useState(false);
     const [isLoading, setLoading] = React.useState(false);
     const [showRegisterMessage, setShowRegisterMessage] = React.useState(false);
-    const {handleSubmit, register, errors} = useForm();
+    const {handleSubmit, errors, control} = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
     const onSubmit = (data: {email: string; password: string}) => {
         if (data.email) {
             setLoading(true);
@@ -81,11 +86,21 @@ const Login: React.FC = () => {
                         <IonList className={classes.form} lines="full">
                             <IonItem>
                                 <IonLabel position="floating">Email</IonLabel>
-                                <IonInput
+                                <Controller
+                                    control={control}
                                     name="email"
-                                    ref={register({
+                                    rules={{
                                         required: true,
-                                    })}
+                                    }}
+                                    render={({onChange, onBlur, value, name, ref}) => (
+                                        <IonInput
+                                            onIonChange={onChange}
+                                            name={name}
+                                            ref={ref}
+                                            onBlur={onBlur}
+                                            value={value}
+                                        />
+                                    )}
                                 />
                                 {errors.email?.type === 'required' && (
                                     <Typography color={palette.error.main} variant="caption2">
@@ -95,12 +110,22 @@ const Login: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <IonLabel position="floating">Password</IonLabel>
-                                <IonInput
+                                <Controller
+                                    control={control}
                                     name="password"
-                                    type="password"
-                                    ref={register({
+                                    rules={{
                                         required: true,
-                                    })}
+                                    }}
+                                    render={({onChange, onBlur, value, name, ref}) => (
+                                        <IonInput
+                                            type="password"
+                                            onIonChange={onChange}
+                                            name={name}
+                                            ref={ref}
+                                            onBlur={onBlur}
+                                            value={value}
+                                        />
+                                    )}
                                 />
                                 {errors.password?.type === 'required' && (
                                     <Typography color={palette.error.main} variant="caption2">
