@@ -1,9 +1,9 @@
 import {Order, OrderStatus, Product, ShoppingCart} from '../models';
 import {extendRawProducts} from '../utils';
 
-const serverIp = 'http://192.168.1.48:3000';
+const serverIp = 'http://51.210.87.239:3000';
 const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZjNkM2U2YjljMzNiMjIwMzA2YmIyYzAiLCJleHAiOjE2MDExMzI4NzY3NzEsImVtYWlsIjoiZGFuaWNhbGRlcmErMUBnbWFpbC5jb20ifQ.Ygb_0Pzr9DkbA0ocUAhy2KF9YKeJfUS6tvVw4QVPVkA';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZmI1NWQ5YTYwZWU5NjAwMTIwNTk5ZjEiLCJleHAiOjE2MDU3MjE2NTMyNjEsImVtYWlsIjoicmlkZXIifQ.dea_aBnFfHQTuhYyAOQNLXJUiFLMlTImyAft_isVR4E';
 
 export type PaginatedResponse<T> = {
     content: T;
