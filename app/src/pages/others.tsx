@@ -110,7 +110,16 @@ const Others: React.FC = () => {
                         <IonLabel>Cerrar sesión</IonLabel>
                     </IonItem>
                 </IonList>
-                <IonModal isOpen={modalData.open}>
+                <IonModal
+                    isOpen={modalData.open}
+                    backdropDismiss
+                    onDidDismiss={() => {
+                        setModalData({
+                            ...modalData,
+                            open: false,
+                        });
+                    }}
+                >
                     <IonHeader>
                         <IonToolbar>
                             <IonTitle>Modificar datos</IonTitle>

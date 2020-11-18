@@ -125,8 +125,12 @@ const ProductList = ({
 
             <IonModal
                 isOpen={!!selected}
+                backdropDismiss
                 onDidPresent={() => setShowChart(true)}
-                onDidDismiss={() => setShowChart(false)}
+                onDidDismiss={() => {
+                    setSelected(null);
+                    setShowChart(false);
+                }}
             >
                 {selected && (
                     <ProductDetail
@@ -147,6 +151,7 @@ const ProductList = ({
 };
 
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
+    const {products: shoppingCart, dispatch} = useShoppingCart();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
         searchText: '',
         pageNumber: 0,
@@ -155,7 +160,6 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
     const [isLoading, setLoading] = React.useState(false);
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
     const [totalSize, setTotalSize] = React.useState<number | null>(null);
-    const {products: shoppingCart, dispatch} = useShoppingCart();
     const contentRef = React.useRef<HTMLIonContentElement | null>(null);
     const scrollToTop = () => {
         contentRef.current && contentRef.current.scrollToTop();
@@ -199,12 +203,11 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 </IonToolbar>
                 <IonToolbar>
                     <IonSearchbar
-                        value={filter.searchText}
                         enterkeyhint="search"
+                        onIonFocus={() => {
+                            scrollToTop();
+                        }}
                         onIonChange={(e) => {
-                            // if (Capacitor.isNative) {
-                            //     Plugins.Keyboard.hide();
-                            // }
                             if (products && products.length > 0) {
                                 setProducts(null);
                                 setTotalSize(null);
@@ -213,7 +216,6 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                                 pageNumber: 0,
                                 searchText: e.detail.value || null,
                             });
-                            // scrollToTop();
                         }}
                         debounce={500}
                         animated

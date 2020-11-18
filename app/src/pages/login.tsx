@@ -173,7 +173,13 @@ const Login: React.FC = () => {
                         )}
                     </Box>
                 </form>
-                <IonModal isOpen={showRegister}>
+                <IonModal
+                    isOpen={showRegister}
+                    backdropDismiss
+                    onDidDismiss={() => {
+                        setShowRegister(false);
+                    }}
+                >
                     <Register
                         closeModal={(registerSuccess) => {
                             if (registerSuccess) {
