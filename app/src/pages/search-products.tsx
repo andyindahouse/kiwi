@@ -27,6 +27,7 @@ import {extendRawProducts} from '../utils';
 import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
+import {Capacitor, Plugins} from '@capacitor/core';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -202,27 +203,39 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                     </IonButtons>
                 </IonToolbar>
                 <IonToolbar>
-                    <IonSearchbar
-                        enterkeyhint="search"
-                        onIonFocus={() => {
-                            scrollToTop();
-                        }}
-                        onIonChange={(e) => {
-                            if (products && products.length > 0) {
-                                setProducts(null);
-                                setTotalSize(null);
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            if (Capacitor.isNative) {
+                                Plugins.Keyboard.hide();
                             }
-                            setFilter({
-                                pageNumber: 0,
-                                searchText: e.detail.value || null,
-                            });
                         }}
-                        debounce={500}
-                        animated
-                        placeholder="Busca tus productos aquí"
-                        showCancelButton="focus"
-                        cancelButtonText="Borrar"
-                    />
+                    >
+                        <IonSearchbar
+                            enterkeyhint="search"
+                            onIonFocus={() => {
+                                scrollToTop();
+                            }}
+                            onIonChange={(e) => {
+                                // if (Capacitor.isNative) {
+                                //     Plugins.Keyboard.hide();
+                                // }
+                                if (products && products.length > 0) {
+                                    setProducts(null);
+                                    setTotalSize(null);
+                                }
+                                setFilter({
+                                    pageNumber: 0,
+                                    searchText: e.detail.value || null,
+                                });
+                            }}
+                            debounce={500}
+                            animated
+                            placeholder="Busca tus productos aquí"
+                            showCancelButton="focus"
+                            cancelButtonText="Borrar"
+                        />
+                    </form>
                 </IonToolbar>
             </IonHeader>
             <IonContent ref={contentRef} scrollEvents={true}>
