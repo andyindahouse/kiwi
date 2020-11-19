@@ -72,6 +72,7 @@ const Units = ({
     handleOnChange: (units: number) => void;
 }) => {
     const classes = useStyles();
+
     return (
         <div className={classes.unitsContainer}>
             <IonIcon
@@ -138,7 +139,7 @@ type Props = {
 
 const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
     const classes = useStyles();
-    const {name, price, cost, img, brand, note, items = []} = product;
+    const {name, price, img, brand, note, items = []} = product;
     const [currentPrice, setCurrentPrice] = React.useState<number | null>();
     const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);
     const [daysAfterOpened, setDaysAfterOpened] = React.useState(0);

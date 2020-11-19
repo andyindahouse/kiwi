@@ -217,9 +217,6 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                                 scrollToTop();
                             }}
                             onIonChange={(e) => {
-                                // if (Capacitor.isNative) {
-                                //     Plugins.Keyboard.hide();
-                                // }
                                 if (products && products.length > 0) {
                                     setProducts(null);
                                     setTotalSize(null);
