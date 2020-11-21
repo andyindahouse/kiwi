@@ -383,7 +383,11 @@ const ProductList = ({
             <IonModal
                 isOpen={!!selectedProduct}
                 onDidPresent={() => setShowChart(true)}
-                onDidDismiss={() => setShowChart(false)}
+                onDidDismiss={() => {
+                    setShowChart(false);
+                    setSelectedProduct(null);
+                }}
+                backdropDismiss
             >
                 {selectedProduct && (
                     <ProductDetail

@@ -11,26 +11,32 @@ export interface Nutriments {
 
 export type ProductOrderStatus = 'pending' | 'saved' | 'not-available';
 
+export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
+
 export interface Product {
     id: string;
     brand: string;
     category: ReadonlyArray<string>;
     name: string;
     price: {
+        original?: string;
         final: string;
     };
-    cost: number;
     discount: boolean;
+    specialOffer?: SpecialOffers;
+    specialOfferValue?: [string, string];
     status: string;
     quantity: number;
     currency: string;
     img: string;
     url: string;
     ean?: string;
-    nutriments: Nutriments;
+    nutriments?: Nutriments;
     units: number;
     note?: string;
     items?: ReadonlyArray<{date: string | null}>;
+    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
+    novaGroups: '1' | '2' | '3' | '4';
     daysAfterOpened?: number;
     statusOrder?: 'pending' | 'saved' | 'not-available';
 }
@@ -60,3 +66,12 @@ export interface Order {
     deliveryDate: string;
     deliveryHour: string;
 }
+
+export type User = {
+    firstName: string;
+    email: string;
+    phone: string;
+    password?: string;
+};
+
+export type RegisterUser = User & {password: string; rePassword: string};

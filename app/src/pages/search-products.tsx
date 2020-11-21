@@ -27,6 +27,7 @@ import {extendRawProducts} from '../utils';
 import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
+import {Capacitor, Plugins} from '@capacitor/core';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -125,8 +126,12 @@ const ProductList = ({
 
             <IonModal
                 isOpen={!!selected}
+                backdropDismiss
                 onDidPresent={() => setShowChart(true)}
-                onDidDismiss={() => setShowChart(false)}
+                onDidDismiss={() => {
+                    setSelected(null);
+                    setShowChart(false);
+                }}
             >
                 {selected && (
                     <ProductDetail
@@ -147,6 +152,7 @@ const ProductList = ({
 };
 
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
+    const {products: shoppingCart, dispatch} = useShoppingCart();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
         searchText: '',
         pageNumber: 0,
@@ -155,7 +161,6 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
     const [isLoading, setLoading] = React.useState(false);
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);
     const [totalSize, setTotalSize] = React.useState<number | null>(null);
-    const {products: shoppingCart, dispatch} = useShoppingCart();
     const contentRef = React.useRef<HTMLIonContentElement | null>(null);
     const scrollToTop = () => {
         contentRef.current && contentRef.current.scrollToTop();
@@ -198,29 +203,36 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                     </IonButtons>
                 </IonToolbar>
                 <IonToolbar>
-                    <IonSearchbar
-                        value={filter.searchText}
-                        enterkeyhint="search"
-                        onIonChange={(e) => {
-                            // if (Capacitor.isNative) {
-                            //     Plugins.Keyboard.hide();
-                            // }
-                            if (products && products.length > 0) {
-                                setProducts(null);
-                                setTotalSize(null);
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            if (Capacitor.isNative) {
+                                Plugins.Keyboard.hide();
                             }
-                            setFilter({
-                                pageNumber: 0,
-                                searchText: e.detail.value || null,
-                            });
-                            // scrollToTop();
                         }}
-                        debounce={500}
-                        animated
-                        placeholder="Busca tus productos aquí"
-                        showCancelButton="focus"
-                        cancelButtonText="Borrar"
-                    />
+                    >
+                        <IonSearchbar
+                            enterkeyhint="search"
+                            onIonFocus={() => {
+                                scrollToTop();
+                            }}
+                            onIonChange={(e) => {
+                                if (products && products.length > 0) {
+                                    setProducts(null);
+                                    setTotalSize(null);
+                                }
+                                setFilter({
+                                    pageNumber: 0,
+                                    searchText: e.detail.value || null,
+                                });
+                            }}
+                            debounce={500}
+                            animated
+                            placeholder="Busca tus productos aquí"
+                            showCancelButton="focus"
+                            cancelButtonText="Borrar"
+                        />
+                    </form>
                 </IonToolbar>
             </IonHeader>
             <IonContent ref={contentRef} scrollEvents={true}>

@@ -15,11 +15,11 @@ import {
     IonToolbar,
 } from '@ionic/react';
 import Register from './register';
-import Box from '../components/box';
 import Typography from '../components/typography';
 import {useAuth} from '../contexts/auth';
 import {useForm, Controller} from 'react-hook-form';
 import palette from '../theme/palette';
+import Box from '../components/box';
 
 const useStyles = createUseStyles(() => ({
     container: {

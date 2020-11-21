@@ -216,7 +216,11 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                 <IonModal
                     isOpen={!!selected}
                     onDidPresent={() => setShowChart(true)}
-                    onDidDismiss={() => setShowChart(false)}
+                    onDidDismiss={() => {
+                        setSelected(null);
+                        setShowChart(false);
+                    }}
+                    backdropDismiss
                 >
                     {selected && (
                         <ProductDetail

@@ -98,10 +98,10 @@ const kiwiApi = {
         pageSize?: number;
         perishable?: boolean;
     }): Promise<PaginatedResponse<ReadonlyArray<PantryProduct>>> => {
-        console.log('API GET PANTRY req:', queryParams);
         const searchTextParam = queryParams.searchText ? `&searchText=${queryParams.searchText}` : '';
         const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
         const perishableParam = queryParams.perishable ? `&perishable=true` : '';
+
         return apiClient({
             url: `/pantry?pageSize=${queryParams.pageSize || 200}&pageNumber=${
                 queryParams.pageNumber

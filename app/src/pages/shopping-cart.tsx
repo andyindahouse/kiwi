@@ -271,7 +271,11 @@ const ShoppingCart = () => {
                 <IonModal
                     isOpen={!!selected}
                     onDidPresent={() => setShowChart(true)}
-                    onDidDismiss={() => setShowChart(false)}
+                    backdropDismiss
+                    onDidDismiss={() => {
+                        setSelected(null);
+                        setShowChart(false);
+                    }}
                 >
                     {selected && (
                         <ProductDetail
@@ -297,7 +301,13 @@ const ShoppingCart = () => {
                         />
                     )}
                 </IonModal>
-                <IonModal isOpen={!!showModal}>
+                <IonModal
+                    isOpen={!!showModal}
+                    backdropDismiss
+                    onDidDismiss={() => {
+                        setShowModal(false);
+                    }}
+                >
                     <>
                         <IonHeader>
                             <IonToolbar>
