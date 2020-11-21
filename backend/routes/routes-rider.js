@@ -7,6 +7,7 @@ const UserController = require('../controllers/user');
 const OrdersRiderController = require('../controllers/orders-rider');
 
 router.post('/login', UserController.login);
+router.post('/register', UserController.register);
 router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
 router.patch('/me', customMdw.ensureAuthenticated, UserController.editUserInfo);
 router.post('/me/password', customMdw.ensureAuthenticated, UserController.editUserPassword);
