@@ -208,7 +208,7 @@ const controller = {
                     ...products[productIndex],
                     ...body,
                 };
-                const newCostProduct = utils.getPrice(newProduct, newProduct.eci.items.length);
+                const newCostProduct = utils.getPrice(newProduct, newProduct.items.length);
                 products[productIndex] = {
                     ...newProduct,
                     cost: newCostProduct,
