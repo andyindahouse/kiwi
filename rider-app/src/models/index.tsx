@@ -55,6 +55,9 @@ export interface Order {
     _id: string;
     createdDate: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
     products: ReadonlyArray<Product>;
     status: OrderStatus;
     deliverFee: number;
@@ -69,9 +72,12 @@ export interface Order {
 
 export type User = {
     firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     password?: string;
+    deliveryCity: string;
+    deliveryVehicle: string;
 };
 
 export type RegisterUser = User & {password: string; rePassword: string};

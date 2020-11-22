@@ -9,7 +9,7 @@ $ npx cap add android
 // Add iOS platform
 $ npx cap add ios
 
-// Build web assets to copy to platforms
+// Build and update web assets
 $ npx ionic build
 
 // Copy the build assets to platforms (web stuff)
@@ -24,13 +24,13 @@ $ npx cap open [android|ios]
 // Run the app in a local ip of localhost and allow livereloading and sync files
 $ npx ionic cap run [android|ios] -l --external
 
-/*
-    NOTE: to avoid server mode and active setup bundle mode (include all web files in app and get up app without local server)
+```
+
+#### NOTE: to avoid server mode and active setup bundle mode (include all web files in app and get up app without local server)
 
     1) Delete prop server in [app|rider-app]/capacitor.config.json in root
     2) Run `npx cap sync` in terminal (this will modify native capacitor files)
     3) Run app from native ide
-```
 
 ```javascript
 // This init frontend in http://localhost:8100/

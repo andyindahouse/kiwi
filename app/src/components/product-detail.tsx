@@ -13,7 +13,7 @@ import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Product} from '../models';
 import palette from '../theme/palette';
-import {getLabelDiscount} from '../utils';
+import {getLabelDiscount, getUnitPriceWithOffer} from '../utils';
 import ChartistGraph from './chartist-graph';
 import Typography from './typography';
 import classnames from 'classnames';
@@ -302,7 +302,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                     <div className={classes.image} style={{backgroundImage: `url(${img})`}}>
                         {!!initialUnits && (
                             <div className={classes.units}>
-                                <Typography variant="h3">{units} ud</Typography>
+                                <Typography variant="h3">{units}&nbsp;ud</Typography>
                             </div>
                         )}
                     </div>
@@ -330,13 +330,19 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                         </div>
                     )}
 
-                    {specialOffer && specialOfferValue && (
+                    {specialOffer && specialOfferValue && price.final && (
                         <div className={classes.discountSection}>
                             <IonIcon icon={pricetag} className={classes.discountIcon} />
                             <Typography variant="h3" color={palette.secondary.main} style={{marginRight: 8}}>
                                 {getLabelDiscount(specialOffer, specialOfferValue)}
                             </Typography>
-                            <Typography>(La unidad te sale a X €)</Typography>
+                            <Typography>
+                                {`(La unidad te saldría a ${getUnitPriceWithOffer(
+                                    price.final,
+                                    specialOffer,
+                                    specialOfferValue
+                                )} €)`}
+                            </Typography>
                         </div>
                     )}
                 </div>

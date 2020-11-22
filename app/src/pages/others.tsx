@@ -15,12 +15,14 @@ import {
     IonTitle,
     IonToast,
     IonToolbar,
+    useIonViewDidEnter,
 } from '@ionic/react';
 import {
     homeOutline,
     keyOutline,
     logOutOutline,
     notificationsOutline,
+    notificationsOffOutline,
     personOutline,
     rocketOutline,
 } from 'ionicons/icons';
@@ -31,9 +33,16 @@ import {User} from '../models';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
 import kiwiApi from '../api';
+import {Capacitor, Plugins} from '@capacitor/core';
+import palette from '../theme/palette';
+
+const MSG_UPDATED_SUCESSFULLY = 'Datos actualizados con éxito';
+const MSG_NOTIFICATIONS_ALREADY_ON = 'Tienes las notificaciones activadas';
+const MSG_NOTIFICATIONS_ACTIVED = 'Notificaciones activadas';
 
 const Others: React.FC = () => {
     const {user, setUser, logout} = useAuth();
+    const [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
     const [formUserRef, setFormUserRef] = React.useState<null | {submit: () => void}>();
     const [formDeliveryRef, setFormDeliveryRef] = React.useState<null | {submit: () => void}>();
     const [formPasswordRef, setFormPasswordRef] = React.useState<null | {submit: () => void}>();
@@ -44,7 +53,13 @@ const Others: React.FC = () => {
         open: false,
         selectedData: 'user',
     });
-    const [showToast, setShowToast] = React.useState(false);
+    const [showToast, setShowToast] = React.useState<{
+        show: boolean;
+        message?: string;
+    }>({
+        show: false,
+        message: '',
+    });
     const selectData = (selectedData: 'user' | 'delivery' | 'password') => {
         setModalData({
             open: true,
@@ -58,7 +73,10 @@ const Others: React.FC = () => {
                 ...modalData,
                 open: false,
             });
-            setShowToast(true);
+            setShowToast({
+                show: true,
+                message: MSG_UPDATED_SUCESSFULLY,
+            });
         });
     };
     const updatePassword = ({oldPassword, password}: {oldPassword: string; password: string}) => {
@@ -69,6 +87,26 @@ const Others: React.FC = () => {
             });
         });
     };
+    const requestNotificationsPermission = async () => {
+        Plugins.LocalNotifications.requestPermission().then((res) => {
+            setNotificationsEnabled(res.granted);
+
+            if (res.granted) {
+                setShowToast({
+                    show: true,
+                    message: MSG_NOTIFICATIONS_ACTIVED,
+                });
+            }
+        });
+    };
+
+    useIonViewDidEnter(() => {
+        if (Capacitor.isNative) {
+            Plugins.LocalNotifications.areEnabled().then((res) => {
+                setNotificationsEnabled(res.value);
+            });
+        }
+    });
 
     return (
         <IonPage>
@@ -101,8 +139,24 @@ const Others: React.FC = () => {
                     <IonListHeader>
                         <Typography variant="h2">Otros</Typography>
                     </IonListHeader>
-                    <IonItem button onClick={() => {}}>
-                        <IonIcon slot="end" color="primary" icon={notificationsOutline}></IonIcon>
+                    <IonItem
+                        button
+                        onClick={() => {
+                            if (notificationsEnabled) {
+                                setShowToast({
+                                    show: false,
+                                    message: MSG_NOTIFICATIONS_ALREADY_ON,
+                                });
+                            } else {
+                                requestNotificationsPermission();
+                            }
+                        }}
+                    >
+                        {notificationsEnabled ? (
+                            <IonIcon slot="end" color="primary" icon={notificationsOutline}></IonIcon>
+                        ) : (
+                            <IonIcon slot="end" color="danger" icon={notificationsOffOutline}></IonIcon>
+                        )}
                         <IonLabel>Notificaciones</IonLabel>
                     </IonItem>
                     <IonItem button onClick={logout}>
@@ -178,14 +232,6 @@ const Others: React.FC = () => {
                                 }}
                             />
                         )}
-                        <IonToast
-                            isOpen={showToast}
-                            onDidDismiss={() => setShowToast(false)}
-                            message={'Datos actualizados con éxito'}
-                            position="bottom"
-                            duration={4000}
-                            translucent
-                        />
                     </IonContent>
                     <IonFooter>
                         <IonToolbar>
@@ -208,6 +254,18 @@ const Others: React.FC = () => {
                         </IonToolbar>
                     </IonFooter>
                 </IonModal>
+                <IonToast
+                    isOpen={showToast.show}
+                    onDidDismiss={() =>
+                        setShowToast({
+                            show: false,
+                        })
+                    }
+                    message={showToast.message}
+                    position="bottom"
+                    duration={4000}
+                    translucent
+                />
             </IonContent>
         </IonPage>
     );

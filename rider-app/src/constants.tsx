@@ -1,1 +1,1 @@
-export const TOKEN_KEY_LOCAL_STORAGE = 'token-auth';
+export const TOKEN_KEY_LOCAL_STORAGE = 'rirder-token-auth';
