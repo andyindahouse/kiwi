@@ -23,9 +23,12 @@ const controller = {
                         deliveryAddress: req.body.deliveryAddress || '',
                         deliveryWeekDay: req.body.deliveryWeekDay || '',
                         deliveryHour: req.body.deliveryHour || '',
+                        deliveryCity: req.body.deliveryCity || '',
+                        deliveryVehicle: req.body.deliveryVehicle || '',
                         phone: req.body.phone || '',
                         deliveryPostalCode: req.body.deliveryPostalCode || '',
                         active: false,
+                        ...(req.baseUrl === '/api/rider' && {rider: true}),
                     });
                     return document.save();
                 }
@@ -40,6 +43,8 @@ const controller = {
                         deliveryWeekDay: data.deliveryWeekDay,
                         deliveryHour: data.deliveryHour,
                         deliveryPostalCode: data.deliveryPostalCode,
+                        deliveryCity: data.deliveryCity,
+                        deliveryVehicle: data.deliveryVehicle,
                         phone: data.phone,
                         rider: data.rider,
                     },
@@ -93,6 +98,13 @@ const controller = {
             },
         });
     },
+    getDeliveryCities: async ({query}, res, next) => {
+        res.json({
+            data: {
+                deliveryCities: ['Alcalá de Henares'],
+            },
+        });
+    },
     getUserInfo: async (req, res, next) => {
         try {
             const user = req.user;
@@ -105,6 +117,8 @@ const controller = {
                     deliveryWeekDay: user.deliveryWeekDay,
                     deliveryHour: user.deliveryHour,
                     deliveryPostalCode: user.deliveryPostalCode,
+                    deliveryCity: user.deliveryCity,
+                    deliveryVehicle: user.deliveryVehicle,
                     phone: user.phone,
                     rider: user.rider,
                     active: user.active,
@@ -126,6 +140,8 @@ const controller = {
                     ...(userInfo.deliveryWeekDay && {deliveryWeekDay: userInfo.deliveryWeekDay}),
                     ...(userInfo.deliveryHour && {deliveryHour: userInfo.deliveryHour}),
                     ...(userInfo.deliveryPostalCode && {deliveryPostalCode: userInfo.deliveryPostalCode}),
+                    ...(userInfo.deliveryCity && {deliveryCity: userInfo.deliveryCity}),
+                    ...(userInfo.deliveryVehicle && {deliveryVehicle: userInfo.deliveryVehicle}),
                     ...(userInfo.phone && {phone: userInfo.phone}),
                 },
                 {
@@ -144,6 +160,8 @@ const controller = {
                         deliveryWeekDay: updatedUser.deliveryWeekDay,
                         deliveryHour: updatedUser.deliveryHour,
                         deliveryPostalCode: updatedUser.deliveryPostalCode,
+                        deliveryCity: updatedUser.deliveryCity,
+                        deliveryVehicle: updatedUser.deliveryVehicle,
                         phone: updatedUser.phone,
                         rider: updatedUser.rider,
                         active: updatedUser.active,
@@ -185,6 +203,8 @@ const controller = {
                         deliveryWeekDay: updatedUserPassword.deliveryWeekDay,
                         deliveryHour: updatedUserPassword.deliveryHour,
                         deliveryPostalCode: updatedUserPassword.deliveryPostalCode,
+                        deliveryCity: updatedUserPassword.deliveryCity,
+                        deliveryVehicle: updatedUserPassword.deliveryVehicle,
                         phone: updatedUserPassword.phone,
                         rider: updatedUserPassword.rider,
                         active: updatedUserPassword.active,

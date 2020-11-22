@@ -1,7 +1,8 @@
 const chromePathWindows = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const chromePathMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const chromePathServer = '/usr/bin/google-chrome';
 
-const chromePath = chromePathWindows;
+const chromePath = chromePathServer;
 const timeout = 20000;
 const pupetterOptions = {
     executablePath: chromePath,

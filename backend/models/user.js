@@ -12,6 +12,8 @@ const UserSchema = Schema({
     deliveryWeekDay: String,
     deliveryHour: String,
     deliveryPostalCode: String,
+    deliveryCity: String,
+    deliveryVehicle: String,
     phone: String,
     rider: Boolean,
     active: Boolean,
