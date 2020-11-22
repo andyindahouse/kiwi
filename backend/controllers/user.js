@@ -98,6 +98,13 @@ const controller = {
             },
         });
     },
+    getDeliveryCities: async ({query}, res, next) => {
+        res.json({
+            data: {
+                deliveryCities: ['Alcalá de Henares'],
+            },
+        });
+    },
     getUserInfo: async (req, res, next) => {
         try {
             const user = req.user;

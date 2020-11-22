@@ -4,7 +4,7 @@ const utils = {
     getPrice: (product, units) => {
         if (product.specialOffer === 'offerDiscount') {
             const quotient = Math.floor(units / product.specialOfferValue[0]);
-            const discount = quotient * ((product.price.final * product.specialOfferValue[1]) / 100);
+            const discount = quotient * ((product.price.final * (100 - product.specialOfferValue[1])) / 100);
             const withoutDiscount = units - quotient;
             return parseFloat((withoutDiscount * product.price.final + discount).toFixed(2));
         } else if (product.specialOffer === 'quantityDiscount') {

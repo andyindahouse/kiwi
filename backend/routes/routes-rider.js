@@ -11,6 +11,7 @@ router.post('/register', UserController.register);
 router.get('/me', customMdw.ensureAuthenticated, UserController.getUserInfo);
 router.patch('/me', customMdw.ensureAuthenticated, UserController.editUserInfo);
 router.post('/me/password', customMdw.ensureAuthenticated, UserController.editUserPassword);
+router.get('/deliveryCities', UserController.getDeliveryCities);
 
 router.get('/orders', customMdw.ensureAuthenticated, customMdw.ensureRider, OrdersRiderController.get);
 router.get(
