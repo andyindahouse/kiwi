@@ -10,7 +10,7 @@ const pupetterOptions = {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--auto-open-devtools-for-tabs'],
 };
 const configMongo = {
-    url: 'mongodb://root:example@localhost/kiwi?authSource=admin&w=1',
+    url: 'mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@localhost/kiwi?authSource=admin&w=1',
     db: 'kiwi',
 };
 const marketUrl = 'https://www.elcorteingles.es';
