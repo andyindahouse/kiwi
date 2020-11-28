@@ -47,6 +47,35 @@ export const statusOrderMap: Record<OrderStatus, {color: string; label: string; 
     },
 };
 
+export const getUnitPriceWithOffer = (
+    originalPrice: string,
+    specialOffer: SpecialOffers,
+    specialOfferValue: [string, string]
+) => {
+    if (specialOffer === 'offerDiscount') {
+        const unitWithDiscount = Number(specialOfferValue[0]);
+        const standardPrice = Number(originalPrice);
+        const prices = Array(unitWithDiscount).fill(standardPrice);
+        const total = prices.reduce((acum, current, index) => {
+            if (index === prices.length - 1) {
+                return acum + current * Math.abs((Number(specialOfferValue[1]) - 100) / 100);
+            }
+            return acum + current;
+        }, 0);
+
+        return (total / prices.length).toFixed(2);
+    }
+
+    if (specialOffer === 'quantityDiscount') {
+        const totalCost = Number(specialOfferValue[1]) * Number(originalPrice);
+
+        return (totalCost / Number(specialOfferValue[0])).toFixed(2);
+    }
+
+    console.error('Error: unknown specialOffer case');
+    return '';
+};
+
 export const getLabelDiscount = (specialOffer: SpecialOffers, specialOfferValue: [string, string]) => {
     if (specialOffer === 'offerDiscount') {
         return `${specialOfferValue[0]}ª - ${specialOfferValue[1]}%`;

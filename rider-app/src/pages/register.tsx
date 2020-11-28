@@ -50,7 +50,10 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
     const [data, setData] = React.useState<RegisterUser>({
         email: '',
         firstName: '',
+        lastName: '',
         phone: '',
+        deliveryCity: '',
+        deliveryVehicle: '',
         password: '',
         rePassword: '',
     });

@@ -1,10 +1,7 @@
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
-import {Order, OrderStatus, Product, ShoppingCart, User} from '../models';
-import {extendRawProducts} from '../utils';
+import {Order, OrderStatus, Product, User} from '../models';
 
 const serverIp = 'http://51.210.87.239:3000';
-// const token =
-//     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZmI1NWQ5YTYwZWU5NjAwMTIwNTk5ZjEiLCJleHAiOjE2MDU3MjE2NTMyNjEsImVtYWlsIjoicmlkZXIifQ.dea_aBnFfHQTuhYyAOQNLXJUiFLMlTImyAft_isVR4E';
 const PAGE_SIZE = 20;
 
 export type PaginatedResponse<T> = {
@@ -53,6 +50,9 @@ const api = {
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
         apiClient({url: `/emailTaken?email=${email}`}, false),
     getUser: (): Promise<User> => apiClient({url: '/me'}),
+    setUser: (body: Partial<User>): Promise<User> => apiClient({url: '/me', body, customMethod: 'PATCH'}),
+    changeUserPassword: (body: {oldPassword: string; newPassword: string}) =>
+        apiClient({url: '/me/password', body}),
     getNewOrders: ({
         pageNumber,
         pageSize = 5,

@@ -87,7 +87,7 @@ type Props = {
 
 const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Seleccionar pedido'}: Props) => {
     const classes = useStyles();
-    const {totalCost, products, deliveryAddress, deliveryDate, deliveryHour} = order;
+    const {totalCost, products, deliveryAddress, firstName, phone, deliveryDate, deliveryHour} = order;
 
     return (
         <div className={classes.container} onClick={handleOpen}>
@@ -115,11 +115,11 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                 <Typography variant="subtitle2">Supermercado</Typography>
                 <Typography variant="body2">El Corte Inglés Supermercado</Typography>
                 <Typography variant="subtitle2">Cliente</Typography>
-                <Typography variant="body2">Daniel Caldera García</Typography>
+                <Typography variant="body2">{firstName}</Typography>
                 <Typography variant="subtitle2">Dirección de entrega</Typography>
                 <Typography variant="body2">{deliveryAddress}</Typography>
                 <Typography variant="subtitle2">Teléfono</Typography>
-                <Typography variant="body2">666 666 666</Typography>
+                <Typography variant="body2">{phone}</Typography>
                 <Typography variant="subtitle2">Nº de productos</Typography>
                 <Typography variant="body2">{getTotalItems(products)}</Typography>
                 {handleManageOrder && (
