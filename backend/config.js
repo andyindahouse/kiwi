@@ -5,7 +5,7 @@ const PORT = 3000;
 
 //Mongo config
 const CONFIG_MONGO = {
-    URL: `mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@mongo/kiwi?authSource=admin&w=1`,
+    URL: `mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@localhost/kiwi?authSource=admin&w=1`,
     URL_: 'mongodb://admin:password@mongo1,mongo2,mongo3/kiwi?replicaSet=rs0&authSource=admin&w=1&',
     DB: 'kiwi',
 };
