@@ -64,6 +64,7 @@ const getProductsPage = async (url) => {
     };
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     const products = await getProducts(url);
     await browser.close();
     return products;
