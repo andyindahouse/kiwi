@@ -10,7 +10,7 @@ const getTotalPages = async (url) => {
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
     await page.goto(url);
-    await page.waitFor(config.timeout);
+    await page.waitForTimeout(config.timeout);
     const pages = await page.evaluate(() =>
         document.querySelector('.pagination').getAttribute('data-pagination-total')
     );
@@ -21,7 +21,7 @@ const getTotalPages = async (url) => {
 const getProductsPage = async (url) => {
     const getProducts = async (url) => {
         await page.goto(url);
-        await page.waitFor(config.timeout);
+        await page.waitForTimeout(config.timeout);
         const data = await page.evaluate(() => {
             const getDiscountType = (specialOffer) => {
                 if (/(\d+).* unidad al (\d+).* de descuento/.test(specialOffer)) {
@@ -71,6 +71,8 @@ const getProductsPage = async (url) => {
 
 (async () => {
     console.log('Starting scraping list...');
+    console.log(new Date());
+    console.time('Scraping');
     const urls = config.scrapingUrl;
     for (let i = 0; i <= urls.length; i++) {
         const url = urls[i].url;
@@ -94,7 +96,6 @@ const getProductsPage = async (url) => {
                         img: product.img.replace('40x40.', '325x325.'),
                         updateDate: new Date(),
                     };
-                    console.log(productData);
                     await collection.findOne({id: productData.id});
                     const result = await collection.updateOne(
                         {id: productData.id},
@@ -113,6 +114,8 @@ const getProductsPage = async (url) => {
                 console.log(`${pages - j} pages left.`);
             }
             console.log(`Scraper finished.`);
+            console.log(new Date());
+            console.time('Scraping');
         } catch (e) {
             console.log(e);
         } finally {
