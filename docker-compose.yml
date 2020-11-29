@@ -22,6 +22,8 @@ services:
             ME_CONFIG_MONGODB_ADMINPASSWORD: 2q"GtK:W{b+<xmt?
             ME_CONFIG_BASICAUTH_USERNAME: kiwi
             ME_CONFIG_BASICAUTH_PASSWORD: FC5W6G?3wGdj7LM{
+        links:
+            - mongo
         depends_on:
             - mongo
 
