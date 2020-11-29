@@ -8,6 +8,7 @@ puppeteer.use(StealthPlugin());
 const getTotalPages = async (url) => {
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     await page.goto(url);
     await page.waitFor(config.timeout);
     const pages = await page.evaluate(() =>
