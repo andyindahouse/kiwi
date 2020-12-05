@@ -92,6 +92,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         }}
                         render={({onChange, onBlur, value, name, ref}) => (
                             <IonInput
+                                autocomplete="street-address"
                                 onIonChange={onChange}
                                 name={name}
                                 ref={ref}
@@ -117,6 +118,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         }}
                         render={({onChange, onBlur, value, name, ref}) => (
                             <IonInput
+                                autocomplete="postal-code"
                                 onIonChange={onChange}
                                 name={name}
                                 ref={ref}

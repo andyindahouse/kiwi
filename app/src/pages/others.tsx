@@ -265,6 +265,17 @@ const Others: React.FC = () => {
                     position="bottom"
                     duration={4000}
                     translucent
+                    buttons={[
+                        {
+                            text: 'Ok',
+                            role: 'ok',
+                            handler: () => {
+                                setShowToast({
+                                    show: false,
+                                });
+                            },
+                        },
+                    ]}
                 />
             </IonContent>
         </IonPage>

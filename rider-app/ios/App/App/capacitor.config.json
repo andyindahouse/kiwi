@@ -1,6 +1,6 @@
 {
     "appId": "io.ionic.starter",
-    "appName": "app",
+    "appName": "rider-app",
     "bundledWebRuntime": false,
     "npmClient": "npm",
     "webDir": "build",
@@ -9,11 +9,5 @@
             "launchShowDuration": 0
         }
     },
-    "cordova": {},
-    "server": {
-        "url": "http://localhost:8100",
-        "cleartext": true,
-        "originalUrl": "http://localhost:8100",
-        "originalCleartext": true
-    }
+    "cordova": {}
 }

@@ -1,5 +1,5 @@
 {
-    "name": "app",
+    "name": "rider-app",
     "integrations": {
         "capacitor": {}
     },

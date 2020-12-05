@@ -63,6 +63,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         }}
                         render={({onChange, onBlur, value, name, ref}) => (
                             <IonInput
+                                autocomplete="email"
                                 disabled={disableEmail}
                                 onIonChange={onChange}
                                 name={name}
@@ -94,6 +95,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         }}
                         render={({onChange, onBlur, value, name, ref}) => (
                             <IonInput
+                                autocomplete="name"
                                 onIonChange={onChange}
                                 name={name}
                                 ref={ref}
@@ -119,6 +121,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         }}
                         render={({onChange, onBlur, value, name, ref}) => (
                             <IonInput
+                                autocomplete="tel"
                                 onIonChange={onChange}
                                 name={name}
                                 type="number"

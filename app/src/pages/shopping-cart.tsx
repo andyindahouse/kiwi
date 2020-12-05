@@ -34,6 +34,8 @@ import {useHistory} from 'react-router-dom';
 import {format, startOfTomorrow, addDays} from 'date-fns';
 import {es} from 'date-fns/locale';
 import EmptyCase from '../components/empty-case';
+import {Controller, useForm} from 'react-hook-form';
+import {useAuth} from '../contexts/auth';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -114,14 +116,19 @@ const ShoppingCart = () => {
         null
     );
     const [showModal, setShowModal] = React.useState(false);
-    const [deliveryAddress, setDeliveryAddress] = React.useState('');
-    const [deliveryDate, setDeliveryDate] = React.useState(startOfTomorrow().toISOString());
-    const [deliveryHour, setDeliveryHour] = React.useState('1990-02-19T16:30Z');
-    const [deliveryNote, setDeliveryNote] = React.useState('');
     const [showAlert, setShowAlert] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
-
+    const {user} = useAuth();
+    const {handleSubmit, errors, control} = useForm({
+        shouldFocusError: true,
+        defaultValues: {
+            deliveryAddress: user?.deliveryAddress,
+            deliveryDate: getAllowDays()[1].value,
+            deliveryHour: user?.deliveryHour,
+            deliveryNote: '',
+        },
+    });
     const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
         kiwiApi
             .setShoppingCart({
@@ -138,7 +145,17 @@ const ShoppingCart = () => {
                 });
             });
     };
-    const handleCheckout = () => {
+    const handleCheckout = ({
+        deliveryAddress,
+        deliveryDate,
+        deliveryHour,
+        deliveryNote,
+    }: {
+        deliveryAddress: string;
+        deliveryDate: string;
+        deliveryHour: string;
+        deliveryNote: string;
+    }) => {
         kiwiApi
             .checkout({
                 note: deliveryNote,
@@ -326,43 +343,94 @@ const ShoppingCart = () => {
                         <IonContent>
                             <IonList lines="full">
                                 <IonItem>
-                                    <IonLabel>Dirección de entrega:</IonLabel>
-                                    <IonInput
-                                        value={deliveryAddress}
-                                        onIonChange={(e) => setDeliveryAddress(e.detail.value || '')}
+                                    <IonLabel position="stacked">Dirección de entrega:</IonLabel>
+                                    <Controller
+                                        control={control}
+                                        name="deliveryAddress"
+                                        rules={{
+                                            required: true,
+                                        }}
+                                        render={({onChange, onBlur, value, name, ref}) => (
+                                            <IonInput
+                                                autocomplete="street-address"
+                                                onIonChange={onChange}
+                                                name={name}
+                                                ref={ref}
+                                                onBlur={onBlur}
+                                                value={value}
+                                            />
+                                        )}
                                     />
+                                    {errors.deliveryAddress?.type === 'required' && (
+                                        <Typography color={palette.error.main} variant="caption2">
+                                            La dirección de entrega es obligatoria
+                                        </Typography>
+                                    )}
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel>Fecha de entrega:</IonLabel>
-                                    <IonSelect
-                                        value={deliveryDate}
-                                        okText="Ok"
-                                        cancelText="Cancelar"
-                                        onIonChange={(e) => setDeliveryDate(e.detail.value)}
-                                    >
-                                        {getAllowDays().map((e: {value: string; label: string}) => (
-                                            <IonSelectOption key={e.value} value={e.value}>
-                                                {e.label}
-                                            </IonSelectOption>
-                                        ))}
-                                    </IonSelect>
+                                    <Controller
+                                        control={control}
+                                        name="deliveryDate"
+                                        rules={{
+                                            required: true,
+                                        }}
+                                        render={({onChange, onBlur, value, name, ref}) => (
+                                            <IonSelect
+                                                name={name}
+                                                value={value}
+                                                onBlur={onBlur}
+                                                onIonChange={onChange}
+                                                okText="Ok"
+                                                cancelText="Cancelar"
+                                                ref={ref}
+                                            >
+                                                {getAllowDays().map((e: {value: string; label: string}) => (
+                                                    <IonSelectOption key={e.value} value={e.value}>
+                                                        {e.label}
+                                                    </IonSelectOption>
+                                                ))}
+                                            </IonSelect>
+                                        )}
+                                    />
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel>Hora de entrega:</IonLabel>
-                                    <IonDatetime
-                                        displayFormat="HH:mm"
-                                        minuteValues="0,15,30,45"
-                                        hourValues="11,12,13,14,15,16,17,18,19,20"
-                                        pickerFormat="HH:mm"
-                                        value={deliveryHour}
-                                        onIonChange={(e) => setDeliveryHour(e.detail.value || '')}
-                                    ></IonDatetime>
+                                    <Controller
+                                        control={control}
+                                        name="deliveryHour"
+                                        rules={{
+                                            required: true,
+                                        }}
+                                        render={({onChange, onBlur, value, name, ref}) => (
+                                            <IonDatetime
+                                                name={name}
+                                                onBlur={onBlur}
+                                                onIonChange={onChange}
+                                                displayFormat="HH:mm"
+                                                minuteValues="0,15,30,45"
+                                                hourValues="11,12,13,14,15,16,17,18,19,20"
+                                                pickerFormat="HH:mm"
+                                                value={value}
+                                                ref={ref}
+                                            />
+                                        )}
+                                    />
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel>Agrega una nota al envío:</IonLabel>
-                                    <IonInput
-                                        value={deliveryNote}
-                                        onIonChange={(e) => setDeliveryNote(e.detail.value || '')}
+                                    <Controller
+                                        control={control}
+                                        name="deliveryNote"
+                                        render={({onChange, onBlur, value, name, ref}) => (
+                                            <IonInput
+                                                onIonChange={onChange}
+                                                name={name}
+                                                ref={ref}
+                                                onBlur={onBlur}
+                                                value={value}
+                                            />
+                                        )}
                                     />
                                 </IonItem>
 
@@ -395,9 +463,7 @@ const ShoppingCart = () => {
                                     },
                                     {
                                         text: 'Aceptar',
-                                        handler: () => {
-                                            handleCheckout();
-                                        },
+                                        handler: handleSubmit(handleCheckout),
                                     },
                                 ]}
                             />

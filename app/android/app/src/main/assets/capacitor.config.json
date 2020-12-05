@@ -1,6 +1,6 @@
 {
     "appId": "io.kiwi.starter",
-    "appName": "app",
+    "appName": "Kiwi",
     "bundledWebRuntime": false,
     "npmClient": "npm",
     "webDir": "build",
