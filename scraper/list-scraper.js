@@ -5,22 +5,19 @@ const config = require('./config');
 
 puppeteer.use(StealthPlugin());
 
-const getTotalPages = async (url) => {
-    const browser = await puppeteer.launch(config.pupetterOptions);
-    const page = await browser.newPage();
+const getTotalPages = async (page, url) => {
     await page.goto(url);
-    await page.waitFor(config.timeout);
+    await page.waitForTimeout(config.timeout);
     const pages = await page.evaluate(() =>
         document.querySelector('.pagination').getAttribute('data-pagination-total')
     );
-    await browser.close();
     return pages;
 };
 
-const getProductsPage = async (url) => {
+const getProductsPage = async (page, url) => {
     const getProducts = async (url) => {
         await page.goto(url);
-        await page.waitFor(config.timeout);
+        await page.waitForTimeout(config.timeout);
         const data = await page.evaluate(() => {
             const getDiscountType = (specialOffer) => {
                 if (/(\d+).* unidad al (\d+).* de descuento/.test(specialOffer)) {
@@ -61,19 +58,21 @@ const getProductsPage = async (url) => {
         });
         return data;
     };
-    const browser = await puppeteer.launch(config.pupetterOptions);
-    const page = await browser.newPage();
     const products = await getProducts(url);
-    await browser.close();
     return products;
 };
 
 (async () => {
     console.log('Starting scraping list...');
+    console.log(new Date());
+    console.time('Scraping');
     const urls = config.scrapingUrl;
+    const browser = await puppeteer.launch(config.pupetterOptions);
+    const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     for (let i = 0; i <= urls.length; i++) {
         const url = urls[i].url;
-        const pages = await getTotalPages(url);
+        const pages = await getTotalPages(page, url);
         console.log(`Scraping category ${url}...`);
         let urlWithPage = `${url}`;
         let client;
@@ -85,7 +84,7 @@ const getProductsPage = async (url) => {
             const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
             for (let j = 1; j <= pages; j++) {
                 urlWithPage = `${url}${j}`;
-                const prods = await getProductsPage(urlWithPage);
+                const prods = await getProductsPage(page, urlWithPage);
                 prods.forEach(async (product) => {
                     const productData = {
                         ...product,
@@ -93,7 +92,6 @@ const getProductsPage = async (url) => {
                         img: product.img.replace('40x40.', '325x325.'),
                         updateDate: new Date(),
                     };
-                    console.log(productData);
                     await collection.findOne({id: productData.id});
                     const result = await collection.updateOne(
                         {id: productData.id},
@@ -111,7 +109,10 @@ const getProductsPage = async (url) => {
                 });
                 console.log(`${pages - j} pages left.`);
             }
+            await browser.close();
             console.log(`Scraper finished.`);
+            console.log(new Date());
+            console.time('Scraping');
         } catch (e) {
             console.log(e);
         } finally {

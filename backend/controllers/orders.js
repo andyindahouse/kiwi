@@ -110,11 +110,11 @@ const controller = {
             next(err);
         }
     },
-    updateStatus: async ({params, body}, res, next) => {
+    updateStatus: async ({params, body, user}, res, next) => {
         try {
             const id = new ObjectID(params.id);
             const updatedOrder = await Order.findOneAndUpdate(
-                {_id: id, email: email.user},
+                {_id: id, email: user.email},
                 {
                     status: body.status,
                     updatedDate: new Date(),
