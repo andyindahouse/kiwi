@@ -2,12 +2,18 @@ const chromePathWindows = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\
 const chromePathMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const chromePathServer = '/usr/bin/google-chrome';
 
-const chromePath = chromePathServer;
+const chromePath = chromePathWindows;
 const timeout = 20000;
 const pupetterOptions = {
     executablePath: chromePath,
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--auto-open-devtools-for-tabs'],
+    args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--auto-open-devtools-for-tabs',
+        `--window-size=${2000},${2000}`,
+    ],
+    // args: ['--no-sandbox', '--disable-setuid-sandbox', '--auto-open-devtools-for-tabs'],
 };
 const configMongo = {
     url: `mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@localhost/kiwi?authSource=admin&w=1`,
