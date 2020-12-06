@@ -9,8 +9,8 @@
             "request": "launch",
             "name": "Launch Program",
             "runtimeExecutable": "yarn",
-            "cwd": "${workspaceFolder}/backend",
-            "runtimeArgs": ["start"],
+            "cwd": "${workspaceFolder}/scraper",
+            "runtimeArgs": ["run", "list"],
             "port": 5858
         }
     ]
