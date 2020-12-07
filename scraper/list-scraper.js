@@ -131,14 +131,14 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             });
 
             await browser.close();
-            console.log(`Scraper finished.`);
-            console.log(new Date());
-            console.time('Scraping');
         } catch (e) {
             console.log(e);
         } finally {
             client.close();
         }
     }
+    console.log(`Scraper finished.`);
+    console.log(new Date());
+    console.timeEnd('Scraping');
     process.exit();
 })();
