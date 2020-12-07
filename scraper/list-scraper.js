@@ -130,15 +130,8 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                     });
                 }
             });
-            // if (client) {
-            //     await client.close();
-            // }
         } catch (e) {
             console.log(e);
-        } finally {
-            // if (client) {
-            //     await client.close();
-            // }
         }
         console.log('Items inserted.');
     }
