@@ -84,24 +84,23 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
     for (let i = 0; i < urls.length; i++) {
-        const url = urls[i].url;
-        console.log(`Scraping category ${url}...`);
-        await page.goto(url);
-        await page.waitForTimeout(config.timeout);
-        const products = await getTotalProducts(page);
-        console.log(products);
-        let urlWithPage = `${url}`;
-        let client;
-
-        //Enbale infinite scroll
-        const searchButtonNodeSelector = '.button._pagination';
-        await page.click(searchButtonNodeSelector);
-
-        await page.waitForTimeout(config.timeout);
-        const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
-        console.log(prods.length, 'scraped');
-        console.log('Inserting items...');
         try {
+            const url = urls[i].url;
+            console.log(`Scraping category ${url}...`);
+            await page.goto(url);
+            await page.waitForTimeout(config.timeout);
+            const products = await getTotalProducts(page);
+            console.log(products);
+            let urlWithPage = `${url}`;
+            let client;
+
+            //Enbale infinite scroll
+            const searchButtonNodeSelector = '.button._pagination';
+            await page.click(searchButtonNodeSelector);
+            await page.waitForTimeout(config.timeout);
+            const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
+            console.log(prods.length, 'scraped');
+            console.log('Inserting items...');
             client = await mongodb.MongoClient.connect(config.configMongo.url, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
