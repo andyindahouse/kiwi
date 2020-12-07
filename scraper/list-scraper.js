@@ -100,6 +100,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
         await page.waitForTimeout(config.timeout);
         const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
         console.log(prods.length, 'scraped');
+        console.log('Inserting items...');
         try {
             client = await mongodb.MongoClient.connect(config.configMongo.url, {
                 useNewUrlParser: true,
@@ -129,13 +130,19 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                     });
                 }
             });
-
-            await browser.close();
         } catch (e) {
             console.log(e);
         } finally {
-            client.close();
+            if (client) {
+                client.close();
+            }
         }
+        console.log('Items inserted.');
+    }
+    try {
+        await browser.close();
+    } catch (e) {
+        console.log(e);
     }
     console.log(`Scraper finished.`);
     console.log(new Date());
