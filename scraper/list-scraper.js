@@ -90,6 +90,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     }
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     for (let i = 0; i < urls.length; i++) {
         try {
             const url = urls[i].url;
