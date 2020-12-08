@@ -79,8 +79,15 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
 (async () => {
     console.log('Starting scraping list...');
     console.log(new Date());
-    console.time('Scraping');
-    const urls = config.scrapingUrl;
+    console.time('Scraping time');
+    let urls = config.scrapingUrls;
+    if (process.argv.length === 3) {
+        urls = [urls.find((url) => url.name === process.argv[2])];
+        if (!urls) {
+            console.log(`Section don't exist`);
+            process.exit(404);
+        }
+    }
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
     for (let i = 0; i < urls.length; i++) {
@@ -141,6 +148,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     }
     console.log(`Scraper finished.`);
     console.log(new Date());
-    console.timeEnd('Scraping');
+    console.timeEnd('Scraping time');
     process.exit();
 })();

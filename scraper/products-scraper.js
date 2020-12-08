@@ -71,7 +71,7 @@ const getOpenFoodDataByEan = async (ean) => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        const collection = await client.db(config.configMongo.db).collection(config.scrapingUrl.collection);
+        const collection = await client.db(config.configMongo.db).collection(config.scrapingUrls.collection);
 
         const cursor = collection.find({ean: {$exists: false}}).addCursorFlag('noCursorTimeout', true);
 
