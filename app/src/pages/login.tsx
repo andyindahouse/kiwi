@@ -20,6 +20,7 @@ import Typography from '../components/typography';
 import {useAuth} from '../contexts/auth';
 import {useForm, Controller} from 'react-hook-form';
 import palette from '../theme/palette';
+import KiwiLogo from '../components/logo';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -33,8 +34,8 @@ const useStyles = createUseStyles(() => ({
         flexDirection: 'column',
     },
     image: {
-        height: 100,
-        border: '1px solid #000000',
+        display: 'flex',
+        justifyContent: 'center',
         marginBottom: 16,
     },
     registerLink: {
@@ -79,10 +80,16 @@ const Login: React.FC = () => {
             <IonContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Box padding={16} cssClass={classes.container}>
-                        <Typography gutterBottom={32} variant="h2">
-                            Bienvenido a Kiwi,
+                        <Typography gutterBottom={8} center variant="h2">
+                            Bienvenido a Kiwi
                         </Typography>
-                        <div className={classes.image}>image</div>
+                        <Typography variant="subtitle1" gutterBottom={16} center>
+                            Tu aplicación para automatizar tu compra online, evitar tirar comida y tener
+                            siempre el frigo lleno
+                        </Typography>
+                        <div className={classes.image}>
+                            <KiwiLogo />
+                        </div>
                         <IonList className={classes.form} lines="full">
                             <IonItem>
                                 <IonLabel position="floating">Email</IonLabel>

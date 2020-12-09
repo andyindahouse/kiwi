@@ -2,20 +2,16 @@ import {IonInput, IonItem, IonLabel, IonList} from '@ionic/react';
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import kiwiApi from '../api';
-import Typography from '../components/typography';
+import Typography from './typography';
 import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
+import {PersonalInformationIllustration} from './illustrations';
 
 const useStyles = createUseStyles(() => ({
     slideContainer: {
         width: '100%',
         height: '100%',
         padding: 16,
-    },
-    image: {
-        height: 100,
-        border: '1px solid #000000',
-        marginBottom: 16,
     },
 }));
 
@@ -40,12 +36,9 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
     return (
         <form className={classes.slideContainer}>
             {showHeader && (
-                <>
-                    <Typography gutterBottom={32} variant="h3">
-                        Vamos con tus datos,
-                    </Typography>
-                    <div className={classes.image}>image</div>
-                </>
+                <Typography gutterBottom={32} variant="h3">
+                    Vamos con tus datos,
+                </Typography>
             )}
             <IonList lines="full">
                 <IonItem>
@@ -142,6 +135,9 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         </Typography>
                     )}
                 </IonItem>
+                <Typography variant="subtitle2" style={{textAlign: 'start'}}>
+                    Necesitamos tu teléfono para llamarte si hay algún problema con tu pedido o entrega
+                </Typography>
             </IonList>
         </form>
     );

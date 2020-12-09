@@ -4,17 +4,13 @@ import * as React from 'react';
 import Typography from '../components/typography';
 import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
+import {OnTheWayIllustration} from './illustrations';
 
 const useStyles = createUseStyles(() => ({
     slideContainer: {
         width: '100%',
         height: '100%',
         padding: 16,
-    },
-    image: {
-        height: 100,
-        border: '1px solid #000000',
-        marginBottom: 16,
     },
 }));
 
@@ -74,12 +70,9 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
     return (
         <form className={classes.slideContainer}>
             {showHeader && (
-                <>
-                    <Typography gutterBottom={32} variant="h3">
-                        Ahora tu información de entrega,
-                    </Typography>
-                    <div className={classes.image}>image</div>
-                </>
+                <Typography gutterBottom={32} variant="h3">
+                    Ahora tu información de entrega,
+                </Typography>
             )}
             <IonList lines="full">
                 <IonItem>
@@ -171,6 +164,9 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         </Typography>
                     )}
                 </IonItem>
+                <Typography variant="subtitle2">
+                    Recibiras tu compra siempre este día de cada semana
+                </Typography>
                 <IonItem>
                     <IonLabel position="floating">Hora de entrega</IonLabel>
                     <Controller
@@ -199,6 +195,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         </Typography>
                     )}
                 </IonItem>
+                <Typography variant="subtitle2">Recibiras tu compra a esta hora el día elegido</Typography>
             </IonList>
         </form>
     );
