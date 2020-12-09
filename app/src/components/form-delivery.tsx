@@ -4,7 +4,6 @@ import * as React from 'react';
 import Typography from '../components/typography';
 import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
-import {OnTheWayIllustration} from './illustrations';
 
 const useStyles = createUseStyles(() => ({
     slideContainer: {

@@ -5,7 +5,6 @@ import kiwiApi from '../api';
 import Typography from './typography';
 import {Controller, useForm} from 'react-hook-form';
 import palette from '../theme/palette';
-import {PersonalInformationIllustration} from './illustrations';
 
 const useStyles = createUseStyles(() => ({
     slideContainer: {
