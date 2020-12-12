@@ -94,6 +94,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     // await page.setDefaultNavigationTimeout(0);
     for (let i = 0; i < urls.length; i++) {
         try {
+            const supermarket = urls[i];
             const url = urls[i].url;
             console.log(`Scraping category ${url}...`);
             await page.goto(url, {waitUntil: 'networkidle0'});
@@ -112,10 +113,19 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             let urlWithPage = `${url}`;
             let client;
 
-            //Enbale infinite scroll
-            const searchButtonNodeSelector = '.button._pagination';
-            await page.click(searchButtonNodeSelector);
-            await page.waitForTimeout(1000); // refresh when pagination mode change
+            const paginationEnabled = await page.evaluate(
+                `document.querySelector('.button._pagination._on')`
+            );
+            console.log(paginationEnabled);
+            if (!paginationEnabled) {
+                console.log('enable infinite scroll...');
+
+                //Enable infinite scroll
+                const searchButtonNodeSelector = '.button._pagination';
+                await page.click(searchButtonNodeSelector);
+                // In this point if the checks to avoid scrapping
+                await page.waitForTimeout(1000); // refresh when pagination mode change
+            }
 
             //Polling
             console.log('window.scrollY', await page.evaluate('window.scrollY'));
@@ -128,10 +138,9 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             console.time('pagination');
             while (numberPage * pageSize < products) {
                 console.log(numberPage * pageSize, products);
-                await page.waitForResponse(
-                    `https://www.elcorteingles.es/alimentacion/api/catalog/010MOE/get-page/supermercado/alimentacion-general/${numberPage}/?direction=next`,
-                    {timeout: 5001}
-                );
+                await page.waitForResponse(supermarket.api.replace('%NUMBERPAGE%', numberPage), {
+                    timeout: 9999,
+                });
                 console.log('window.scrollY', await page.evaluate('window.scrollY'));
                 console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
                 numberPage += 1;
