@@ -90,13 +90,23 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     }
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
-    await page.setDefaultNavigationTimeout(0);
+
+    // await page.setDefaultNavigationTimeout(0);
     for (let i = 0; i < urls.length; i++) {
         try {
             const url = urls[i].url;
             console.log(`Scraping category ${url}...`);
-            await page.goto(url);
-            await page.waitForTimeout(config.timeout);
+            await page.goto(url, {waitUntil: 'networkidle0'});
+            await page.waitForTimeout(1000); // redirect from check page
+
+            await page.setViewport({
+                width: 1200,
+                height: 1200,
+            });
+
+            // console.log('first render');
+            // await page.waitForTimeout(config.timeout);
+            // console.log('end first render');
             const products = await getTotalProducts(page);
             console.log(products);
             let urlWithPage = `${url}`;
@@ -105,38 +115,60 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             //Enbale infinite scroll
             const searchButtonNodeSelector = '.button._pagination';
             await page.click(searchButtonNodeSelector);
-            await page.waitForTimeout(config.timeout);
-            const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
-            console.log(prods.length, 'scraped');
-            console.log('Inserting items...');
-            client = await mongodb.MongoClient.connect(config.configMongo.url, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            });
-            const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
+            await page.waitForTimeout(1000); // refresh when pagination mode change
 
-            prods.forEach(async (product) => {
-                const productData = {
-                    ...product,
-                    market: config.collectionProducts[config.indexCollection].market,
-                    img: product.img.replace('40x40.', '325x325.'),
-                    updateDate: new Date(),
-                };
-                await collection.findOne({id: productData.id});
-                const result = await collection.updateOne(
-                    {id: productData.id},
-                    {
-                        $set: {...productData},
-                    }
+            //Polling
+            console.log('window.scrollY', await page.evaluate('window.scrollY'));
+            console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
+            await page.evaluate('window.scrollBy(0, 100000000)');
+            console.log('window.scrollY', await page.evaluate('window.scrollY'));
+            console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
+            let numberPage = 2;
+            let pageSize = 24;
+            console.time('pagination');
+            while (numberPage * pageSize < products) {
+                console.log(numberPage * pageSize, products);
+                await page.waitForResponse(
+                    `https://www.elcorteingles.es/alimentacion/api/catalog/010MOE/get-page/supermercado/alimentacion-general/${numberPage}/?direction=next`,
+                    {timeout: 5001}
                 );
-                if (result.matchedCount === 0) {
-                    await collection.insertOne({
-                        ...productData,
-                        createDate: new Date(),
-                        available: true,
-                    });
-                }
-            });
+                console.log('window.scrollY', await page.evaluate('window.scrollY'));
+                console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
+                numberPage += 1;
+            }
+            console.timeEnd('pagination');
+
+            const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
+            console.log('scraped', prods.length);
+            // console.log('Inserting items...');
+            // client = await mongodb.MongoClient.connect(config.configMongo.url, {
+            //     useNewUrlParser: true,
+            //     useUnifiedTopology: true,
+            // });
+            // const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
+
+            // prods.forEach(async (product) => {
+            //     const productData = {
+            //         ...product,
+            //         market: config.collectionProducts[config.indexCollection].market,
+            //         img: product.img.replace('40x40.', '325x325.'),
+            //         updateDate: new Date(),
+            //     };
+            //     await collection.findOne({id: productData.id});
+            //     const result = await collection.updateOne(
+            //         {id: productData.id},
+            //         {
+            //             $set: {...productData},
+            //         }
+            //     );
+            //     if (result.matchedCount === 0) {
+            //         await collection.insertOne({
+            //             ...productData,
+            //             createDate: new Date(),
+            //             available: true,
+            //         });
+            //     }
+            // });
         } catch (e) {
             console.log(e);
         }
