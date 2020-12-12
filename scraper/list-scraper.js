@@ -149,35 +149,35 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
 
             const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
             console.log('scraped', prods.length);
-            // console.log('Inserting items...');
-            // client = await mongodb.MongoClient.connect(config.configMongo.url, {
-            //     useNewUrlParser: true,
-            //     useUnifiedTopology: true,
-            // });
-            // const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
+            console.log('Inserting items...');
+            client = await mongodb.MongoClient.connect(config.configMongo.url, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
 
-            // prods.forEach(async (product) => {
-            //     const productData = {
-            //         ...product,
-            //         market: config.collectionProducts[config.indexCollection].market,
-            //         img: product.img.replace('40x40.', '325x325.'),
-            //         updateDate: new Date(),
-            //     };
-            //     await collection.findOne({id: productData.id});
-            //     const result = await collection.updateOne(
-            //         {id: productData.id},
-            //         {
-            //             $set: {...productData},
-            //         }
-            //     );
-            //     if (result.matchedCount === 0) {
-            //         await collection.insertOne({
-            //             ...productData,
-            //             createDate: new Date(),
-            //             available: true,
-            //         });
-            //     }
-            // });
+            prods.forEach(async (product) => {
+                const productData = {
+                    ...product,
+                    market: config.collectionProducts[config.indexCollection].market,
+                    img: product.img.replace('40x40.', '325x325.'),
+                    updateDate: new Date(),
+                };
+                await collection.findOne({id: productData.id});
+                const result = await collection.updateOne(
+                    {id: productData.id},
+                    {
+                        $set: {...productData},
+                    }
+                );
+                if (result.matchedCount === 0) {
+                    await collection.insertOne({
+                        ...productData,
+                        createDate: new Date(),
+                        available: true,
+                    });
+                }
+            });
         } catch (e) {
             console.log(e);
         }
