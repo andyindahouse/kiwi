@@ -100,11 +100,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             await page.goto(url, {waitUntil: 'networkidle0'});
             await page.waitForTimeout(1000); // redirect from check page
 
-            await page.setViewport({
-                width: 1200,
-                height: 1200,
-            });
-
             // console.log('first render');
             // await page.waitForTimeout(config.timeout);
             // console.log('end first render');
