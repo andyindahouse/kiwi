@@ -7,13 +7,7 @@ const timeout = 20000;
 const pupetterOptions = {
     executablePath: chromePath,
     headless: true,
-    args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        // '--auto-open-devtools-for-tabs',
-        `--window-size=${1200},${1200}`,
-    ],
-    // args: ['--no-sandbox', '--disable-setuid-sandbox', '--auto-open-devtools-for-tabs'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', `--window-size=${1200},${1200}`],
 };
 const configMongo = {
     url: `mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@localhost/kiwi?authSource=admin&w=1`,
