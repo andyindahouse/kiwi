@@ -91,7 +91,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
 
-    // await page.setDefaultNavigationTimeout(0);
     for (let i = 0; i < urls.length; i++) {
         try {
             const supermarket = urls[i];
@@ -100,9 +99,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             await page.goto(url, {waitUntil: 'networkidle0'});
             await page.waitForTimeout(1000); // redirect from check page
 
-            // console.log('first render');
-            // await page.waitForTimeout(config.timeout);
-            // console.log('end first render');
             const products = await getTotalProducts(page);
             console.log(products);
             let urlWithPage = `${url}`;
@@ -123,11 +119,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             }
 
             //Polling
-            console.log('window.scrollY', await page.evaluate('window.scrollY'));
-            console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
             await page.evaluate('window.scrollBy(0, 100000000)');
-            console.log('window.scrollY', await page.evaluate('window.scrollY'));
-            console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
             let numberPage = 2;
             let pageSize = 24;
             console.time('pagination');
@@ -136,8 +128,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                 await page.waitForResponse(supermarket.api.replace('%NUMBERPAGE%', numberPage), {
                     timeout: 9999,
                 });
-                console.log('window.scrollY', await page.evaluate('window.scrollY'));
-                console.log('scrollHeight', await page.evaluate('document.body.scrollHeight'));
                 numberPage += 1;
             }
             console.timeEnd('pagination');
