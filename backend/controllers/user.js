@@ -54,7 +54,19 @@ const controller = {
                 next(err);
             });
     },
-    login: (req, res, next) => {
+    login: async (req, res, next) => {
+        const user = await User.findOne({email: req.body.email});
+        if (!user) {
+            return next(new errorTypes.Error401('Username or password not correct.'));
+        } else {
+            const isRider = req.baseUrl === '/api/rider';
+            if (isRider && !user.rider) {
+                return next(new errorTypes.Error401('Username or password not correct.'));
+            } else if (!isRider && !!user.rider) {
+                return next(new errorTypes.Error401('Username or password not correct.'));
+            }
+        }
+
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
                 return next(new errorTypes.Error401('Username or password not correct.'));
