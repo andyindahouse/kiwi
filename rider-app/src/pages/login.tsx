@@ -32,11 +32,6 @@ const useStyles = createUseStyles(() => ({
         display: 'flex',
         flexDirection: 'column',
     },
-    image: {
-        height: 100,
-        border: '1px solid #000000',
-        marginBottom: 16,
-    },
     registerLink: {
         padding: 32,
         alignSelf: 'center',
@@ -82,7 +77,6 @@ const Login: React.FC = () => {
                         <Typography gutterBottom={32} variant="h2">
                             Bienvenido a Kiwi,
                         </Typography>
-                        <div className={classes.image}>image</div>
                         <IonList className={classes.form} lines="full">
                             <IonItem>
                                 <IonLabel position="floating">Email</IonLabel>

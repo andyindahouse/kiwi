@@ -89,11 +89,11 @@ const Delivery = () => {
                         <div className={classes.container}>
                             <Typography variant="subtitle1">Nombre de cliente:</Typography>
                             <Typography gutterBottom={16}>
-                                Fulanito DiSousa Fulanito DiSousa Fulanito DiSousa
+                                {`${order?.firstName} ${order?.lastName}`}
                             </Typography>
 
                             <Typography variant="subtitle1">Número de teléfono:</Typography>
-                            <Typography>666 666 666</Typography>
+                            <Typography>{order?.phone}</Typography>
                             <Typography gutterBottom={16} variant="subtitle2">
                                 Llamar solamente en caso de no encontrar al cliente
                             </Typography>

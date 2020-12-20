@@ -213,10 +213,15 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                             <IonLabel>Fecha de caducidad:</IonLabel>
                             <IonDatetime
                                 min={new Date().toISOString()}
+                                max="2030-12-31"
                                 value={e.date}
                                 placeholder="Añadir"
                                 displayFormat="DD/MM/YYYY"
-                                onIonChange={(e) => changeUnits(index, e.detail.value ?? '')}
+                                onIonChange={(e) => {
+                                    if (e.detail.value) {
+                                        changeUnits(index, e.detail.value?.split('T')[0]);
+                                    }
+                                }}
                             />
                         </IonItem>
                     ))}

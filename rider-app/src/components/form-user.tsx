@@ -12,11 +12,6 @@ const useStyles = createUseStyles(() => ({
         height: '100%',
         padding: 16,
     },
-    image: {
-        height: 100,
-        border: '1px solid #000000',
-        marginBottom: 16,
-    },
 }));
 
 type Props = {
@@ -44,7 +39,6 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                     <Typography gutterBottom={32} variant="h3">
                         Vamos con tus datos,
                     </Typography>
-                    <div className={classes.image}>image</div>
                 </>
             )}
             <IonList lines="full">
