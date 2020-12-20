@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # alimentacion desayunos lacteos congelados dieteticos bebidas frescos bebes higiene limpieza
 rm ./tmp_log
 sections=(alimentacion desayunos lacteos congelados dieteticos bebidas frescos bebes higiene limpieza)
