@@ -11,11 +11,6 @@ const useStyles = createUseStyles(() => ({
         height: '100%',
         padding: 16,
     },
-    image: {
-        height: 100,
-        border: '1px solid #000000',
-        marginBottom: 16,
-    },
 }));
 
 const cities = [
@@ -71,7 +66,6 @@ const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
                     <Typography gutterBottom={32} variant="h3">
                         Cuentanos un poco más,
                     </Typography>
-                    <div className={classes.image}>image</div>
                 </>
             )}
             <IonList lines="full">

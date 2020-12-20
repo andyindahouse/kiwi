@@ -108,7 +108,7 @@ const kiwiApi = {
             }${searchTextParam}${inStorageParam}${perishableParam}&orderBy=date&orderDir=asc`,
         });
     },
-    updatePantryProduct: (body: PantryProduct): Promise<{data: PantryProduct}> =>
+    updatePantryProduct: (body: PantryProduct): Promise<PantryProduct> =>
         apiClient({url: `/pantry/${body._id}`, body}),
 };
 

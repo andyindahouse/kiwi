@@ -178,7 +178,7 @@ const FoodToExpire = () => {
                                     }}
                                 >
                                     <div className={classes.date}>
-                                        <Typography style={{color: expiryObj.color}}>
+                                        <Typography variant="caption1" style={{color: expiryObj.color}}>
                                             {expiryObj.label}
                                         </Typography>
                                         <Typography variant="subtitle2">

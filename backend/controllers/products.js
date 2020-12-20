@@ -38,7 +38,8 @@ const controller = {
                     ...textQuery,
                     ...{available: {$ne: false}},
                 })
-                .sort({discount: -1, _id: 1})
+                .select({score: {$meta: 'textScore'}})
+                .sort({score: {$meta: 'textScore'}})
                 .skip(skip)
                 .limit(limit);
             res.json({

@@ -174,7 +174,7 @@ const ProductList = ({
     const getProduct = (id: string) => kiwiApi.getProductDetail(id);
     const consumedProduct = async (selected: PantryProduct, consumedDate: string) => {
         try {
-            const {data} = await updatePantryProduct({
+            const data = await updatePantryProduct({
                 ...selected,
                 inStorage: 'consumed',
                 consumedDate: consumedDate,
@@ -262,7 +262,7 @@ const ProductList = ({
                         >
                             {product.date && (
                                 <div className={classes.date}>
-                                    <Typography style={{color: expiryObj.color}}>
+                                    <Typography variant="caption1" style={{color: expiryObj.color}}>
                                         {expiryObj.label}
                                     </Typography>
                                     <Typography variant="subtitle2">
