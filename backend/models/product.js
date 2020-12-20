@@ -6,7 +6,7 @@ const {PRODUCTS_COLLECTION} = require('../config');
 
 const ProductSchema = Schema({
     id: {type: String, required: true},
-    name: {type: String, required: true},
+    name: {type: String, text: true, required: true},
     ean: {type: String},
 });
 

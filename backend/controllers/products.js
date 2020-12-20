@@ -15,7 +15,16 @@ const controller = {
 
         const limit = pageSize;
         const skip = pageNumber * pageSize;
-        const textQuery = searchText ? {name: new RegExp(searchText, 'gi')} : {};
+        const textQuery = searchText
+            ? {
+                  $text: {
+                      $search: searchText,
+                      $language: 'spanish',
+                      $caseSensitive: false,
+                      $diacriticSensitive: false,
+                  },
+              }
+            : {};
 
         try {
             const totalSize = await Product.eci
