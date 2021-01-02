@@ -8,6 +8,9 @@ const ProductsController = require('../controllers/products');
 const ShoppingCartController = require('../controllers/shoppingCart');
 const PantryController = require('../controllers/pantry');
 const OrdersController = require('../controllers/orders');
+const ConfigController = require('../controllers/config');
+
+router.get('/config', ConfigController.config);
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);

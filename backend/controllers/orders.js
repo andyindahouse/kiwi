@@ -69,8 +69,13 @@ const controller = {
                         cost: costProduct,
                     };
                 });
+                const deliveryPrice = utils.getDeliveryPrice();
                 const totalCost = parseFloat(
-                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
+                    (
+                        totalShoppingCart +
+                        deliveryPrice.finalDeliverFee +
+                        deliveryPrice.finalShopperFee
+                    ).toFixed(2)
                 );
                 const order = {
                     _id: new ObjectID(),
@@ -81,8 +86,7 @@ const controller = {
                     createdDate: new Date(),
                     products: orderWithProducts,
                     totalShoppingCart,
-                    deliverFee: FEES.deliverFee,
-                    shopperFee: FEES.shopperFee,
+                    ...deliveryPrice,
                     totalCost,
                     status: 'pending',
                     note: body.note,

@@ -1,5 +1,7 @@
 'use strict';
 
+const {FEES} = require('../config');
+
 const utils = {
     getPrice: (product, units) => {
         if (product.specialOffer === 'offerDiscount') {
@@ -16,6 +18,15 @@ const utils = {
         } else {
             return parseFloat((units * product.price.final).toFixed(2));
         }
+    },
+    getDeliveryPrice: () => {
+        return {
+            deliverFee: FEES.deliverFee,
+            shopperFee: FEES.shopperFee,
+            deliveryDiscount: FEES.discount,
+            finalDeliverFee: FEES.discount ? FEES.deliverFee * FEES.discount : FEES.deliverFee,
+            finalShopperFee: FEES.discount ? FEES.shopperFee * FEES.discount : FEES.shopperFee,
+        };
     },
 };
 
