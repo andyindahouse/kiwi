@@ -5,6 +5,9 @@ const router = express.Router();
 const customMdw = require('../middleware/custom');
 const UserController = require('../controllers/user');
 const OrdersRiderController = require('../controllers/orders-rider');
+const ConfigController = require('../controllers/config');
+
+router.get('/config', ConfigController.config);
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);

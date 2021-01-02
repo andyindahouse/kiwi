@@ -22,13 +22,15 @@ const calculateShoppingCart = async (shopppingCart) => {
                 cost: costProduct,
             };
         });
-        const totalCost = parseFloat((totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2));
+        const deliveryPrice = utils.getDeliveryPrice();
+        const totalCost = parseFloat(
+            (totalShoppingCart + deliveryPrice.finalDeliverFee + deliveryPrice.finalShopperFee).toFixed(2)
+        );
         return {
             data: {
                 products: shoppingCartWithProducts,
                 totalShoppingCart,
-                deliverFee: FEES.deliverFee,
-                shopperFee: FEES.shopperFee,
+                ...deliveryPrice,
                 totalCost,
             },
         };

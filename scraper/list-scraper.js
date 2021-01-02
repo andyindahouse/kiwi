@@ -68,7 +68,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                 await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
                 await page.waitForTimeout(scrollDelay);
             }
-            console.log(items, itemTargetCount);
         }
     } catch (e) {
         console.log(e);
@@ -100,17 +99,14 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             await page.waitForTimeout(1000); // redirect from check page
 
             const products = await getTotalProducts(page);
-            console.log(products);
+            console.log({products});
             let urlWithPage = `${url}`;
             let client;
 
             const paginationEnabled = await page.evaluate(
                 `document.querySelector('.button._pagination._on')`
             );
-            console.log(paginationEnabled);
             if (!paginationEnabled) {
-                console.log('enable infinite scroll...');
-
                 //Enable infinite scroll
                 const searchButtonNodeSelector = '.button._pagination';
                 await page.click(searchButtonNodeSelector);
@@ -122,15 +118,12 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             await page.evaluate('window.scrollBy(0, 100000000)');
             let numberPage = 2;
             let pageSize = 24;
-            console.time('pagination');
             while (numberPage * pageSize < products) {
-                console.log(numberPage * pageSize, products);
                 await page.waitForResponse(supermarket.api.replace('%NUMBERPAGE%', numberPage), {
                     timeout: 9999,
                 });
                 numberPage += 1;
             }
-            console.timeEnd('pagination');
 
             const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
             console.log('scraped', prods.length);
@@ -163,12 +156,13 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                     });
                 }
             });
+            console.log(`${supermarket.name} Items inserted.`);
         } catch (e) {
             console.log(e);
         }
-        console.log('Items inserted.');
     }
     try {
+        await page.close();
         await browser.close();
     } catch (e) {
         console.log(e);

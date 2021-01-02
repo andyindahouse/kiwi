@@ -24,8 +24,9 @@ const PASSPORT_CONFIG = {
 };
 
 const FEES = {
-    deliverFee: 1.95,
-    shopperFee: 3.95,
+    deliverFee: 3,
+    shopperFee: 4,
+    discount: 0.5,
 };
 
 const POSTAL_CODES_ALLOWED = [28806];

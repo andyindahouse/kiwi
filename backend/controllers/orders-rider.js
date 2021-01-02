@@ -227,8 +227,13 @@ const controller = {
                         cost: costProduct,
                     };
                 });
+                const deliveryPrice = utils.getDeliveryPrice();
                 const totalCost = parseFloat(
-                    (totalShoppingCart + FEES.deliverFee + FEES.shopperFee).toFixed(2)
+                    (
+                        totalShoppingCart +
+                        deliveryPrice.finalDeliverFee +
+                        deliveryPrice.finalShopperFee
+                    ).toFixed(2)
                 );
 
                 if (productIndex > -1) {
