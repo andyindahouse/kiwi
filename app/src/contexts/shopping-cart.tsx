@@ -24,9 +24,12 @@ type Actions = UpdateShoppingCartProduct | SyncShoppingCart | EmptyShoppingCart;
 const initialState = {
     products: [],
     deliverFee: 0,
+    finalDeliverFee: 0,
     shopperFee: 0,
-    totalShoppingCart: 0,
+    finalShopperFee: 0,
     totalCost: 0,
+    totalShoppingCart: 0,
+    deliveryDiscount: 0,
 };
 
 const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<Actions>}>({

@@ -100,7 +100,12 @@ const ProductList = ({
 
     return (
         <>
-            <div className={classes.container}>
+            <div
+                className={classes.container}
+                onScroll={() => {
+                    console.log('test');
+                }}
+            >
                 {products.map((product) => (
                     <ProductCard
                         key={product.id}

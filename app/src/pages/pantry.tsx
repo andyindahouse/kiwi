@@ -152,20 +152,17 @@ const ProductList = ({
     products,
     segment,
     refreshProducts,
-    refreshSegmentClassifyProduct,
 }: {
     isLoading: boolean;
     products: ReadonlyArray<PantryProduct>;
     segment: PantryProductStatus;
     refreshProducts: (products: ReadonlyArray<PantryProduct>) => void;
-    refreshSegmentClassifyProduct: (target: PantryProductStatus) => void;
 }) => {
     const classes = useStyles();
     const history = useHistory();
     const {products: shoppingCartProducts, dispatch} = useShoppingCart();
     const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
     const [selectedPantryProduct, setSelectedPantryProduct] = React.useState<PantryProduct | null>(null);
-    const [showClassifyAlert, setShowClassifyAlert] = React.useState(false);
     const [showExpiryDateAlert, setShowExpiryDateAlert] = React.useState(false);
     const [showToast, setShowToast] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
@@ -244,12 +241,7 @@ const ProductList = ({
                                     setSelectedProduct(res);
                                 });
                             }}
-                            labelLeftAction="Clasificar"
                             labelRightAction="Consumido"
-                            handleClickLeftAction={() => {
-                                setSelectedPantryProduct(product);
-                                setShowClassifyAlert(true);
-                            }}
                             disableSwipeOptions={segment === 'consumed'}
                             handleClickRightAction={() => {
                                 setSelectedPantryProduct(product);
@@ -259,15 +251,15 @@ const ProductList = ({
                                     consumedProduct(product, new Date().toISOString());
                                 }
                             }}
+                            expandableRightAction
                         >
                             {product.date && (
                                 <div className={classes.date}>
                                     <Typography variant="caption1" style={{color: expiryObj.color}}>
                                         {expiryObj.label}
                                     </Typography>
+                                    <Typography variant="subtitle2">caducidad</Typography>
                                     <Typography variant="subtitle2">
-                                        caducidad
-                                        <br />
                                         {new Date(product.date).toLocaleDateString()}
                                     </Typography>
                                 </div>
@@ -276,66 +268,6 @@ const ProductList = ({
                     );
                 })}
             </IonList>
-            <IonAlert
-                isOpen={showClassifyAlert}
-                onDidDismiss={() => setShowClassifyAlert(false)}
-                cssClass="my-custom-class"
-                header={'Radio'}
-                inputs={[
-                    {
-                        name: 'radio2',
-                        type: 'radio',
-                        label: 'Frigorífico',
-                        value: 'cooled',
-                        checked: segment === 'cooled',
-                    },
-                    {
-                        name: 'radio3',
-                        type: 'radio',
-                        label: 'Congelador',
-                        value: 'frozen',
-                        checked: segment === 'frozen',
-                    },
-                    {
-                        name: 'radio4',
-                        type: 'radio',
-                        label: 'Despensa',
-                        value: 'storaged',
-                        checked: segment === 'storaged',
-                    },
-                    {
-                        name: 'radio5',
-                        type: 'radio',
-                        label: 'Otros',
-                        value: 'others',
-                        checked: segment === 'others',
-                    },
-                ]}
-                buttons={[
-                    {
-                        text: 'Cancelar',
-                        role: 'cancel',
-                        handler: () => {
-                            listRef.current?.closeSlidingItems();
-                        },
-                    },
-                    {
-                        text: 'Aceptar',
-                        handler: (value: PantryProductStatus) => {
-                            if (selectedPantryProduct) {
-                                updatePantryProduct({
-                                    ...selectedPantryProduct,
-                                    inStorage: value,
-                                }).then(() => {
-                                    console.log('works', refreshSegmentClassifyProduct);
-                                    refreshSegmentClassifyProduct && refreshSegmentClassifyProduct(value);
-                                });
-                            }
-                        },
-                    },
-                ]}
-            />
-
             <IonToast
                 isOpen={!!showToast}
                 onDidDismiss={() => setShowToast(false)}
@@ -359,7 +291,7 @@ const ProductList = ({
                 onDidDismiss={() => setShowExpiryDateAlert(false)}
                 cssClass="my-custom-class"
                 header="El producto aparece como caducado"
-                message={'¿Consumiste este producto <strong>antes</strong> de que caducará?'}
+                message={'¿Consumiste este producto <strong>antes</strong> de que caducara?'}
                 buttons={[
                     {
                         text: 'No',
@@ -409,13 +341,8 @@ type PantryProductsView = {
 
 const Pantry: React.FC<RouteComponentProps> = ({location}) => {
     const classes = useStyles();
-    const [segment, setSegment] = React.useState<PantryProductStatus>('pending');
     const [searchText, setSearchText] = React.useState('');
     const [pendingProducts, setPendingProducts] = React.useState<PantryProductsView | null>(null);
-    const [cooledProducts, setCooledProducts] = React.useState<PantryProductsView | null>(null);
-    const [frozenProducts, setFrozenProducts] = React.useState<PantryProductsView | null>(null);
-    const [storagedProducts, setStoragedProducts] = React.useState<PantryProductsView | null>(null);
-    const [othersProducts, setOthersProducts] = React.useState<PantryProductsView | null>(null);
     const refresh = (
         inStorage: PantryProductStatus,
         setter: React.Dispatch<
@@ -446,36 +373,9 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                 });
             });
     };
-    const refreshSegment = (segment: PantryProductStatus) => {
-        switch (segment) {
-            case 'cooled':
-                refresh('cooled', setCooledProducts, searchText);
-                break;
-            case 'frozen':
-                refresh('frozen', setFrozenProducts, searchText);
-                break;
-            case 'storaged':
-                refresh('storaged', setStoragedProducts, searchText);
-                break;
-            case 'consumed':
-                break;
-            case 'pending':
-                refresh('pending', setPendingProducts, searchText);
-                break;
-            case 'others':
-                refresh('others', setOthersProducts, searchText);
-                break;
-            default:
-                break;
-        }
-    };
 
     React.useEffect(() => {
-        refreshSegment('pending');
-        refreshSegment('cooled');
-        refreshSegment('frozen');
-        refreshSegment('storaged');
-        refreshSegment('others');
+        refresh('pending', setPendingProducts, searchText);
     }, [searchText]);
 
     return (
@@ -499,63 +399,7 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                {/* <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton>
-                        <IonIcon icon={scanSharp} />
-                    </IonFabButton>
-                </IonFab> */}
-                <IonToolbar>
-                    <IonSegment
-                        scrollable
-                        onIonChange={(e) => {
-                            setSegment(e.detail.value as PantryProductStatus);
-                        }}
-                        value={segment}
-                    >
-                        <IonSegmentButton value="pending">
-                            <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Por clasificar</Typography>
-                                {pendingProducts?.totalSize && (
-                                    <IonBadge color="primary">{pendingProducts.totalSize}</IonBadge>
-                                )}
-                            </div>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="cooled">
-                            <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Frigo</Typography>
-                                {cooledProducts?.totalSize && (
-                                    <IonBadge color="primary">{cooledProducts.totalSize}</IonBadge>
-                                )}
-                            </div>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="frozen">
-                            <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Congelador</Typography>
-                                {frozenProducts?.totalSize && (
-                                    <IonBadge color="primary">{frozenProducts.totalSize}</IonBadge>
-                                )}
-                            </div>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="storaged">
-                            <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Despensa</Typography>
-                                {storagedProducts?.totalSize && (
-                                    <IonBadge color="primary">{storagedProducts.totalSize}</IonBadge>
-                                )}
-                            </div>
-                        </IonSegmentButton>
-                        <IonSegmentButton value="others">
-                            <div className={classes.segmentItem}>
-                                <Typography variant="caption2">Otros</Typography>
-                                {othersProducts?.totalSize && (
-                                    <IonBadge color="primary">{othersProducts.totalSize}</IonBadge>
-                                )}
-                            </div>
-                        </IonSegmentButton>
-                    </IonSegment>
-                </IonToolbar>
-
-                {segment === 'pending' && pendingProducts && (
+                {pendingProducts && (
                     <ProductList
                         products={pendingProducts?.products}
                         isLoading={pendingProducts.isLoading}
@@ -567,67 +411,6 @@ const Pantry: React.FC<RouteComponentProps> = ({location}) => {
                                 products,
                             });
                         }}
-                        refreshSegmentClassifyProduct={refreshSegment}
-                    />
-                )}
-                {segment === 'cooled' && cooledProducts && (
-                    <ProductList
-                        products={cooledProducts?.products}
-                        isLoading={cooledProducts.isLoading}
-                        segment="cooled"
-                        refreshProducts={(products) => {
-                            setCooledProducts({
-                                isLoading: false,
-                                totalSize: products.length,
-                                products,
-                            });
-                        }}
-                        refreshSegmentClassifyProduct={refreshSegment}
-                    />
-                )}
-                {segment === 'frozen' && frozenProducts && (
-                    <ProductList
-                        products={frozenProducts?.products}
-                        isLoading={frozenProducts.isLoading}
-                        segment="frozen"
-                        refreshProducts={(products) => {
-                            setFrozenProducts({
-                                isLoading: false,
-                                totalSize: products.length,
-                                products,
-                            });
-                        }}
-                        refreshSegmentClassifyProduct={refreshSegment}
-                    />
-                )}
-                {segment === 'storaged' && storagedProducts && (
-                    <ProductList
-                        products={storagedProducts?.products}
-                        isLoading={storagedProducts.isLoading}
-                        segment="storaged"
-                        refreshProducts={(products) => {
-                            setStoragedProducts({
-                                isLoading: false,
-                                totalSize: products.length,
-                                products,
-                            });
-                        }}
-                        refreshSegmentClassifyProduct={refreshSegment}
-                    />
-                )}
-                {segment === 'others' && othersProducts && (
-                    <ProductList
-                        products={othersProducts?.products}
-                        isLoading={othersProducts.isLoading}
-                        segment="others"
-                        refreshProducts={(products) => {
-                            setOthersProducts({
-                                isLoading: false,
-                                totalSize: products.length,
-                                products,
-                            });
-                        }}
-                        refreshSegmentClassifyProduct={refreshSegment}
                     />
                 )}
             </IonContent>

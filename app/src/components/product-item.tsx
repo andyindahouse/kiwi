@@ -62,6 +62,7 @@ type Props = {
     labelRightAction?: string | React.ReactNode;
     handleClickLeftAction?: () => void;
     handleClickRightAction?: () => void;
+    expandableRightAction?: boolean;
     children: React.ReactNode;
 };
 
@@ -75,6 +76,7 @@ const ProductItem = ({
     labelRightAction,
     handleClickLeftAction,
     handleClickRightAction,
+    expandableRightAction = false,
     children,
 }: Props) => {
     const classes = useStyles();
@@ -93,12 +95,23 @@ const ProductItem = ({
                 </div>
             </IonItem>
 
-            <IonItemOptions side="end">
+            <IonItemOptions
+                side="end"
+                onIonSwipe={() => {
+                    if (expandableRightAction && handleClickRightAction) {
+                        handleClickRightAction();
+                    }
+                }}
+            >
                 {handleClickLeftAction && labelLeftAction && (
                     <IonItemOption onClick={handleClickLeftAction}>{labelLeftAction}</IonItemOption>
                 )}
                 {handleClickRightAction && labelRightAction && (
-                    <IonItemOption color="danger" onClick={handleClickRightAction}>
+                    <IonItemOption
+                        color="danger"
+                        onClick={handleClickRightAction}
+                        expandable={expandableRightAction}
+                    >
                         {labelRightAction}
                     </IonItemOption>
                 )}

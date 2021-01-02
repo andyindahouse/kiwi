@@ -87,6 +87,10 @@ const useStyles = createUseStyles(() => ({
         textAlign: 'center',
         padding: '0 16px',
     },
+    feeDiscount: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
 }));
 
 const getFormatDate = (date: Date) =>
@@ -110,7 +114,16 @@ const getAllowDays = () => {
 const ShoppingCart = () => {
     const classes = useStyles();
     const history = useHistory();
-    const {products, totalCost, totalShoppingCart, deliverFee, shopperFee, dispatch} = useShoppingCart();
+    const {
+        products,
+        totalCost,
+        totalShoppingCart,
+        deliverFee,
+        shopperFee,
+        finalShopperFee,
+        finalDeliverFee,
+        dispatch,
+    } = useShoppingCart();
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [productWithNote, setProductWithNote] = React.useState<{product: Product; index: number} | null>(
         null
@@ -488,13 +501,37 @@ const ShoppingCart = () => {
                     <IonToolbar>
                         <div className={classes.feeZone}>
                             <Typography variant="subtitle2">Carrito</Typography>
-                            <Typography variant="body2">{totalShoppingCart}</Typography>
-                            <Typography variant="subtitle2">Personal shopper</Typography>
-                            <Typography variant="body2">{shopperFee}€</Typography>
-                            <Typography variant="subtitle2">Envío a domicilio</Typography>
-                            <Typography variant="body2">{deliverFee}€</Typography>
+                            <Typography variant="body1">{totalShoppingCart}€</Typography>
+                            <div>
+                                <Typography variant="subtitle2">Personal shopper</Typography>
+                                &nbsp;
+                                <Typography variant="subtitle2" color={palette.primary.dark}>
+                                    (50% descuento early adopter)
+                                </Typography>
+                            </div>
+                            <div className={classes.feeDiscount}>
+                                <Typography variant="body1">{finalShopperFee}€</Typography>
+                                &nbsp;
+                                <Typography variant="body1" style={{textDecoration: 'line-through'}}>
+                                    {shopperFee} €
+                                </Typography>
+                            </div>
+                            <div>
+                                <Typography variant="subtitle2">Envío a domicilio</Typography>
+                                &nbsp;
+                                <Typography variant="subtitle2" color={palette.primary.dark}>
+                                    (50% descuento early adopter)
+                                </Typography>
+                            </div>
+                            <div className={classes.feeDiscount}>
+                                <Typography variant="body1">{finalDeliverFee}€</Typography>
+                                &nbsp;
+                                <Typography variant="body1" style={{textDecoration: 'line-through'}}>
+                                    {deliverFee} €
+                                </Typography>
+                            </div>
                             <Typography variant="subtitle2">Total</Typography>
-                            <Typography variant="body2">{totalCost}€</Typography>
+                            <Typography variant="caption1">{totalCost}€</Typography>
                         </div>
                         <IonButton
                             color="secondary"

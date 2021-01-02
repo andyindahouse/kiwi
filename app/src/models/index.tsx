@@ -53,9 +53,12 @@ export interface Product {
 export interface ShoppingCart {
     products: ReadonlyArray<Product>;
     deliverFee: number;
+    finalDeliverFee: number;
     shopperFee: number;
+    finalShopperFee: number;
     totalShoppingCart: number;
     totalCost: number;
+    deliveryDiscount: number;
 }
 
 export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'issue' | 'comming' | 'finalized';

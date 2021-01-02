@@ -120,7 +120,7 @@ const Others: React.FC = () => {
                     <IonListHeader>
                         <Typography variant="h2">Cuenta</Typography>
                     </IonListHeader>
-                    <IonItem href="/others/orders">
+                    <IonItem routerLink="/others/orders">
                         <IonIcon slot="end" color="secondary" icon={rocketOutline}></IonIcon>
                         <IonLabel>Mis pedidos</IonLabel>
                     </IonItem>
