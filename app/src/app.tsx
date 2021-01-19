@@ -4,7 +4,9 @@ import {useAuth} from './contexts/auth';
 import Login from './pages/login';
 
 const App: React.FC = () => {
-    return <AuthenticatedApp />;
+    const {user} = useAuth();
+
+    return user ? <AuthenticatedApp /> : <Login />;
 };
 
 export default App;
