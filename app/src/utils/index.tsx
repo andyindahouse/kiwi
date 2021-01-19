@@ -41,7 +41,7 @@ export const statusOrderMap: Record<OrderStatus, {color: string; label: string; 
         icon: checkmarkDoneOutline,
     },
     finalized: {
-        color: palette.primary.main,
+        color: palette.primary.dark,
         label: 'Completado',
         icon: homeOutline,
     },

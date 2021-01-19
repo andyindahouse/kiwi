@@ -69,8 +69,11 @@ export interface Order {
     email: string;
     products: ReadonlyArray<Product>;
     status: OrderStatus;
+    deliveryDiscount: number;
     deliverFee: number;
+    finalDeliverFee: number;
     shopperFee: number;
+    finalShopperFee: number;
     totalShoppingCart: number;
     totalCost: number;
 }

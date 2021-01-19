@@ -36,6 +36,7 @@ import {es} from 'date-fns/locale';
 import EmptyCase from '../components/empty-case';
 import {Controller, useForm} from 'react-hook-form';
 import {useAuth} from '../contexts/auth';
+import PaymentFooter from '../components/payment-fields';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -77,6 +78,9 @@ const useStyles = createUseStyles(() => ({
         display: 'grid',
         gridTemplateColumns: '1fr auto',
         gridGap: 8,
+        '& > p': {
+            justifySelf: 'flex-end',
+        },
     },
     center: {
         marginTop: 100,
@@ -86,10 +90,6 @@ const useStyles = createUseStyles(() => ({
         justifyContent: 'center',
         textAlign: 'center',
         padding: '0 16px',
-    },
-    feeDiscount: {
-        display: 'flex',
-        justifyContent: 'flex-end',
     },
 }));
 
@@ -122,6 +122,7 @@ const ShoppingCart = () => {
         shopperFee,
         finalShopperFee,
         finalDeliverFee,
+        deliveryDiscount,
         dispatch,
     } = useShoppingCart();
     const [selected, setSelected] = React.useState<Product | null>(null);
@@ -449,16 +450,15 @@ const ShoppingCart = () => {
 
                                 <IonItemDivider />
 
-                                <div className={classes.feeZone}>
-                                    <Typography variant="subtitle1">Carrito</Typography>
-                                    <Typography>{totalShoppingCart}€</Typography>
-                                    <Typography variant="subtitle1">Personal shopper</Typography>
-                                    <Typography>{shopperFee}€</Typography>
-                                    <Typography variant="subtitle1">Envío a domicilio</Typography>
-                                    <Typography>{deliverFee}€</Typography>
-                                    <Typography variant="subtitle1">Total</Typography>
-                                    <Typography variant="caption1">{totalCost}€</Typography>
-                                </div>
+                                <PaymentFooter
+                                    totalShoppingCart={totalShoppingCart}
+                                    deliveryDiscount={deliveryDiscount}
+                                    deliverFee={deliverFee}
+                                    finalDeliverFee={finalDeliverFee}
+                                    shopperFee={shopperFee}
+                                    finalShopperFee={finalShopperFee}
+                                    totalCost={totalCost}
+                                />
                                 <IonItemDivider />
                             </IonList>
                             <IonAlert
@@ -499,40 +499,15 @@ const ShoppingCart = () => {
             {products && products.length > 0 && (
                 <IonFooter>
                     <IonToolbar>
-                        <div className={classes.feeZone}>
-                            <Typography variant="subtitle2">Carrito</Typography>
-                            <Typography variant="body1">{totalShoppingCart}€</Typography>
-                            <div>
-                                <Typography variant="subtitle2">Personal shopper</Typography>
-                                &nbsp;
-                                <Typography variant="subtitle2" color={palette.primary.dark}>
-                                    (50% descuento early adopter)
-                                </Typography>
-                            </div>
-                            <div className={classes.feeDiscount}>
-                                <Typography variant="body1">{finalShopperFee}€</Typography>
-                                &nbsp;
-                                <Typography variant="body1" style={{textDecoration: 'line-through'}}>
-                                    {shopperFee} €
-                                </Typography>
-                            </div>
-                            <div>
-                                <Typography variant="subtitle2">Envío a domicilio</Typography>
-                                &nbsp;
-                                <Typography variant="subtitle2" color={palette.primary.dark}>
-                                    (50% descuento early adopter)
-                                </Typography>
-                            </div>
-                            <div className={classes.feeDiscount}>
-                                <Typography variant="body1">{finalDeliverFee}€</Typography>
-                                &nbsp;
-                                <Typography variant="body1" style={{textDecoration: 'line-through'}}>
-                                    {deliverFee} €
-                                </Typography>
-                            </div>
-                            <Typography variant="subtitle2">Total</Typography>
-                            <Typography variant="caption1">{totalCost}€</Typography>
-                        </div>
+                        <PaymentFooter
+                            totalShoppingCart={totalShoppingCart}
+                            deliveryDiscount={deliveryDiscount}
+                            deliverFee={deliverFee}
+                            finalDeliverFee={finalDeliverFee}
+                            shopperFee={shopperFee}
+                            finalShopperFee={finalShopperFee}
+                            totalCost={totalCost}
+                        />
                         <IonButton
                             color="secondary"
                             expand="full"

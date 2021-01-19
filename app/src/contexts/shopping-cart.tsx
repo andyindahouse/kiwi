@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Product, ShoppingCart} from '../models';
 import kiwiApi from '../api';
+import {useAuth} from './auth';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {
@@ -88,14 +89,19 @@ export const ShoppingProvider = ({children}: {children: React.ReactNode}) => {
         console.log('NEW STATE:', newState);
         return newState;
     }, initialState);
+    const {user} = useAuth();
 
     React.useEffect(() => {
-        kiwiApi.getShoppingCart().then((res) => {
-            dispatch({
-                type: SYNC_SHOPPING_CART,
-                shoppingCart: res,
+        if (user) {
+            kiwiApi.getShoppingCart().then((res) => {
+                dispatch({
+                    type: SYNC_SHOPPING_CART,
+                    shoppingCart: res,
+                });
             });
-        });
+        } else {
+            // get it from local-storage
+        }
     }, [dispatch]);
 
     return (

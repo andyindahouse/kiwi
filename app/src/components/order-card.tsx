@@ -7,6 +7,7 @@ import {IonButton, IonIcon} from '@ionic/react';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 import classnames from 'classnames';
 import {statusOrderMap} from '../utils';
+import PaymentFooter from './payment-fields';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -44,7 +45,7 @@ const useStyles = createUseStyles(() => ({
         '&:before': {
             content: '""',
             width: 'calc(100% - 40px)',
-            height: 2,
+            height: 4,
             backgroundColor: palette.grey,
             position: 'absolute',
             bottom: 26,
@@ -71,6 +72,10 @@ const useStyles = createUseStyles(() => ({
         gridGap: 16,
         padding: '8px 16px 16px 16px',
         backgroundColor: palette.background.brand,
+    },
+    feeDiscount: {
+        display: 'flex',
+        justifyContent: 'flex-end',
     },
     expandSection: {
         transition: 'max-height 0.15s ease-out',
@@ -118,7 +123,18 @@ type Props = {
 
 const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
     const classes = useStyles();
-    const {totalCost, products, status, createdDate, totalShoppingCart, shopperFee, deliverFee} = order;
+    const {
+        totalCost,
+        products,
+        status,
+        createdDate,
+        totalShoppingCart,
+        shopperFee,
+        deliveryDiscount,
+        finalShopperFee,
+        finalDeliverFee,
+        deliverFee,
+    } = order;
 
     return (
         <div className={classes.container} onClick={handleOpen}>
@@ -146,7 +162,7 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                 <div>
                     <Typography variant="subtitle2">Modo de Pago</Typography>
                     <Typography variant="body2" ellipsis>
-                        Bizummmm
+                        Efectivo
                     </Typography>
                 </div>
                 <div>
@@ -164,14 +180,15 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                     <IconStatus icon={homeOutline} activated={status === 'finalized'}></IconStatus>
                 </div>
                 <div className={classes.feeSection}>
-                    <Typography variant="subtitle2">Carrito</Typography>
-                    <Typography variant="body2">{totalShoppingCart}€</Typography>
-                    <Typography variant="subtitle2">Personal shopper</Typography>
-                    <Typography variant="body2">{shopperFee}€</Typography>
-                    <Typography variant="subtitle2">Envío a domicilio</Typography>
-                    <Typography variant="body2">{deliverFee}€</Typography>
-                    <Typography variant="subtitle2">Total</Typography>
-                    <Typography variant="body2">{totalCost}€</Typography>
+                    <PaymentFooter
+                        totalShoppingCart={totalShoppingCart}
+                        deliveryDiscount={deliveryDiscount}
+                        deliverFee={deliverFee}
+                        finalDeliverFee={finalDeliverFee}
+                        shopperFee={shopperFee}
+                        finalShopperFee={finalShopperFee}
+                        totalCost={totalCost}
+                    />
                     <IonButton
                         size="small"
                         expand="block"

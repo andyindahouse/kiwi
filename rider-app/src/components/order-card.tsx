@@ -63,6 +63,7 @@ const useStyles = createUseStyles(() => ({
     },
     logo: {
         width: 64,
+        height: 64,
     },
     infoOrder: {
         display: 'grid',
@@ -93,7 +94,7 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
         <div className={classes.container} onClick={handleOpen}>
             <div className={classes.header}>
                 <div className={classes.headerText}>
-                    <img className={classes.logo} src="./images/eci.jpg" alt="elcroteingles_imagen" />
+                    <img className={classes.logo} src="./images/eci.jpg" alt="el corteingles logo" />
                     <div>
                         <Typography>Precio total compra: {totalCost}€</Typography>
 

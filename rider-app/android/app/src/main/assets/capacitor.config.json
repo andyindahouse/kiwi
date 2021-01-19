@@ -1,6 +1,6 @@
 {
-    "appId": "io.ionic.starter",
-    "appName": "rider-app",
+    "appId": "io.kiwishopper.starter",
+    "appName": "Kiwi Shopper",
     "bundledWebRuntime": false,
     "npmClient": "npm",
     "webDir": "build",

@@ -23,6 +23,8 @@ import {RouteComponentProps} from 'react-router-dom';
 import {statusOrderMap} from '../utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '../models';
+import PaymentFooter from '../components/payment-fields';
+import Box from '../components/box';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -64,9 +66,6 @@ const useStyles = createUseStyles(() => ({
         display: 'grid',
         gridTemplateColumns: '1fr auto',
         gridGap: 8,
-    },
-    p16: {
-        padding: '8px 16px',
     },
 }));
 
@@ -256,23 +255,28 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
             {order && (
                 <IonFooter>
                     <IonToolbar style={{backgroundColor: palette.background.default}}>
-                        <div className={classes.feeZone}>
-                            <Typography variant="subtitle2">Estado de tu pedido</Typography>
-                            <Typography style={{color: statusOrderMap[order.status].color}} variant="body2">
+                        <Box>
+                            <Typography variant="subtitle2" gutterBottom={4}>
+                                Estado de tu pedido
+                            </Typography>
+                            <Typography
+                                style={{color: statusOrderMap[order.status].color}}
+                                variant="caption1"
+                                gutterBottom={4}
+                            >
                                 {statusOrderMap[order.status].label}
                             </Typography>
-                            <Typography variant="subtitle2">Carrito</Typography>
-                            <Typography variant="body2">{order.totalShoppingCart}€</Typography>
-                            <Typography variant="subtitle2">Personal shopper</Typography>
-                            <Typography variant="body2">{order.shopperFee}€</Typography>
-                            <Typography variant="subtitle2">Envío a domicilio</Typography>
-                            <Typography variant="body2">{order.deliverFee}€</Typography>
-                            <Typography variant="subtitle2">Total</Typography>
-                            <Typography variant="body2">{order.totalCost}€</Typography>
-                        </div>
-                        <div className={classes.p16}>
                             <Typography variant="subtitle2">{getMesaggeStatus(order.status)}</Typography>
-                        </div>
+                        </Box>
+                        <PaymentFooter
+                            totalShoppingCart={order.totalShoppingCart}
+                            deliveryDiscount={order.deliveryDiscount}
+                            deliverFee={order.deliverFee}
+                            finalDeliverFee={order.finalDeliverFee}
+                            shopperFee={order.shopperFee}
+                            finalShopperFee={order.finalShopperFee}
+                            totalCost={order.totalCost}
+                        />
                         <IonButton
                             color="danger"
                             expand="block"
