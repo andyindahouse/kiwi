@@ -44,7 +44,7 @@ const apiClient = async (
 
 const api = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
-        apiClient({url: '/login', body}, false),
+        apiClient({url: '/rider/login', body}, false),
     registerUser: (body: User & {password: string}): Promise<User> =>
         apiClient({url: '/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
