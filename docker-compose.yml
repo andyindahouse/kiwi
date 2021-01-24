@@ -32,6 +32,9 @@ services:
         restart: always
         ports:
             - 3000:3000
+            - 3001:3001
+        volumes:
+            - /etc/letsencrypt:/etc/letsencrypt
         links:
             - mongo
         depends_on:
