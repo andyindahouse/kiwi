@@ -2,6 +2,9 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const https = require('https');
+const http = require('http');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
@@ -74,7 +77,29 @@ app.use('/api/rider', routesRider);
 app.use(customMdw.errorHandler);
 app.use(customMdw.notFoundHandler);
 
+const httpServer = http.createServer(app);
+
 const port = PORT || 3000;
-app.listen(port, function () {
+
+httpServer.listen(port, () => {
     console.log(`Magic happens on port ${port}`);
 });
+
+if (process.argv.length === 3 && process.argv[2] && process.argv[2] === 'https') {
+    // Certificate
+    const privateKey = fs.readFileSync('/etc/letsencrypt/live/kiwiapp.es/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('/etc/letsencrypt/live/kiwiapp.es/cert.pem', 'utf8');
+    const ca = fs.readFileSync('/etc/letsencrypt/live/kiwiapp.es/chain.pem', 'utf8');
+
+    const credentials = {
+        key: privateKey,
+        cert: certificate,
+        ca: ca,
+    };
+
+    const httpsServer = https.createServer(credentials, app);
+
+    httpsServer.listen(port + 1, () => {
+        console.log(`Secure Magic happens on port ${port + 1}`);
+    });
+}
