@@ -134,14 +134,13 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
             });
             const collection = await client.db(config.configMongo.db).collection(urls[i].collection);
 
-            prods.forEach(async (product) => {
+            for (let j = 0; j < prods.length; j++) {
                 const productData = {
-                    ...product,
+                    ...prods[j],
                     market: config.collectionProducts[config.indexCollection].market,
-                    img: product.img.replace('40x40.', '325x325.'),
+                    img: prods[j].img.replace('40x40.', '325x325.'),
                     updateDate: new Date(),
                 };
-                await collection.findOne({id: productData.id});
                 const result = await collection.updateOne(
                     {id: productData.id},
                     {
@@ -155,7 +154,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                         available: true,
                     });
                 }
-            });
+            }
             console.log(`${supermarket.name} Items inserted.`);
         } catch (e) {
             console.log(e);

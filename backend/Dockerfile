@@ -27,6 +27,6 @@ ADD ./middleware ./middleware
 ADD ./controllers ./controllers
 
 # Expose app port
-EXPOSE 3000
+EXPOSE 3000 3001
 
 CMD [ "npm", "start" ]

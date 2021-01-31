@@ -26,11 +26,11 @@ const config = require('./config');
             const result = await collection.updateMany(
                 {
                     updateDate: {
-                        $lte: date,
+                        $lt: date,
                     },
                 },
                 {
-                    $set: {available: true},
+                    $set: {available: false},
                 }
             );
             console.log(result.modifiedCount, 'productos actualizados');
