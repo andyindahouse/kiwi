@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {Product, ShoppingCart} from '../models';
 import kiwiApi from '../api';
+import {useAuth} from './auth';
+import {getPersistedShoppingCart, clearPersistedShoppingCart} from '../utils/unauthenticated-persistence';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {
@@ -21,12 +23,12 @@ export type EmptyShoppingCart = {
 
 type Actions = UpdateShoppingCartProduct | SyncShoppingCart | EmptyShoppingCart;
 
-const initialState = {
+export const initialState = {
     products: [],
-    deliverFee: 0,
-    finalDeliverFee: 0,
-    shopperFee: 0,
-    finalShopperFee: 0,
+    deliverFee: 3,
+    finalDeliverFee: 3,
+    shopperFee: 4,
+    finalShopperFee: 4,
     totalCost: 0,
     totalShoppingCart: 0,
     deliveryDiscount: 0,
@@ -82,21 +84,61 @@ function reducer(state: ShoppingCart, action: Actions) {
     }
 }
 
+const mergeProducts = (data: ShoppingCart, localData: ShoppingCart): ReadonlyArray<Product> => {
+    return data.products
+        .map((product) => {
+            const localProduct = localData.products.find((e) => e.id === product.id);
+
+            if (!localProduct) {
+                return product;
+            } else {
+                return {
+                    ...product,
+                    units: product.units + localProduct.units,
+                };
+            }
+        })
+        .concat(
+            localData.products.filter((localProduct) => !data.products.find((e) => e.id === localProduct.id))
+        );
+};
+
 export const ShoppingProvider = ({children}: {children: React.ReactNode}) => {
     const [shoppingCart, dispatch] = React.useReducer((state: ShoppingCart, action: Actions) => {
         const newState = reducer(state, action);
         console.log('NEW STATE:', newState);
         return newState;
     }, initialState);
+    const {user} = useAuth();
 
     React.useEffect(() => {
-        kiwiApi.getShoppingCart().then((res) => {
-            dispatch({
-                type: SYNC_SHOPPING_CART,
-                shoppingCart: res,
+        if (!user) {
+            getPersistedShoppingCart().then((res) => {
+                dispatch({
+                    type: SYNC_SHOPPING_CART,
+                    shoppingCart: res,
+                });
             });
-        });
-    }, [dispatch]);
+        } else {
+            Promise.all([kiwiApi.getShoppingCart(), getPersistedShoppingCart()]).then(([data, localData]) => {
+                if (localData.products.length === 0) {
+                    dispatch({
+                        type: SYNC_SHOPPING_CART,
+                        shoppingCart: data,
+                    });
+                    clearPersistedShoppingCart();
+                } else {
+                    kiwiApi.setShoppingCart({products: mergeProducts(data, localData)}).then((res) => {
+                        dispatch({
+                            type: SYNC_SHOPPING_CART,
+                            shoppingCart: res,
+                        });
+                        clearPersistedShoppingCart();
+                    });
+                }
+            });
+        }
+    }, [dispatch, user]);
 
     return (
         <ShoppingContext.Provider value={{...shoppingCart, dispatch}}>{children}</ShoppingContext.Provider>

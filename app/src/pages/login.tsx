@@ -57,18 +57,17 @@ const Login: React.FC = () => {
             password: '',
         },
     });
-    const onSubmit = (data: {email: string; password: string}) => {
-        if (data.email) {
+    const onSubmit = React.useCallback(
+        (data: {email: string; password: string}) => {
             setLoading(true);
             login(data)
                 .catch(() => {
                     setLoginError(true);
                 })
-                .finally(() => {
-                    setLoading(false);
-                });
-        }
-    };
+                .finally(() => setLoading(false));
+        },
+        [login]
+    );
 
     return (
         <IonPage>

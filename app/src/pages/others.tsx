@@ -34,7 +34,6 @@ import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
 import kiwiApi from '../api';
 import {Capacitor, Plugins} from '@capacitor/core';
-import palette from '../theme/palette';
 
 const MSG_UPDATED_SUCESSFULLY = 'Datos actualizados con éxito';
 const MSG_NOTIFICATIONS_ALREADY_ON = 'Tienes las notificaciones activadas';
