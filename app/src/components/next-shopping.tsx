@@ -72,6 +72,7 @@ const NextShopping = () => {
                                     title={name}
                                     subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
                                     handleClickDetail={() => console.log()}
+                                    showAlertIcon={!product.available}
                                 >
                                     <div>
                                         <Typography color={palette.secondary.main} variant="caption1">

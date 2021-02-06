@@ -46,6 +46,8 @@ export interface Product {
     units: number;
     note?: string;
     items?: ReadonlyArray<string>;
+    available: boolean;
+    updateDate: string;
     nutriments?: Nutriments;
     nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
     novaGroups: '1' | '2' | '3' | '4';

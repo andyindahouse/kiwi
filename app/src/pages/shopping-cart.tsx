@@ -233,6 +233,7 @@ const ShoppingCart = () => {
                                                 products.slice(0, index).concat(products.slice(index + 1))
                                             )
                                         }
+                                        showAlertIcon={!product.available}
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
