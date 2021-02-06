@@ -26,14 +26,15 @@ const controller = {
             };
             try {
                 const totalSize = await Pantry.find(findPantryProducts).countDocuments();
-                const result = await Pantry.aggregate([
+                const result = await Pantry.find(findPantryProducts).sort(order).skip(skip).limit(limit);
+                /*  const result = await Pantry.aggregate([
                     {$match: findPantryProducts},
                     {$addFields: {fieldType: {$type: '$date'}}},
                     {$sort: {fieldType: 1, ...order}},
                     {$project: {fieldType: 0}},
                     {$skip: skip},
                     {$limit: limit},
-                ]);
+                ]);*/
                 res.json({
                     pageNumber,
                     pageSize,
