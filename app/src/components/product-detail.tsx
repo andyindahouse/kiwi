@@ -8,7 +8,7 @@ import {
     IonFooter,
     IonIcon,
 } from '@ionic/react';
-import {addCircleSharp, pricetag, removeCircleSharp} from 'ionicons/icons';
+import {addCircleSharp, alertCircleOutline, pricetag, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Product} from '../models';
@@ -175,6 +175,12 @@ const useStyles = createUseStyles(() => ({
         borderRadius: 16,
         color: 'white',
     },
+    availableIcon: {
+        width: 16,
+        height: 16,
+        color: palette.tertiary.main,
+        marginRight: 8,
+    },
 }));
 
 type SectionProps = {
@@ -284,6 +290,8 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
         nutriments,
         nutriscoreGrade,
         novaGroups,
+        available,
+        updateDate,
     } = product;
     const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
 
@@ -342,6 +350,17 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                                     specialOffer,
                                     specialOfferValue
                                 )} €)`}
+                            </Typography>
+                        </div>
+                    )}
+                    <Typography className={classes.discountSection} variant="subtitle2">
+                        Información actualizada el {new Date(updateDate).toLocaleDateString()}
+                    </Typography>
+                    {!available && (
+                        <div className={classes.discountSection}>
+                            <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />
+                            <Typography variant="subtitle2" color={palette.tertiary.main}>
+                                Este producto puede que no este disponible
                             </Typography>
                         </div>
                     )}

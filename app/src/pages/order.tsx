@@ -159,6 +159,7 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({match}) => {
                                         subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
                                         handleClickDetail={() => setSelected(product)}
                                         disableSwipeOptions
+                                        showAlertIcon={!product.available}
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">

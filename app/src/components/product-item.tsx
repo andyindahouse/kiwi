@@ -10,8 +10,11 @@ import {
     IonSkeletonText,
     IonLabel,
     IonList,
+    IonIcon,
 } from '@ionic/react';
 import Typography from '../components/typography';
+import {alertCircleOutline} from 'ionicons/icons';
+import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     card: {
@@ -20,10 +23,20 @@ const useStyles = createUseStyles(() => ({
         gridTemplateColumns: '64px 1fr auto',
         gridGap: 8,
         alignItems: 'center',
+        position: 'relative',
     },
     img: {
         width: 64,
         padding: '8px 0',
+    },
+    availableIcon: {
+        position: 'absolute',
+        top: 2,
+        left: 2,
+        width: 16,
+        height: 16,
+        color: palette.tertiary.main,
+        marginRight: 8,
     },
 }));
 
@@ -63,6 +76,7 @@ type Props = {
     handleClickLeftAction?: () => void;
     handleClickRightAction?: () => void;
     expandableRightAction?: boolean;
+    showAlertIcon?: boolean;
     children: React.ReactNode;
 };
 
@@ -78,6 +92,7 @@ const ProductItem = ({
     handleClickRightAction,
     expandableRightAction = false,
     children,
+    showAlertIcon,
 }: Props) => {
     const classes = useStyles();
     return (
@@ -85,6 +100,7 @@ const ProductItem = ({
             <IonItem onClick={handleClickDetail}>
                 <div className={classes.card}>
                     <img className={classes.img} alt="product" src={img} />
+                    {showAlertIcon && <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />}
                     <div>
                         <Typography variant="body2" gutterBottom={4} ellipsis lineClamp={2}>
                             {title}
