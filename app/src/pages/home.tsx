@@ -4,8 +4,11 @@ import Fragment from '../components/fragment';
 import {rocketOutline} from 'ionicons/icons';
 import FoodToExpire from '../components/food-to-expire';
 import NextShopping from '../components/next-shopping';
+import {useAuth} from '../contexts/auth';
 
 const Home: React.FC = () => {
+    const {user} = useAuth();
+
     return (
         <IonPage>
             <IonHeader>
@@ -19,19 +22,21 @@ const Home: React.FC = () => {
                         <IonTitle size="large">Inicio</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <Fragment
-                    icon={rocketOutline}
-                    color="secondary"
-                    text="Ver pedidos en curso"
-                    link="/others/orders"
-                ></Fragment>
+                {user && (
+                    <Fragment
+                        icon={rocketOutline}
+                        color="secondary"
+                        text="Ver pedidos en curso"
+                        link="/others/orders"
+                    ></Fragment>
+                )}
                 {/* <Fragment
                     icon={barcodeOutline}
                     color="secondary"
                     text="Escanea un producto"
                     link="/others/orders"
                 ></Fragment> */}
-                <FoodToExpire />
+                {user && <FoodToExpire />}
                 <NextShopping />
             </IonContent>
         </IonPage>

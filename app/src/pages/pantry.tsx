@@ -8,9 +8,6 @@ import {
     IonToolbar,
     IonSearchbar,
     IonModal,
-    IonSegment,
-    IonSegmentButton,
-    IonBadge,
     IonList,
     IonAlert,
     IonToast,
@@ -339,8 +336,7 @@ type PantryProductsView = {
     totalSize: number | null;
 };
 
-const Pantry: React.FC<RouteComponentProps> = ({location}) => {
-    const classes = useStyles();
+const Pantry: React.FC<RouteComponentProps> = () => {
     const [searchText, setSearchText] = React.useState('');
     const [pendingProducts, setPendingProducts] = React.useState<PantryProductsView | null>(null);
     const refresh = (

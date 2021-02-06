@@ -41,13 +41,14 @@ const PaymentFooter = ({
     deliveryDiscount,
 }: Props) => {
     const classes = useStyles();
+
     return (
         <div className={classes.feeZone}>
             <Typography variant="subtitle2">Carrito</Typography>
             <Typography variant="body1">{totalShoppingCart}€</Typography>
             <div>
                 <Typography variant="subtitle2">Personal shopper</Typography>
-                {deliveryDiscount && (
+                {!!deliveryDiscount && (
                     <>
                         &nbsp;
                         <Typography variant="subtitle2" color={palette.primary.dark}>
@@ -58,7 +59,7 @@ const PaymentFooter = ({
             </div>
             <div className={classes.feeDiscount}>
                 <Typography variant="body1">{finalShopperFee}€</Typography>
-                {deliveryDiscount && (
+                {!!deliveryDiscount && (
                     <>
                         &nbsp;
                         <Typography variant="body1" style={{textDecoration: 'line-through'}}>
@@ -69,7 +70,7 @@ const PaymentFooter = ({
             </div>
             <div>
                 <Typography variant="subtitle2">Envío a domicilio</Typography>
-                {deliveryDiscount && (
+                {!!deliveryDiscount && (
                     <>
                         &nbsp;
                         <Typography variant="subtitle2" color={palette.primary.dark}>
@@ -80,7 +81,7 @@ const PaymentFooter = ({
             </div>
             <div className={classes.feeDiscount}>
                 <Typography variant="body1">{finalDeliverFee}€</Typography>
-                {deliveryDiscount && (
+                {!!deliveryDiscount && (
                     <>
                         &nbsp;
                         <Typography variant="body1" style={{textDecoration: 'line-through'}}>

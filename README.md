@@ -10,7 +10,7 @@ $ npx cap add android
 $ npx cap add ios
 
 // Build and update web assets
-$ npx ionic build
+$ yarn build
 
 // Copy the build assets to platforms (web stuff)
 $ npx cap copy

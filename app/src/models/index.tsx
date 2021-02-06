@@ -25,6 +25,7 @@ export interface Nutriments {
 export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
 
 export interface Product {
+    _id: string;
     id: string;
     brand: string;
     category: ReadonlyArray<string>;

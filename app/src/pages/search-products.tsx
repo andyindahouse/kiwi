@@ -28,6 +28,8 @@ import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
 import {Capacitor, Plugins} from '@capacitor/core';
+import {useAuth} from '../contexts/auth';
+import {setPersistedShoppingCartProducts} from '../utils/unauthenticated-persistence';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -86,13 +88,18 @@ const ProductList = ({
     const classes = useStyles();
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [showChart, setShowChart] = React.useState(false);
-    const {products: shoppingCart} = useShoppingCart();
+    const {products: shoppingCartProducts} = useShoppingCart();
+    const {user} = useAuth();
 
     React.useEffect(() => {
-        kiwiApi.setShoppingCart({products: shoppingCart}).catch((res) => {
+        const request = !!user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+
+        request({products: shoppingCartProducts}).catch(() => {
             throw new Error('Carrito desactualizado');
         });
-    }, [shoppingCart]);
+        // TODO: Refactor to avoid duplicated products after login (with products in localstorage)
+        // I can't add user like a dependecy because this make a post with login so if i have products in cart these are uploaded and merge after in the shopping-context
+    }, [shoppingCartProducts]);
 
     if (products.length === 0 && !isLoading) {
         return <div>No hemos encontrado productos para esa busqueda</div>;
@@ -100,15 +107,10 @@ const ProductList = ({
 
     return (
         <>
-            <div
-                className={classes.container}
-                onScroll={() => {
-                    console.log('test');
-                }}
-            >
+            <div className={classes.container}>
                 {products.map((product) => (
                     <ProductCard
-                        key={product.id}
+                        key={product._id}
                         updateUnits={(units: number) => {
                             updateShoppingCart({
                                 type: UPDATE_SHOPPING_CART_PRODUCT,
@@ -204,7 +206,13 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 <IonToolbar>
                     <IonTitle>{totalSize ? `${totalSize} resultados` : 'Comprar'}</IonTitle>
                     <IonButtons slot="primary">
-                        <IonButton onClick={() => history.push('/search/cart')}>Carrito</IonButton>
+                        <IonButton
+                            size="large"
+                            color="secondary"
+                            onClick={() => history.push('/search/cart')}
+                        >
+                            Ver Carrito ({shoppingCart.length})
+                        </IonButton>
                     </IonButtons>
                 </IonToolbar>
                 <IonToolbar>

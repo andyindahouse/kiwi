@@ -57,7 +57,7 @@ type Props = {
 
 const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors, control} = useForm({
+    const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
     });

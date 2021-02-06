@@ -22,6 +22,7 @@ import {
     IonItemDivider,
     IonSelect,
     IonSelectOption,
+    useIonViewWillEnter,
 } from '@ionic/react';
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
@@ -37,6 +38,7 @@ import EmptyCase from '../components/empty-case';
 import {Controller, useForm} from 'react-hook-form';
 import {useAuth} from '../contexts/auth';
 import PaymentFooter from '../components/payment-fields';
+import {setPersistedShoppingCartProducts} from '../utils/unauthenticated-persistence';
 
 const useStyles = createUseStyles(() => ({
     list: {
@@ -131,6 +133,7 @@ const ShoppingCart = () => {
     );
     const [showModal, setShowModal] = React.useState(false);
     const [showAlert, setShowAlert] = React.useState(false);
+    const [showRegisterAlert, setShowRegisterAlert] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
     const {user} = useAuth();
@@ -144,19 +147,18 @@ const ShoppingCart = () => {
         },
     });
     const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
-        kiwiApi
-            .setShoppingCart({
-                products: updatedProducts,
-            })
-            .catch((error) => {
-                throw new Error('Carrito desactualizado');
-            })
+        const request = !!user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+
+        request({products: updatedProducts})
             .then((res) => {
                 listRef.current?.closeSlidingItems();
                 dispatch({
                     type: SYNC_SHOPPING_CART,
                     shoppingCart: res,
                 });
+            })
+            .catch(() => {
+                throw new Error('Carrito desactualizado');
             });
     };
     const handleCheckout = ({
@@ -186,14 +188,16 @@ const ShoppingCart = () => {
             });
     };
 
-    React.useEffect(() => {
-        kiwiApi.getShoppingCart().then((res) => {
-            dispatch({
-                type: SYNC_SHOPPING_CART,
-                shoppingCart: res,
+    useIonViewWillEnter(() => {
+        if (!!user) {
+            kiwiApi.getShoppingCart().then((res) => {
+                dispatch({
+                    type: SYNC_SHOPPING_CART,
+                    shoppingCart: res,
+                });
             });
-        });
-    }, [dispatch]);
+        }
+    }, [user, dispatch]);
 
     return (
         <IonPage>
@@ -298,6 +302,18 @@ const ShoppingCart = () => {
                             },
                         },
                     ]}
+                />
+
+                <IonAlert
+                    isOpen={showRegisterAlert}
+                    onDidDismiss={() => {
+                        setShowRegisterAlert(false);
+                        history.push('/others');
+                    }}
+                    header="¡Ay!"
+                    subHeader="Regístrate y haz tu pedido"
+                    message="Para realizar un pedido tienes que estar registrado o tener tu sesión activa"
+                    buttons={['OK']}
                 />
                 <IonModal
                     isOpen={!!selected}
@@ -512,7 +528,13 @@ const ShoppingCart = () => {
                             color="secondary"
                             expand="full"
                             size="large"
-                            onClick={() => setShowModal(true)}
+                            onClick={() => {
+                                if (!!user) {
+                                    setShowModal(true);
+                                } else {
+                                    setShowRegisterAlert(true);
+                                }
+                            }}
                         >
                             <Typography variant="h3" style={{color: palette.white}}>
                                 Ir a pago y envío

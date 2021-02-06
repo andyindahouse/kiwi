@@ -1,7 +1,7 @@
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
 import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart, User} from '../models';
 
-const serverIp = 'http://51.210.87.239:3000';
+const serverIp = 'https://kiwiapp.es:3001';
 const PAGE_SIZE = 20;
 
 export type PaginatedResponse<T> = {
@@ -15,9 +15,8 @@ const apiClient = async (
     {url, body, customMethod}: {url: string; body?: Record<string, any> | FormData; customMethod?: string},
     authenticated = true
 ) => {
-    console.log(customMethod);
     const method = customMethod || (body ? 'POST' : 'GET');
-    console.log(`API ${method} ${url} req:`, body);
+    console.log(`API ${method} REQUEST ${url}:`, body);
     const rawResponse = await fetch(`${serverIp}/api${url}`, {
         method,
         headers: {
@@ -28,18 +27,14 @@ const apiClient = async (
         },
         ...(body ? {body: JSON.stringify(body)} : {}),
     });
-    const response = await rawResponse.json();
 
     if (rawResponse.ok) {
-        console.log(`API ${method} ${url} res:`, response);
+        const response = await rawResponse.json();
+        console.log(`API ${method} RESPONSE ${url}:`, response);
         return response.data ? response.data : response;
+    } else {
+        throw Error(`ERROR API ${method} RESPONSE ${url}: ${rawResponse.status}`);
     }
-
-    if (response?.error) {
-        throw Error(`ERROR API ${method} ${url} res: ${response.error}`);
-    }
-
-    throw Error(`ERROR API ${method} ${url} unknown error`);
 };
 
 const kiwiApi = {
@@ -57,10 +52,13 @@ const kiwiApi = {
         searchText: string | null;
         pageNumber: number;
     }): Promise<PaginatedResponse<ReadonlyArray<Product>>> =>
-        apiClient({
-            url: `/products?pageSize=${PAGE_SIZE}&searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`,
-        }),
-    getProductDetail: (id: string): Promise<Product> => apiClient({url: `/products/${id}`}),
+        apiClient(
+            {
+                url: `/products?pageSize=${PAGE_SIZE}&searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`,
+            },
+            false
+        ),
+    getProductDetail: (id: string): Promise<Product> => apiClient({url: `/products/${id}`}, false),
     setShoppingCart: (body: {products: ReadonlyArray<Product>}): Promise<ShoppingCart> =>
         apiClient({url: '/shoppingCart', body}),
     getShoppingCart: (): Promise<ShoppingCart> => apiClient({url: '/shoppingCart'}),
