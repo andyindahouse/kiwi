@@ -141,18 +141,20 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                     img: prods[j].img.replace('40x40.', '325x325.'),
                     updateDate: new Date(),
                 };
-                const result = await collection.updateOne(
-                    {id: productData.id},
-                    {
-                        $set: {...productData},
+                if (productData.status === 'AVAILABLE') {
+                    const result = await collection.updateOne(
+                        {id: productData.id},
+                        {
+                            $set: {...productData},
+                        }
+                    );
+                    if (result.matchedCount === 0) {
+                        await collection.insertOne({
+                            ...productData,
+                            createDate: new Date(),
+                            available: true,
+                        });
                     }
-                );
-                if (result.matchedCount === 0) {
-                    await collection.insertOne({
-                        ...productData,
-                        createDate: new Date(),
-                        available: true,
-                    });
                 }
             }
             console.log(`${supermarket.name} Items inserted.`);
