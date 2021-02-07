@@ -360,7 +360,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                         <div className={classes.discountSection}>
                             <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />
                             <Typography variant="subtitle2" color={palette.tertiary.main}>
-                                Este producto puede que no este disponible
+                                Este producto ya no está disponible
                             </Typography>
                         </div>
                     )}

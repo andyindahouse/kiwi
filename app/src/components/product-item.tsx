@@ -15,28 +15,36 @@ import {
 import Typography from '../components/typography';
 import {alertCircleOutline} from 'ionicons/icons';
 import palette from '../theme/palette';
+import classNames from 'classnames';
 
 const useStyles = createUseStyles(() => ({
+    cardContainer: {
+        width: '100%',
+    },
     card: {
         width: '100%',
         display: 'grid',
         gridTemplateColumns: '64px 1fr auto',
         gridGap: 8,
         alignItems: 'center',
-        position: 'relative',
     },
     img: {
         width: 64,
         padding: '8px 0',
     },
     availableIcon: {
-        position: 'absolute',
-        top: 2,
-        left: 2,
         width: 16,
         height: 16,
         color: palette.tertiary.main,
         marginRight: 8,
+    },
+    notAvailable: {
+        opacity: 0.3,
+    },
+    labelNotAvailable: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 8,
     },
 }));
 
@@ -98,16 +106,29 @@ const ProductItem = ({
     return (
         <IonItemSliding disabled={disableSwipeOptions}>
             <IonItem onClick={handleClickDetail}>
-                <div className={classes.card}>
-                    <img className={classes.img} alt="product" src={img} />
-                    {showAlertIcon && <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />}
-                    <div>
-                        <Typography variant="body2" gutterBottom={4} ellipsis lineClamp={2}>
-                            {title}
-                        </Typography>
-                        <Typography variant="subtitle2">{subtitle}</Typography>
+                <div className={classes.cardContainer}>
+                    <div
+                        className={classNames(classes.card, {
+                            [classes.notAvailable]: showAlertIcon,
+                        })}
+                    >
+                        <img className={classes.img} alt="product" src={img} />
+                        <div>
+                            <Typography variant="body2" gutterBottom={4} ellipsis lineClamp={2}>
+                                {title}
+                            </Typography>
+                            <Typography variant="subtitle2">{subtitle}</Typography>
+                        </div>
+                        {children}
                     </div>
-                    {children}
+                    {showAlertIcon && (
+                        <div className={classes.labelNotAvailable}>
+                            <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />
+                            <Typography variant="subtitle2" color={palette.tertiary.main}>
+                                Este producto ya no está disponible
+                            </Typography>
+                        </div>
+                    )}
                 </div>
             </IonItem>
 
@@ -119,7 +140,7 @@ const ProductItem = ({
                     }
                 }}
             >
-                {handleClickLeftAction && labelLeftAction && (
+                {!showAlertIcon && handleClickLeftAction && labelLeftAction && (
                     <IonItemOption onClick={handleClickLeftAction}>{labelLeftAction}</IonItemOption>
                 )}
                 {handleClickRightAction && labelRightAction && (
