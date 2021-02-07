@@ -140,19 +140,21 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
                     market: config.collectionProducts[config.indexCollection].market,
                     img: prods[j].img.replace('40x40.', '325x325.'),
                     updateDate: new Date(),
+                    available: true,
                 };
                 if (productData.status === 'AVAILABLE') {
                     const result = await collection.updateOne(
                         {id: productData.id},
                         {
-                            $set: {...productData},
+                            $set: {
+                                ...productData,
+                            },
                         }
                     );
                     if (result.matchedCount === 0) {
                         await collection.insertOne({
                             ...productData,
                             createDate: new Date(),
-                            available: true,
                         });
                     }
                 }
