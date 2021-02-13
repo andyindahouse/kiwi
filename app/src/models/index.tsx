@@ -34,6 +34,7 @@ export interface Product {
         original?: string;
         final: string;
     };
+    cost?: number;
     discount: boolean;
     specialOffer?: SpecialOffers;
     specialOfferValue?: [string, string];

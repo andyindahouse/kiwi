@@ -178,7 +178,7 @@ const useStyles = createUseStyles(() => ({
     availableIcon: {
         width: 16,
         height: 16,
-        color: palette.tertiary.main,
+        color: palette.secondary.main,
         marginRight: 8,
     },
 }));

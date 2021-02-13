@@ -99,6 +99,7 @@ const controller = {
                     deliveryPostalCode: body.deliveryPostalCode,
                     deliveryDate: body.deliveryDate,
                     deliveryHour: body.deliveryHour,
+                    replaceProducts: body.replaceProducts,
                 };
                 const saveOrder = await Order.create(order);
                 await ShoppingCart.findOneAndUpdate(

@@ -23,6 +23,7 @@ import {
     IonSelect,
     IonSelectOption,
     useIonViewWillEnter,
+    IonToggle,
 } from '@ionic/react';
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
@@ -136,6 +137,7 @@ const ShoppingCart = () => {
     const [showRegisterAlert, setShowRegisterAlert] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
+    const [replaceProducts, setReplaceProducts] = React.useState(true);
     const {user} = useAuth();
     const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
@@ -178,6 +180,7 @@ const ShoppingCart = () => {
                 deliveryAddress,
                 deliveryDate,
                 deliveryHour,
+                replaceProducts,
             })
             .then((res) => {
                 setShowModal(false);
@@ -234,10 +237,16 @@ const ShoppingCart = () => {
                                             )
                                         }
                                         showAlertIcon={!product.available}
+                                        showDiscountIcon={
+                                            product.available &&
+                                            product.specialOffer &&
+                                            product.specialOfferValue &&
+                                            Number(product.specialOfferValue[0]) > product.units
+                                        }
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
-                                                {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                                {product.cost}€
                                             </Typography>
                                         </div>
                                     </ProductItem>
@@ -462,6 +471,24 @@ const ShoppingCart = () => {
                                                 value={value}
                                             />
                                         )}
+                                    />
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel>
+                                        <div>
+                                            <IonLabel>Reeemplazar con equivalentes:</IonLabel>
+                                            <Typography variant="subtitle2">
+                                                En caso de no disponer de existencias <br />
+                                                de un productos tu shopper lo reemplazará <br />
+                                                por un producto equivalente
+                                            </Typography>
+                                        </div>
+                                    </IonLabel>
+
+                                    <IonToggle
+                                        checked={replaceProducts}
+                                        onIonChange={(e) => setReplaceProducts(e.detail.checked)}
                                     />
                                 </IonItem>
 

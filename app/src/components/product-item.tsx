@@ -13,7 +13,7 @@ import {
     IonIcon,
 } from '@ionic/react';
 import Typography from '../components/typography';
-import {alertCircleOutline} from 'ionicons/icons';
+import {alertCircleOutline, pricetagsOutline} from 'ionicons/icons';
 import palette from '../theme/palette';
 import classNames from 'classnames';
 
@@ -36,6 +36,12 @@ const useStyles = createUseStyles(() => ({
         width: 16,
         height: 16,
         color: palette.tertiary.main,
+        marginRight: 8,
+    },
+    discountIcon: {
+        width: 16,
+        height: 16,
+        color: palette.secondary.main,
         marginRight: 8,
     },
     notAvailable: {
@@ -85,6 +91,7 @@ type Props = {
     handleClickRightAction?: () => void;
     expandableRightAction?: boolean;
     showAlertIcon?: boolean;
+    showDiscountIcon?: boolean;
     children: React.ReactNode;
 };
 
@@ -101,6 +108,7 @@ const ProductItem = ({
     expandableRightAction = false,
     children,
     showAlertIcon,
+    showDiscountIcon,
 }: Props) => {
     const classes = useStyles();
     return (
@@ -126,6 +134,14 @@ const ProductItem = ({
                             <IonIcon icon={alertCircleOutline} className={classes.availableIcon} />
                             <Typography variant="subtitle2" color={palette.tertiary.main}>
                                 Este producto ya no está disponible
+                            </Typography>
+                        </div>
+                    )}
+                    {showDiscountIcon && (
+                        <div className={classes.labelNotAvailable}>
+                            <IonIcon icon={alertCircleOutline} className={classes.discountIcon} />
+                            <Typography variant="subtitle2" color={palette.secondary.main}>
+                                Añade unidades para aprovechar la oferta
                             </Typography>
                         </div>
                     )}

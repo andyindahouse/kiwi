@@ -71,7 +71,7 @@ const useStyles = createUseStyles(() => ({
 
 const getMesaggeStatus = (status: OrderStatus) => {
     if (status === 'pending') {
-        return 'Podrás cancelar tu pedido mientras tu personal shopper no haya empezado a realizar tu compra (normalmente empezara dos horas antes de la fecha de entrega)';
+        return 'Podrás cancelar tu pedido mientras tu personal shopper no haya empezado a realizar tu compra (normalmente empezará dos horas antes de la fecha de entrega)';
     }
 
     if (status === 'cancelled') {
