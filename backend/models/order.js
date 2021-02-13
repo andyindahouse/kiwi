@@ -25,6 +25,7 @@ const OrderSchema = Schema({
     deliveryPostalCode: String,
     deliveryDate: Date,
     deliveryHour: String,
+    replaceProducts: Boolean,
 });
 
 module.exports = mongoose.model('Order', OrderSchema, 'orders');
