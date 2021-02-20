@@ -60,6 +60,8 @@ const Login: React.FC = () => {
     const onSubmit = React.useCallback(
         (data: {email: string; password: string}) => {
             setLoading(true);
+            setLoginError(false);
+            setShowRegisterMessage(false);
             login(data)
                 .catch(() => {
                     setLoginError(true);
@@ -152,7 +154,9 @@ const Login: React.FC = () => {
                                         setShowRegister(true);
                                     }}
                                 >
-                                    Registrame
+                                    <Typography variant="h5" color={palette.primary.dark}>
+                                        Registrame
+                                    </Typography>
                                 </a>
                             )}
                         </div>
