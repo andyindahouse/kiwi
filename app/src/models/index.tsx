@@ -73,6 +73,11 @@ export interface Order {
     email: string;
     products: ReadonlyArray<Product>;
     status: OrderStatus;
+    deliveryAdrres: string;
+    deliveryDate: string;
+    deliveryHour: string;
+    note: string;
+    replaceProducts: false;
     deliveryDiscount: number;
     deliverFee: number;
     finalDeliverFee: number;

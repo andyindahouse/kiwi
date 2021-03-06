@@ -8,6 +8,7 @@ import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'io
 import classnames from 'classnames';
 import {statusOrderMap} from '../utils';
 import PaymentFooter from './payment-fields';
+import {getFormatDate, getFormatTime} from '../utils/format-date';
 
 const useStyles = createUseStyles(() => ({
     container: {
@@ -30,8 +31,8 @@ const useStyles = createUseStyles(() => ({
         },
     },
     subtitles: {
-        display: 'flex',
-        flexDirection: 'column',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
         marginBottom: 8,
     },
     paymentSection: {
@@ -130,6 +131,8 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
         createdDate,
         totalShoppingCart,
         shopperFee,
+        deliveryDate,
+        deliveryHour,
         deliveryDiscount,
         finalShopperFee,
         finalDeliverFee,
@@ -147,9 +150,10 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
                     </div>
                 </div>
                 <div className={classes.subtitles}>
-                    <Typography variant="subtitle2">
-                        Creado el: {new Date(createdDate).toLocaleString()}
-                    </Typography>
+                    <Typography variant="subtitle2">Día de entrega:</Typography>
+                    <Typography variant="body1">{getFormatDate(deliveryDate)}</Typography>
+                    <Typography variant="subtitle2">Hora de entrega:</Typography>
+                    <Typography variant="body1">{getFormatTime(deliveryHour)}</Typography>
                 </div>
             </div>
             <div className={classes.paymentSection}>

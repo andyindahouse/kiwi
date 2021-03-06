@@ -67,6 +67,7 @@ const kiwiApi = {
         deliveryAddress: string;
         deliveryDate: string;
         deliveryHour: string;
+        replaceProducts: boolean;
     }): Promise<Order> => apiClient({url: '/checkout', body, customMethod: 'PUT'}),
     getOrders: ({pageNumber}: {pageNumber: number}): Promise<PaginatedResponse<ReadonlyArray<Order>>> =>
         apiClient({url: `/orders?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`}),

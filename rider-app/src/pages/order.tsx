@@ -216,6 +216,7 @@ const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) =>
                             updateProduct={updateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
+                            replaceProduct={order?.replaceProducts}
                         />
                     )}
                 </IonModal>

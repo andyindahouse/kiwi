@@ -246,7 +246,11 @@ const ShoppingCart = () => {
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
-                                                {product.cost}€
+                                                {!!user
+                                                    ? `${product.cost}€`
+                                                    : `${(getUnits(product) * Number(price.final)).toFixed(
+                                                          2
+                                                      )}€`}
                                             </Typography>
                                         </div>
                                     </ProductItem>

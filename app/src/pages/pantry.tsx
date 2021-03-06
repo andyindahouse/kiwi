@@ -21,10 +21,10 @@ import {getFormatDate} from '../utils/format-date';
 import {differenceInDays} from 'date-fns';
 import {RouteComponentProps, useHistory} from 'react-router';
 import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
-import ProductItem from '../components/product-item';
+import ProductItem, {ProductListItemSkeleton} from '../components/product-item';
 import {getExpiryObj} from '../utils';
 import EmptyCase from '../components/empty-case';
-import {bandageOutline, cafeOutline, fishOutline, shapesOutline, snowOutline} from 'ionicons/icons';
+import {helpOutline, nutritionOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({
     center: {
@@ -86,56 +86,6 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const segmentMap: Record<
-    PantryProductStatus,
-    {emptyMessage: {title1: string; title2: string}; icon: string}
-> = {
-    pending: {
-        emptyMessage: {
-            title1: 'No tienes productos por clasificar',
-            title2: 'Aquí encontrarás los productos cuando tus pedidos sean entregados',
-        },
-        icon: shapesOutline,
-    },
-    cooled: {
-        emptyMessage: {
-            title1: 'No tienes alimentos en el frigorífico',
-            title2: 'Puedes añadir tus alimentos al frigorífico desde la sección de "Por clasificar"',
-        },
-        icon: fishOutline,
-    },
-    frozen: {
-        emptyMessage: {
-            title1: 'No tienes alimentos en el congelador',
-            title2: 'Puedes añadir tus alimentos al congelador desde la sección de "Por clasificar"',
-        },
-        icon: snowOutline,
-    },
-    storaged: {
-        emptyMessage: {
-            title1: 'No tienes alimentos en tu despensa',
-            title2: 'Puedes añadir alimentos a tu despensa desde la sección de "Por clasificar"',
-        },
-        icon: cafeOutline,
-    },
-    consumed: {
-        emptyMessage: {
-            title1: 'No tienes alimentos consumidos puedes marcar tus alimentos según los vayas consumiendo',
-            title2:
-                'Podrás encontrar los mismos en la sección en las que los tengas clasificados o usando el buscador',
-        },
-        icon: shapesOutline,
-    },
-    others: {
-        emptyMessage: {
-            title1: 'No tienes productos aquí',
-            title2:
-                'Usa esta categoría para clasificar todos los productos que no encajen en las otras categorías.',
-        },
-        icon: bandageOutline,
-    },
-};
-
 const hasExpiredDate = (date: string) => {
     const expiryDate = new Date(date);
     const currentDate = new Date();
@@ -149,11 +99,13 @@ const ProductList = ({
     products,
     segment,
     refreshProducts,
+    isSearching,
 }: {
     isLoading: boolean;
     products: ReadonlyArray<PantryProduct>;
     segment: PantryProductStatus;
     refreshProducts: (products: ReadonlyArray<PantryProduct>) => void;
+    isSearching: boolean;
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -165,59 +117,79 @@ const ProductList = ({
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
 
-    const getProduct = (id: string) => kiwiApi.getProductDetail(id);
-    const consumedProduct = async (selected: PantryProduct, consumedDate: string) => {
-        try {
-            const data = await updatePantryProduct({
-                ...selected,
-                inStorage: 'consumed',
-                consumedDate: consumedDate,
-            });
-            const product = await getProduct(data.id);
-            const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
-            const shoppingCart = await kiwiApi.setShoppingCart({
-                products:
-                    productIndex === -1
-                        ? [
-                              ...shoppingCartProducts,
-                              {
-                                  ...product,
-                                  units: 1,
-                              },
-                          ]
-                        : [
-                              ...shoppingCartProducts.slice(0, productIndex),
-                              {
-                                  ...{
-                                      ...shoppingCartProducts[productIndex],
-                                      units: shoppingCartProducts[productIndex].units + 1,
+    const getProduct = React.useCallback((id: string) => kiwiApi.getProductDetail(id), []);
+    const updatePantryProduct = React.useCallback(
+        (product: PantryProduct) =>
+            kiwiApi.updatePantryProduct(product).then((res) => {
+                listRef.current?.closeSlidingItems();
+                refreshProducts(products.filter((e) => e._id !== product._id));
+                return res;
+            }),
+        [products, refreshProducts]
+    );
+    const consumedProduct = React.useCallback(
+        async (selected: PantryProduct, consumedDate: string) => {
+            try {
+                const data = await updatePantryProduct({
+                    ...selected,
+                    inStorage: 'consumed',
+                    consumedDate: consumedDate,
+                });
+                const product = await getProduct(data.id);
+                const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
+                const shoppingCart = await kiwiApi.setShoppingCart({
+                    products:
+                        productIndex === -1
+                            ? [
+                                  ...shoppingCartProducts,
+                                  {
+                                      ...product,
+                                      units: 1,
                                   },
-                              },
-                              ...shoppingCartProducts.slice(productIndex + 1),
-                          ],
-            });
-            dispatch({
-                type: SYNC_SHOPPING_CART,
-                shoppingCart,
-            });
-            setShowToast(true);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    const updatePantryProduct = async (product: PantryProduct) =>
-        kiwiApi.updatePantryProduct(product).then((res) => {
-            listRef.current?.closeSlidingItems();
-            refreshProducts(products.filter((e) => e._id !== product._id));
-            return res;
-        });
+                              ]
+                            : [
+                                  ...shoppingCartProducts.slice(0, productIndex),
+                                  {
+                                      ...{
+                                          ...shoppingCartProducts[productIndex],
+                                          units: shoppingCartProducts[productIndex].units + 1,
+                                      },
+                                  },
+                                  ...shoppingCartProducts.slice(productIndex + 1),
+                              ],
+                });
+                dispatch({
+                    type: SYNC_SHOPPING_CART,
+                    shoppingCart,
+                });
+                setShowToast(true);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [shoppingCartProducts, dispatch, updatePantryProduct, getProduct]
+    );
+
+    if (isLoading) {
+        return <ProductListItemSkeleton rows={4} />;
+    }
+
+    if (isSearching && products.length === 0 && !isLoading) {
+        return (
+            <EmptyCase
+                title1="No se han encontrado productos"
+                subtitle="No tienes productos en tu despensa que coincidan con esta búsqueda"
+                icon={helpOutline}
+            />
+        );
+    }
 
     if (products.length === 0 && !isLoading) {
         return (
             <EmptyCase
-                title1={segmentMap[segment].emptyMessage.title1}
-                subtitle={segmentMap[segment].emptyMessage.title2}
-                icon={segmentMap[segment].icon}
+                title1="Bienvenido a tu despensa"
+                subtitle="Aquí encontrarás tus productos una vez hagas tu compra"
+                icon={nutritionOutline}
             />
         );
     }
@@ -248,7 +220,6 @@ const ProductList = ({
                                     consumedProduct(product, new Date().toISOString());
                                 }
                             }}
-                            expandableRightAction
                         >
                             {product.date && (
                                 <div className={classes.date}>
@@ -339,18 +310,9 @@ type PantryProductsView = {
 const Pantry: React.FC<RouteComponentProps> = () => {
     const [searchText, setSearchText] = React.useState('');
     const [pendingProducts, setPendingProducts] = React.useState<PantryProductsView | null>(null);
-    const refresh = (
-        inStorage: PantryProductStatus,
-        setter: React.Dispatch<
-            React.SetStateAction<{
-                products: ReadonlyArray<PantryProduct>;
-                isLoading: boolean;
-                totalSize: number | null;
-            } | null>
-        >,
-        searchText?: string
-    ) => {
-        setter({
+
+    React.useEffect(() => {
+        setPendingProducts({
             products: [],
             totalSize: null,
             isLoading: true,
@@ -358,20 +320,16 @@ const Pantry: React.FC<RouteComponentProps> = () => {
         kiwiApi
             .getPantry({
                 pageNumber: 0,
-                inStorage,
+                inStorage: 'pending',
                 searchText,
             })
             .then((res) => {
-                setter({
+                setPendingProducts({
                     products: res.content,
                     totalSize: res.totalSize,
                     isLoading: false,
                 });
             });
-    };
-
-    React.useEffect(() => {
-        refresh('pending', setPendingProducts, searchText);
     }, [searchText]);
 
     return (
@@ -387,16 +345,17 @@ const Pantry: React.FC<RouteComponentProps> = () => {
                             setSearchText(e.detail.value ?? '');
                         }}
                         animated
-                        debounce={3000}
+                        debounce={300}
                         placeholder="Buscar en mi despensa"
                         showCancelButton="focus"
                         cancelButtonText="Borrar"
-                    ></IonSearchbar>
+                    />
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 {pendingProducts && (
                     <ProductList
+                        isSearching={!!searchText}
                         products={pendingProducts?.products}
                         isLoading={pendingProducts.isLoading}
                         segment="pending"

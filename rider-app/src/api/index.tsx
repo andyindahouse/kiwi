@@ -2,7 +2,6 @@ import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
 import {Order, OrderStatus, Product, User} from '../models';
 
 const serverIp = 'http://51.210.87.239:3000';
-const PAGE_SIZE = 20;
 
 export type PaginatedResponse<T> = {
     content: T;
@@ -46,13 +45,13 @@ const api = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
         apiClient({url: '/rider/login', body}, false),
     registerUser: (body: User & {password: string}): Promise<User> =>
-        apiClient({url: '/register', body}, false),
+        apiClient({url: '/rider/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
         apiClient({url: `/emailTaken?email=${email}`}, false),
-    getUser: (): Promise<User> => apiClient({url: '/me'}),
+    getUser: (): Promise<User> => apiClient({url: '/rider/me'}),
     setUser: (body: Partial<User>): Promise<User> => apiClient({url: '/me', body, customMethod: 'PATCH'}),
     changeUserPassword: (body: {oldPassword: string; newPassword: string}) =>
-        apiClient({url: '/me/password', body}),
+        apiClient({url: '/rider/me/password', body}),
     getNewOrders: ({
         pageNumber,
         pageSize = 5,

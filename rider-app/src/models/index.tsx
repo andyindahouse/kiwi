@@ -68,6 +68,7 @@ export interface Order {
     deliveryAddress: string;
     deliveryDate: string;
     deliveryHour: string;
+    replaceProducts: boolean;
 }
 
 export type User = {

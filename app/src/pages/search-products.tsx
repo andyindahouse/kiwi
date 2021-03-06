@@ -108,9 +108,9 @@ const ProductList = ({
     return (
         <>
             <div className={classes.container}>
-                {products.map((product) => (
+                {products.map((product, index) => (
                     <ProductCard
-                        key={product._id}
+                        key={index}
                         updateUnits={(units: number) => {
                             updateShoppingCart({
                                 type: UPDATE_SHOPPING_CART_PRODUCT,

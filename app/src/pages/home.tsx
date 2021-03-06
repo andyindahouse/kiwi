@@ -30,12 +30,6 @@ const Home: React.FC = () => {
                         link="/others/orders"
                     ></Fragment>
                 )}
-                {/* <Fragment
-                    icon={barcodeOutline}
-                    color="secondary"
-                    text="Escanea un producto"
-                    link="/others/orders"
-                ></Fragment> */}
                 {user && <FoodToExpire />}
                 <NextShopping />
             </IonContent>

@@ -23,9 +23,13 @@ export const getPersistedShoppingCart = (): Promise<ShoppingCart> => {
 };
 
 export const setPersistedShoppingCartProducts = ({products}: {products: ReadonlyArray<Product>}) => {
-    const totalShoppingCart = products.reduce((acum, current) => {
-        return acum + Number(current.price.final);
-    }, 0);
+    const totalShoppingCart = Number(
+        products
+            .reduce((acum, current) => {
+                return acum + Number(current.price.final) * current.units;
+            }, 0)
+            .toFixed(2)
+    );
     const totalCost = totalShoppingCart + SHOPPER_FEE + DELIVER_FEE;
 
     localStorage.setItem(

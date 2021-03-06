@@ -15,7 +15,7 @@ import {
     IonItemDivider,
     IonAlert,
 } from '@ionic/react';
-import {addCircleOutline, removeCircleOutline} from 'ionicons/icons';
+import {addCircleOutline, removeCircleOutline, syncOutline} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Product, ProductOrderStatus} from '../models';
@@ -57,6 +57,17 @@ const useStyles = createUseStyles(() => ({
         '&::first-letter': {
             textTransform: 'uppercase',
         },
+    },
+    replaceSection: {
+        display: 'grid',
+        gridTemplateColumns: 'auto 1fr',
+        gridGap: 8,
+        alignItems: 'center',
+    },
+    icon: {
+        width: 24,
+        height: 24,
+        color: palette.secondary.main,
     },
 }));
 
@@ -135,9 +146,10 @@ type Props = {
     updateProduct: (product: Product) => void;
     closeModal: () => void;
     disabled?: boolean;
+    replaceProduct?: boolean;
 };
 
-const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: Props) => {
+const ProductDetail = ({product, closeModal, updateProduct, disabled = false, replaceProduct}: Props) => {
     const classes = useStyles();
     const {name, price, img, brand, note, items = []} = product;
     const [currentPrice, setCurrentPrice] = React.useState<number | null>();
@@ -168,13 +180,21 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                     <Typography variant="subtitle1" gutterBottom={8}>
                         {brand}
                     </Typography>
-                    <Typography className={classes.nameProduct} variant="h3">
+                    <Typography className={classes.nameProduct} variant="h3" gutterBottom={16}>
                         {name.replace(brand, '').trim()}
                     </Typography>
                     {note && <Typography>Nota del cliente: {note}</Typography>}
+                    {replaceProduct && (
+                        <div className={classes.replaceSection}>
+                            <IonIcon className={classes.icon} size="large" icon={syncOutline} />
+                            <Typography variant="body2">
+                                Puedes reemplazar este producto por uno equivalente, solo si te has asegurado
+                                que no está disponible
+                            </Typography>
+                        </div>
+                    )}
                 </div>
                 <IonList>
-                    <IonItemDivider />
                     <IonItem lines="none">
                         <IonLabel>Precio marcado:</IonLabel>
                         <IonInput
@@ -190,7 +210,10 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
 
                     <IonItem>
                         <div>
-                            <Typography>{`Unidades a recoger: (${items.length})`}</Typography>
+                            <Typography>Unidades a recoger:</Typography>
+                            <Typography variant="h5" gutterBottom={8} color={palette.secondary.main}>
+                                {items.length === 1 ? `${items.length} unidad` : `${items.length} unidades`}
+                            </Typography>
                             <Typography gutterBottom={8} variant="subtitle2">
                                 Si no están disponibles las unidades requeridas marcar la cantidad cogida
                             </Typography>
@@ -219,29 +242,20 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false}: P
                                 displayFormat="DD/MM/YYYY"
                                 onIonChange={(e) => {
                                     if (e.detail.value) {
-                                        changeUnits(index, e.detail.value?.split('T')[0]);
+                                        const newValue = e.detail.value?.split('T')[0];
+                                        const auxUnits = units.map((unit, idx) => {
+                                            if (index === idx || !unit.date) {
+                                                return {date: newValue};
+                                            } else {
+                                                return {date: unit.date};
+                                            }
+                                        });
+                                        setUnits(auxUnits);
                                     }
                                 }}
                             />
                         </IonItem>
                     ))}
-                    <IonItemDivider />
-
-                    <IonItem lines="none">
-                        <div>
-                            <Typography>Una vez abierto consumir en:</Typography>
-                            <Typography gutterBottom={8} variant="subtitle2">
-                                Mirar fecha en producto si corresponde
-                            </Typography>
-                            <Units
-                                label={['día', 'días']}
-                                units={daysAfterOpened}
-                                handleOnChange={(days) => {
-                                    setDaysAfterOpened(days);
-                                }}
-                            />
-                        </div>
-                    </IonItem>
                     <IonItemDivider />
 
                     {product.statusOrder !== 'not-available' && (

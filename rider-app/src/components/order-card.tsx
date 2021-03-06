@@ -97,13 +97,6 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                     <img className={classes.logo} src="./images/eci.jpg" alt="el corteingles logo" />
                     <div>
                         <Typography>Precio total compra: {totalCost}€</Typography>
-
-                        {/* <Typography variant="subtitle2" gutterBottom={4}>
-                            Fecha de entrega: {deliveryDate && getFormatDate(new Date(deliveryDate))}
-                        </Typography>
-                        <Typography variant="subtitle2">
-                           Hora de entrega: {deliveryHour && getFormatTime(new Date(deliveryHour))}
-                        </Typography> */}
                     </div>
                 </div>
             </div>
@@ -119,6 +112,10 @@ const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Selecciona
                 <Typography variant="body2">{firstName}</Typography>
                 <Typography variant="subtitle2">Dirección de entrega</Typography>
                 <Typography variant="body2">{deliveryAddress}</Typography>
+                <Typography variant="subtitle2">Día de entrega</Typography>
+                <Typography variant="body2">{`${getFormatDate(deliveryDate)}`}</Typography>
+                <Typography variant="subtitle2">Hora de entrega</Typography>
+                <Typography variant="body2">{`${getFormatTime(deliveryHour)}`}</Typography>
                 <Typography variant="subtitle2">Teléfono</Typography>
                 <Typography variant="body2">{phone}</Typography>
                 <Typography variant="subtitle2">Nº de productos</Typography>

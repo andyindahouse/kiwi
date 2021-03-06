@@ -49,7 +49,7 @@ const App: React.FC = () => (
                     <Route path="/profile" component={Profile} exact />
                     <Route path="/help" component={Help} exact />
                     <Route path="/feedback" component={Feedback} exact />
-                    <Route path="/" render={() => <Redirect to="/home" />} exact />
+                    <Route path="/" render={() => <Redirect to="/orders" />} exact />
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">
                     <IonTabButton tab="orders" href="/orders">
