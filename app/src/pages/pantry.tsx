@@ -224,7 +224,7 @@ const ProductList = ({
                             {product.date && (
                                 <div className={classes.date}>
                                     <Typography variant="caption1" style={{color: expiryObj.color}}>
-                                        {expiryObj.label}
+                                        Miguel
                                     </Typography>
                                     <Typography variant="subtitle2">caducidad</Typography>
                                     <Typography variant="subtitle2">

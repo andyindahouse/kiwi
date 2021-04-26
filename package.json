@@ -15,12 +15,7 @@
     "bugs": {
         "url": "https://github.com/andyindahouse/kiwi/issues"
     },
-    "homepage": "https://github.com/andyindahouse/kiwi#readme",
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
+    "homepage": "https://github.com/andyindahouse/kiwi#readme",    
     "lint-staged": {
         "*.{js,json,md}": [
             "prettier --write",
@@ -28,7 +23,6 @@
         ]
     },
     "dependencies": {
-        "husky": "^4.2.5",
         "lint-staged": "^10.2.11",
         "prettier": "^2.0.5"
     }
