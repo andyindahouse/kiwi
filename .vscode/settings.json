@@ -9,6 +9,5 @@
         "**/build": true,
         "**/dist": true
     },
-    "files.eol": "\n",
-    "eslint.enable": true
+    "files.eol": "\n"
 }
