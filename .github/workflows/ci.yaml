@@ -23,3 +23,15 @@ jobs:
             - name: Build
               working-directory: ./app
               run: yarn build
+    build-rider-app:
+        name: Build Rider App
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+            - name: Install dependencies
+              working-directory: ./rider-app
+              run: yarn
+            - name: Build
+              working-directory: ./rider-app
+              run: yarn build
