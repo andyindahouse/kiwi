@@ -184,7 +184,7 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         ) : currentStep === 0 || currentStep === 1 ? (
                             'Siguiente'
                         ) : (
-                            'Registrame'
+                            'Regístrame'
                         )}
                     </IonButton>
                 </IonToolbar>

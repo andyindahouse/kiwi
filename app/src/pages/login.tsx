@@ -155,7 +155,7 @@ const Login: React.FC = () => {
                                     }}
                                 >
                                     <Typography variant="h5" color={palette.primary.dark}>
-                                        Registrame
+                                        Regístrame
                                     </Typography>
                                 </a>
                             )}
@@ -176,7 +176,7 @@ const Login: React.FC = () => {
                                     ¡Enhorabuena! Te has registrado con éxito <br />
                                 </Typography>
                                 <Typography center color={palette.secondary.main}>
-                                    En breves activaremos tu cuenta y te notificaremos por correo para que
+                                    En breve activaremos tu cuenta y te notificaremos por correo para que
                                     puedas acceder. <br /> Tardaremos poco ;)
                                 </Typography>
                             </>
