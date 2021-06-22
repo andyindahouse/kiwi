@@ -164,7 +164,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                     )}
                 </IonItem>
                 <Typography variant="subtitle2">
-                    Recibiras tu compra siempre este día de cada semana
+                    Recibirás tu compra siempre este día de cada semana
                 </Typography>
                 <IonItem>
                     <IonLabel position="floating">Hora de entrega</IonLabel>
@@ -194,7 +194,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         </Typography>
                     )}
                 </IonItem>
-                <Typography variant="subtitle2">Recibiras tu compra a esta hora el día elegido</Typography>
+                <Typography variant="subtitle2">Recibirás tu compra a esta hora el día elegido</Typography>
             </IonList>
         </form>
     );

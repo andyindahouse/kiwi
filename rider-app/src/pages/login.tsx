@@ -140,13 +140,13 @@ const Login: React.FC = () => {
                                         setShowRegister(true);
                                     }}
                                 >
-                                    Registrame
+                                    Regístrame
                                 </a>
                             )}
                         </div>
                         {loginError && (
                             <Typography center color={palette.error.main} gutterBottom={16}>
-                                Usuario no activo o las credeneciales no son correctas
+                                Usuario inactivo o las credeneciales no son correctas
                             </Typography>
                         )}
                         {showRegisterMessage && (
@@ -160,7 +160,7 @@ const Login: React.FC = () => {
                                     ¡Enhorabuena! Te has registrado con éxito <br />
                                 </Typography>
                                 <Typography center color={palette.secondary.main}>
-                                    En breves activaremos tu cuenta y te notificaremos por correo para que
+                                    En breve activaremos tu cuenta y te notificaremos por correo para que
                                     puedas acceder. <br /> Tardaremos poco ;)
                                 </Typography>
                             </>

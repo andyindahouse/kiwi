@@ -79,7 +79,7 @@ const getMesaggeStatus = (status: OrderStatus) => {
     }
 
     if (status === 'in-progress') {
-        return 'Tu personal shopper está realizando el pedido, en breves recibiras tu compra';
+        return 'Tu personal shopper está realizando el pedido, en breve recibirás tu compra';
     }
 
     if (status === 'comming') {

@@ -58,7 +58,7 @@ const OrderList = ({
                 <Typography variant="h2" gutterBottom={16} className={classes.center}>
                     Ahora mismo no hay pedidos disponibles
                     <br />
-                    En breves recibiras pedidos
+                    En breve recibirás pedidos
                 </Typography>
             </>
         );
