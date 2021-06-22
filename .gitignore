@@ -3,7 +3,14 @@
 # dependencies
 /node_modules
 /backend/node_modules
-/.pnp
+
+# Yarn 2
+.yarn/*
+!.yarn/cache/
+!.yarn/releases/
+!.yarn/plugins/
+!.yarn/versions/
+!.yarn/sdks/
 .pnp.js
 
 # testing

@@ -1,37 +1,19 @@
 name: ci
 on: [push]
 jobs:
-    code-style:
-        name: Code Style
+    ci:
+        name: Continuous Integration
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@v1
             - name: Install dependencies
-              run: yarn
+              run: yarn install --immutable --immutable-cache
             - name: Prettier
               run: yarn prettier-check
-    build-app:
-        name: Build App
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
-            - name: Install dependencies
-              working-directory: ./app
-              run: yarn
-            - name: Build
+            - name: Build (App)
               working-directory: ./app
               run: yarn build
-    build-rider-app:
-        name: Build Rider App
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
-            - name: Install dependencies
-              working-directory: ./rider-app
-              run: yarn
-            - name: Build
+            - name: Build (Rider App)
               working-directory: ./rider-app
               run: yarn build

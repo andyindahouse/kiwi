@@ -2,3 +2,5 @@
 **/dist/
 **/esm/
 **/build/
+**/.yarn
+.pnp.js
