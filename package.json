@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
+        "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.json\" \"**/*.yml\" \"**/*.md\""
     },
     "repository": {
         "type": "git",
