@@ -23,7 +23,7 @@ import Typography from '../components/typography';
 import ProductItem from '../components/product-item';
 import palette from '../theme/palette';
 import kiwiApi from '../api';
-import {RouteComponentProps, useHistory, useParams} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 
 import type {Order as OrderModel, Product, ProductOrderStatus} from '../models';
 import {chevronForwardOutline} from 'ionicons/icons';

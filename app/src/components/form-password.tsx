@@ -17,7 +17,7 @@ type Props = {controlRef: (handleSubmit: any) => void; showHeader?: boolean; sho
 
 const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors, watch, control} = useForm({
+    const {handleSubmit, errors, watch, control} = useForm({
         shouldFocusError: true,
     });
 

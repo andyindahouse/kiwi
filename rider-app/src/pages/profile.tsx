@@ -18,13 +18,11 @@ import {
     useIonViewDidEnter,
 } from '@ionic/react';
 import {
-    homeOutline,
     keyOutline,
     logOutOutline,
     notificationsOutline,
     notificationsOffOutline,
     personOutline,
-    rocketOutline,
     cashOutline,
     bicycleOutline,
 } from 'ionicons/icons';

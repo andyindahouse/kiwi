@@ -13,7 +13,7 @@ import {
     IonIcon,
 } from '@ionic/react';
 import Typography from '../components/typography';
-import {alertCircleOutline, pricetagsOutline} from 'ionicons/icons';
+import {alertCircleOutline} from 'ionicons/icons';
 import palette from '../theme/palette';
 import classNames from 'classnames';
 

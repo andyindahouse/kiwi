@@ -6,7 +6,6 @@ export type User = {
     deliveryPostalCode: string;
     deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
     deliveryHour: string;
-    password?: string;
 };
 
 export type RegisterUser = User & {password: string; rePassword: string};
@@ -52,6 +51,11 @@ export interface Product {
     nutriments?: Nutriments;
     nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
     novaGroups: '1' | '2' | '3' | '4';
+    saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
+    hasPreparations: boolean;
+    isCooled: boolean;
+    isGlutenFree: boolean;
+    isLactoseFree: boolean;    
 }
 
 export interface ShoppingCart {

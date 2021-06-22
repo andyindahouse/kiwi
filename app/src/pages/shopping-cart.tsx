@@ -239,8 +239,8 @@ const ShoppingCart = () => {
                                         showAlertIcon={!product.available}
                                         showDiscountIcon={
                                             product.available &&
-                                            product.specialOffer &&
-                                            product.specialOfferValue &&
+                                            !!product.specialOffer &&
+                                            !!product.specialOfferValue &&
                                             Number(product.specialOfferValue[0]) > product.units
                                         }
                                     >

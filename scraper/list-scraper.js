@@ -12,6 +12,30 @@ const getTotalProducts = async (page) => {
     return products;
 };
 
+const getProductSaleType = (productSaleType) => {
+    switch (productSaleType) {
+        // only sold by weigth (Example: 300gr steak)
+        case 'SELLING_TYPE_WEIGHT':
+            return 'weight';
+        // one piece or sold by % pieces (Example: 200gr salmon or one salmon)
+        case 'SELLING_TYPE_WEIGHT_AND_UNIT':
+            return 'weight_and_unit';
+            break;
+        // products sold by unit (Example: bottle of water)
+        case 'SELLING_TYPE_TRAY':
+        case 'SELLING_TYPE_UNIT':
+            return 'unit';
+            break;
+        // full pieces (price -> X kg of piece)  (Example: one chicken)
+        case 'SELLING_TYPE_PIECE':
+            return 'piece';
+            break;
+        default:
+            return 'unit';
+            break;
+    }
+};
+
 const getProducts = async (page) => {
     const data = await page.evaluate(() => {
         const getDiscountType = (specialOffer) => {
@@ -36,7 +60,14 @@ const getProducts = async (page) => {
             .filter((elem) => !!elem)
             .map((elem) => {
                 const jsonData = elem.getAttribute('data-json');
+                const productDefaultListOption = elem.getAttribute('data-product-default_list_options');
+                const productSaleType = elem.getAttribute('data-product-sale_type');
+                const hasPreparations = !!elem.getAttribute('data-product-preparations');
+                const isCooled = elem.querySelector('span[title="Producto refrigerado"]');
+                const isGlutenFree = elem.querySelector('span[title="Producto sin gluten"]');
+                const isLactoseFree = elem.querySelector('span[title="Producto sin lactosa"]');
                 const offerData = elem.querySelector('.offer-description');
+
                 if (jsonData) {
                     return {
                         ...JSON.parse(elem.getAttribute('data-json')),
@@ -45,6 +76,11 @@ const getProducts = async (page) => {
                         ...(offerData
                             ? {...getDiscountType(offerData.textContent)}
                             : {specialOffer: null, specialOfferValue: null}),
+                        saleType: getProductSaleType(productSaleType),
+                        hasPreparations,
+                        isCooled,
+                        isGlutenFree,
+                        isLactoseFree
                     };
                 }
                 return null;
