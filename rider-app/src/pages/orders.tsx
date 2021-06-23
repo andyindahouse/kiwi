@@ -12,13 +12,11 @@ import {
     IonButtons,
     IonButton,
     IonList,
-    useIonViewWillEnter,
 } from '@ionic/react';
-import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order, Order as OrderModel, OrderStatus} from '../models';
 import Typography from '../components/typography';
-import {RouteComponentProps, useHistory, useLocation} from 'react-router';
+import {RouteComponentProps} from 'react-router';
 import OrderCard from '../components/order-card';
 import InfiniteScroll from '../components/infinite-scroll';
 

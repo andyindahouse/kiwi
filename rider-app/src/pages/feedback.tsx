@@ -4,18 +4,13 @@ import {
     IonContent,
     IonHeader,
     IonPage,
-    IonBackButton,
     IonTitle,
     IonToolbar,
-    IonButtons,
     IonFooter,
     IonButton,
     IonIcon,
 } from '@ionic/react';
-import kiwiApi from '../api';
-import {useHistory, useLocation, useParams} from 'react-router-dom';
-
-import type {Order as OrderModel} from '../models';
+import {useHistory, useLocation} from 'react-router-dom';
 import palette from '../theme/palette';
 import Typography from '../components/typography';
 import {cashOutline} from 'ionicons/icons';

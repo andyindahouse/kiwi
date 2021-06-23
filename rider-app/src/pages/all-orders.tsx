@@ -1,5 +1,4 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
 import {
     IonBackButton,
     IonButtons,
@@ -7,18 +6,14 @@ import {
     IonHeader,
     IonPage,
     IonTitle,
-    IonRouterLink,
     IonToolbar,
-    IonButton,
+
 } from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order as OrderModel} from '../models';
 import OrderList from '../components/order-list';
 import {useHistory} from 'react-router';
-import {Link} from 'react-router-dom';
-
-const useStyles = createUseStyles(() => ({}));
 
 const AllOrders: React.FC = () => {
     const history = useHistory();

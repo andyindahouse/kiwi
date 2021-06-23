@@ -89,7 +89,7 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const IconStatus = ({icon, activated}: {icon: string | undefined; activated: boolean}) => {
+const IconStatus = ({icon, activated}: {icon: string; activated: boolean}) => {
     const classes = useStyles();
     return (
         <div
@@ -127,8 +127,7 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
     const {
         totalCost,
         products,
-        status,
-        createdDate,
+        status,        
         totalShoppingCart,
         shopperFee,
         deliveryDate,

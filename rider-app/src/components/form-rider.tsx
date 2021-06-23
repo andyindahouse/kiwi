@@ -1,4 +1,4 @@
-import {IonDatetime, IonInput, IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from '@ionic/react';
+import {IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from '@ionic/react';
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import Typography from './typography';
@@ -50,7 +50,7 @@ type Props = {
 
 const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
-    const {handleSubmit, register, errors, control} = useForm({
+    const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
     });
