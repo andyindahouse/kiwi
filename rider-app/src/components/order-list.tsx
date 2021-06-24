@@ -5,8 +5,7 @@ import {RefresherEventDetail} from '@ionic/core';
 import {Order} from '../models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline} from 'ionicons/icons';
-import {Typography} from '@kiwi/ui';
-import InfiniteScroll from '../components/infinite-scroll';
+import {Typography, InfiniteScroll} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

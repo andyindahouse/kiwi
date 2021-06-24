@@ -18,7 +18,7 @@ import {Order, Order as OrderModel, OrderStatus} from '../models';
 import {Typography} from '@kiwi/ui';
 import {RouteComponentProps} from 'react-router';
 import OrderCard from '../components/order-card';
-import InfiniteScroll from '../components/infinite-scroll';
+import {InfiniteScroll} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

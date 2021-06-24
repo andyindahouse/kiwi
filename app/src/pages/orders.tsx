@@ -17,7 +17,7 @@ import kiwiApi from '../api';
 import {Order, Order as OrderModel} from '../models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline, rocketOutline} from 'ionicons/icons';
-import InfiniteScroll from '../components/infinite-scroll';
+import {InfiniteScroll} from '@kiwi/ui';
 import {useHistory} from 'react-router-dom';
 import EmptyCase from '../components/empty-case';
 

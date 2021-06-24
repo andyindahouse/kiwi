@@ -24,7 +24,7 @@ import {
 import {cartOutline, searchOutline} from 'ionicons/icons';
 import Fragment from '../components/fragment';
 import {extendRawProducts} from '../utils';
-import InfiniteScroll, {isLastPage} from '../components/infinite-scroll';
+import {InfiniteScroll} from '@kiwi/ui';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
 import {Capacitor, Plugins} from '@capacitor/core';
@@ -157,6 +157,9 @@ const ProductList = ({
         </>
     );
 };
+
+const isLastPage = (pageNumber: number, pageSize: number, totalSize: number, contentLength: number) =>
+    (pageNumber > 0 ? pageNumber * pageSize + contentLength : contentLength) === totalSize;
 
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
     const {products: shoppingCart, dispatch} = useShoppingCart();
