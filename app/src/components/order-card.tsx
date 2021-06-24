@@ -127,7 +127,7 @@ const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
     const {
         totalCost,
         products,
-        status,        
+        status,
         totalShoppingCart,
         shopperFee,
         deliveryDate,

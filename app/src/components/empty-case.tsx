@@ -1,6 +1,6 @@
 import {IonIcon} from '@ionic/react';
 import * as React from 'react';
-import Box from './box';
+import {Box} from '@kiwi/ui';
 import Typography from './typography';
 import {createUseStyles} from 'react-jss';
 

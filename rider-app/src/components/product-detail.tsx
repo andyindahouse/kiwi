@@ -154,7 +154,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
     const {name, price, img, brand, note, items = []} = product;
     const [currentPrice, setCurrentPrice] = React.useState<number | null>();
     const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);
-    const [showAlert, setShowAlert] = React.useState(false);    
+    const [showAlert, setShowAlert] = React.useState(false);
 
     return (
         <>
@@ -308,7 +308,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
                                     if (product.statusOrder) {
                                         updateProduct({
                                             ...product,
-                                            items: units,                                            
+                                            items: units,
                                             price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,
                                         });

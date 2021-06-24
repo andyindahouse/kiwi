@@ -9,7 +9,7 @@ import ProductItem, {ProductListItemSkeleton} from '../components/product-item';
 import {getExpiryObj} from '../utils';
 import {getFormatDate} from '../utils/format-date';
 import kiwiApi from '../api';
-import Box from './box';
+import {Box} from '@kiwi/ui';
 import {Link, useHistory} from 'react-router-dom';
 import {Plugins, Capacitor} from '@capacitor/core';
 import {isFuture, isPast, subDays} from 'date-fns';

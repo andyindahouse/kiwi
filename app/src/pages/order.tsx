@@ -24,7 +24,7 @@ import {statusOrderMap} from '../utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '../models';
 import PaymentFooter from '../components/payment-fields';
-import Box from '../components/box';
+import {Box} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     list: {

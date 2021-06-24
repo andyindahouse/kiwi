@@ -11,9 +11,11 @@ jobs:
               run: yarn install --immutable --immutable-cache
             - name: Prettier
               run: yarn prettier-check
+            - name: Build (Packages)
+              run: yarn ui build
             - name: Build (App)
               working-directory: ./app
-              run: yarn build
+              run: yarn app build
             - name: Build (Rider App)
               working-directory: ./rider-app
-              run: yarn build
+              run: yarn rider-app build

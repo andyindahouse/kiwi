@@ -7,7 +7,7 @@ import palette from '../theme/palette';
 import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '../models';
-import Box from './box';
+import {Box} from '@kiwi/ui';
 import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles(() => ({

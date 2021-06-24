@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import {restaurantOutline} from 'ionicons/icons';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import Fragment from '../components/fragment';
-import Box from '../components/box';
+import {Box} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     test: {
