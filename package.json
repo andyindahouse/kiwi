@@ -37,6 +37,7 @@
         "backend",
         "app",
         "rider-app",
-        "scrapper"
+        "scrapper",
+        "packages/*"
     ]
 }

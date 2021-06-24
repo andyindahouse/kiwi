@@ -15,7 +15,7 @@ import kiwiApi from '../api';
 import {Product} from '../models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import Box from '../components/box';
+import {Box} from '@kiwi/ui';
 import {
     UpdateShoppingCartProduct,
     UPDATE_SHOPPING_CART_PRODUCT,

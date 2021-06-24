@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-    IonBackButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-
-} from '@ionic/react';
+import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
 import {Order as OrderModel} from '../models';

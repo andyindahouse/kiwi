@@ -55,7 +55,7 @@ export interface Product {
     hasPreparations: boolean;
     isCooled: boolean;
     isGlutenFree: boolean;
-    isLactoseFree: boolean;    
+    isLactoseFree: boolean;
 }
 
 export interface ShoppingCart {

@@ -22,7 +22,7 @@ type Props = {
     cssClass?: string;
 };
 
-const Box = ({
+export const Box = ({
     children,
     padding = 16,
     paddingTop,

@@ -19,7 +19,7 @@ import Typography from '../components/typography';
 import {useAuth} from '../contexts/auth';
 import {useForm, Controller} from 'react-hook-form';
 import palette from '../theme/palette';
-import Box from '../components/box';
+import {Box} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

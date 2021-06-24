@@ -104,7 +104,7 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
             }, 3000);
 
             timerTimeOutRef.current = window.setTimeout(() => {
-                if(units !== 0) {
+                if (units !== 0) {
                     updateUnits(units);
                 }
                 setShowSpinner(false);

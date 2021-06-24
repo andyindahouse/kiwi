@@ -80,7 +80,7 @@ const getProducts = async (page) => {
                         hasPreparations,
                         isCooled,
                         isGlutenFree,
-                        isLactoseFree
+                        isLactoseFree,
                     };
                 }
                 return null;
