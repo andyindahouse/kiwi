@@ -26,7 +26,7 @@ import {
     personOutline,
     rocketOutline,
 } from 'ionicons/icons';
-import Typography from '../components/typography';
+import {Typography} from '@kiwi/ui';
 import {useAuth} from '../contexts/auth';
 import FormUser from '../components/form-user';
 import {User} from '../models';

@@ -11,8 +11,7 @@ import {
     IonIcon,
 } from '@ionic/react';
 import {useHistory, useLocation} from 'react-router-dom';
-import palette from '../theme/palette';
-import Typography from '../components/typography';
+import {palette, Typography} from '@kiwi/ui';
 import {cashOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({

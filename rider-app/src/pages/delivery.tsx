@@ -20,8 +20,7 @@ import kiwiApi from '../api';
 import {useHistory, useParams} from 'react-router-dom';
 
 import type {Order as OrderModel} from '../models';
-import palette from '../theme/palette';
-import Typography from '../components/typography';
+import {Typography, palette} from '@kiwi/ui';
 import {getFormatDate} from '../utils/format-date';
 import {chevronForwardOutline} from 'ionicons/icons';
 
@@ -143,7 +142,7 @@ const Delivery = () => {
                         Cobrar vía
                     </Typography>
                     <Typography gutterBottom={16}>Bizum</Typography>
-                    <Typography variant="caption">Total a Pagar: {order?.totalCost} €</Typography>
+                    <Typography variant="caption1">Total a Pagar: {order?.totalCost} €</Typography>
                 </div>
                 <IonToolbar style={{backgroundColor: palette.background.default}}>
                     <IonButton

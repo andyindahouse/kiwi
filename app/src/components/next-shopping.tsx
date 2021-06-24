@@ -2,12 +2,10 @@ import React from 'react';
 import {createUseStyles} from 'react-jss';
 import {IonIcon, IonList} from '@ionic/react';
 import {cartOutline} from 'ionicons/icons';
-import Typography from '../components/typography';
-import palette from '../theme/palette';
+import {Typography, palette, Box} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '../models';
-import {Box} from '@kiwi/ui';
 import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles(() => ({

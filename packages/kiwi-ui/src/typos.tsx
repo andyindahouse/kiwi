@@ -1,7 +1,7 @@
 // @flow
-import palette from './palette';
+import {palette} from './palette';
 
-export default {
+export const typos = {
     h1: {
         color: palette.text.primary,
         fontWeight: 500,
@@ -45,31 +45,31 @@ export default {
     h6: {
         color: palette.text.primary,
         fontWeight: 500,
-        fontSize: '14px',
+        fontSize: '16px',
         letterSpacing: '-0.05px',
         lineHeight: '20px',
         fontSmoothing: 'antialiased',
     },
     body1: {
         color: palette.text.primary,
-        fontSize: 16,
+        fontSize: 14,
         letterSpacing: 'normal',
-        lineHeight: 1.71,
+        lineHeight: 1.3,
         fontSmoothing: 'antialiased',
     },
     body2: {
         color: palette.text.primary,
-        fontSize: 13,
+        fontSize: 12,
         letterSpacing: '-0.05px',
-        lineHeight: 1.3,
+        lineHeight: 1.2,
         fontSmoothing: 'antialiased',
     },
     subtitle1: {
         color: palette.text.secondary,
         fontWeight: 500,
-        fontSize: 16,
+        fontSize: 14,
         letterSpacing: '-0.05px',
-        lineHeight: 1,
+        lineHeight: 1.3,
         fontSmoothing: 'antialiased',
     },
     subtitle2: {
@@ -77,20 +77,20 @@ export default {
         fontWeight: 500,
         fontSize: 12,
         letterSpacing: '-0.05px',
-        lineHeight: 1.3,
+        lineHeight: 1.2,
         fontSmoothing: 'antialiased',
     },
     button: {
         color: palette.text.primary,
-        fontSize: '14px',
+        fontSize: 14,
         fontSmoothing: 'antialiased',
     },
     caption: {
         color: palette.text.primary,
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 600,
         letterSpacing: 'normal',
-        lineHeight: 1.71,
+        lineHeight: 1.5,
         fontSmoothing: 'antialiased',
     },
     caption2: {
@@ -103,11 +103,11 @@ export default {
     },
     overline: {
         color: palette.text.secondary,
-        fontSize: '11px',
+        fontSize: 12,
         fontWeight: 500,
         letterSpacing: '0.33px',
-        lineHeight: '13px',
+        lineHeight: 13,
         textTransform: 'uppercase',
         fontSmoothing: 'antialiased',
     },
-};
+} as const;

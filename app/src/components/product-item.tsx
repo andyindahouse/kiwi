@@ -12,9 +12,8 @@ import {
     IonList,
     IonIcon,
 } from '@ionic/react';
-import Typography from '../components/typography';
+import {Typography, palette} from '@kiwi/ui';
 import {alertCircleOutline} from 'ionicons/icons';
-import palette from '../theme/palette';
 import classNames from 'classnames';
 
 const useStyles = createUseStyles(() => ({

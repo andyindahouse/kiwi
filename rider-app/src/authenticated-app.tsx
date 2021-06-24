@@ -29,7 +29,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css';
+import '@kiwi/ui/theme.css';
 import Feedback from './pages/feedback';
 
 /* We have to do a full reload page to avoid side effects with lifecycle custom of ionic.

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import Typography from '../components/typography';
+import {Typography} from '@kiwi/ui';
 
 const Help = () => {
     return (

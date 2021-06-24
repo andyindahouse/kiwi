@@ -19,9 +19,8 @@ import {
     IonIcon,
 } from '@ionic/react';
 import ProductDetail from '../components/product-detail';
-import Typography from '../components/typography';
+import {palette, Typography} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
-import palette from '../theme/palette';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
 

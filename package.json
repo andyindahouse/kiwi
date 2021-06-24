@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
-        "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.json\" \"**/*.yml\" \"**/*.md\""
+        "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
+        "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\""
     },
     "repository": {
         "type": "git",
@@ -23,7 +23,7 @@
         }
     },
     "lint-staged": {
-        "*.{js,json,md}": [
+        "*.{js,ts,tsx,css,json,md,yaml,yml}": [
             "prettier --write",
             "git add"
         ]

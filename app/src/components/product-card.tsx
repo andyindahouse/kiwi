@@ -4,8 +4,7 @@ import {createUseStyles, useTheme} from 'react-jss';
 import {IonIcon} from '@ionic/react';
 import {Product} from '../models';
 import {IonSpinner} from '@ionic/react';
-import Typography from './typography';
-import palette from '../theme/palette';
+import {Typography, palette} from '@kiwi/ui';
 import {getLabelDiscount} from '../utils';
 
 const useStyles = createUseStyles(() => ({

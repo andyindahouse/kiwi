@@ -12,10 +12,9 @@ import {addCircleSharp, alertCircleOutline, pricetag, removeCircleSharp} from 'i
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Product} from '../models';
-import palette from '../theme/palette';
+import {palette, Typography} from '@kiwi/ui';
 import {getLabelDiscount, getUnitPriceWithOffer} from '../utils';
 import ChartistGraph from './chartist-graph';
-import Typography from './typography';
 import classnames from 'classnames';
 
 const novaMap = {

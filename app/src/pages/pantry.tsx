@@ -13,8 +13,7 @@ import {
     IonToast,
 } from '@ionic/react';
 import {Product, PantryProductStatus, PantryProduct} from '../models';
-import Typography from '../components/typography';
-import palette from '../theme/palette';
+import {Typography, palette} from '@kiwi/ui';
 import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';
 import {getFormatDate} from '../utils/format-date';

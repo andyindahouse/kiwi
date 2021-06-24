@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import {documentTextOutline, trashOutline} from 'ionicons/icons';
 import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
 import {Product} from '../models';
-import Typography from '../components/typography';
+import {Typography} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     card: {

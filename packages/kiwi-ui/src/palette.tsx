@@ -1,7 +1,7 @@
 const white = '#FFFFFF';
 const black = '#000000';
 
-export default {
+export const palette = {
     black,
     white,
     primary: {
@@ -59,4 +59,4 @@ export default {
     icon: white,
     divider: '#F6F6F6',
     grey: '#DADADA',
-};
+} as const;

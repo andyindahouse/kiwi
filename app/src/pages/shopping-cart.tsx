@@ -28,9 +28,8 @@ import {
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
 import {EMPTY_SHOPPING_CART, SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
-import Typography from '../components/typography';
+import {Typography, palette} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
-import palette from '../theme/palette';
 import kiwiApi from '../api';
 import {useHistory} from 'react-router-dom';
 import {format, startOfTomorrow, addDays} from 'date-fns';
