@@ -15,16 +15,14 @@ import {
     IonFooter,
 } from '@ionic/react';
 import ProductDetail from '../components/product-detail';
-import Typography from '../components/typography';
+import {Typography, palette, Box} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
-import palette from '../theme/palette';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
 import {statusOrderMap} from '../utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '../models';
 import PaymentFooter from '../components/payment-fields';
-import {Box} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     list: {

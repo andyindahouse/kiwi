@@ -1,5 +1,5 @@
 import {Product} from '../models';
-import palette from '../theme/palette';
+import {palette} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {

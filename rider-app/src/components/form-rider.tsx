@@ -1,9 +1,8 @@
 import {IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from '@ionic/react';
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
-import Typography from './typography';
+import {Typography, palette} from '@kiwi/ui';
 import {Controller, useForm} from 'react-hook-form';
-import palette from '../theme/palette';
 
 const useStyles = createUseStyles(() => ({
     slideContainer: {

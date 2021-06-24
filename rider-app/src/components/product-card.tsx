@@ -4,7 +4,7 @@ import {createUseStyles, useTheme} from 'react-jss';
 import {IonIcon} from '@ionic/react';
 import {Product} from '../models';
 import {IonSpinner} from '@ionic/react';
-import Typography from './typography';
+import {Typography} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

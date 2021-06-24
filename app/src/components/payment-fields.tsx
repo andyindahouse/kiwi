@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import palette from '../theme/palette';
-import Typography from './typography';
+import {palette, Typography} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     feeZone: {

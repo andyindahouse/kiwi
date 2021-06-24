@@ -17,8 +17,7 @@ import {RegisterUser} from '../models';
 import FormUser from '../components/form-user';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
-import Typography from '../components/typography';
-import palette from '../theme/palette';
+import {Typography, palette} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     registerForm: {

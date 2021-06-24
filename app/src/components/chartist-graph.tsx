@@ -3,7 +3,7 @@ import Chartist from 'chartist';
 import 'chartist/dist/chartist.css';
 import classnames from 'classnames';
 import {createUseStyles} from 'react-jss';
-import palette from '../theme/palette';
+import {palette} from '@kiwi/ui';
 import {isNumber} from 'lodash';
 
 const useStyles = createUseStyles(() => ({

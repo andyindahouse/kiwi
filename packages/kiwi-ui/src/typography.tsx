@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import typos from '../theme/typography';
+import {typos} from './typos';
 import classnames from 'classnames';
 
 const useStyles = createUseStyles(() => ({
@@ -47,13 +47,14 @@ interface Props {
         | 'subtitle1'
         | 'subtitle2'
         | 'button'
-        | 'caption'
+        | 'caption1'
         | 'caption2'
         | 'overline';
     color?: string;
+    style?: React.CSSProperties;
 }
 
-const Typography = ({
+export const Typography = ({
     variant = 'body1',
     gutterBottom = 0,
     ellipsis = false,
@@ -62,6 +63,7 @@ const Typography = ({
     className,
     children,
     color,
+    style,
     ...props
 }: Props & React.HTMLAttributes<any>) => {
     const classes = useStyles();
@@ -75,10 +77,11 @@ const Typography = ({
                         className
                     )}
                     style={{
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -95,9 +98,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -113,10 +117,11 @@ const Typography = ({
                         className
                     )}
                     style={{
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -132,10 +137,11 @@ const Typography = ({
                         className
                     )}
                     style={{
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -151,10 +157,11 @@ const Typography = ({
                         className
                     )}
                     style={{
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -173,6 +180,7 @@ const Typography = ({
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -191,6 +199,7 @@ const Typography = ({
                         marginBottom: gutterBottom,
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -207,9 +216,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -226,9 +236,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -245,9 +256,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -264,16 +276,17 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
                     {children}
                 </p>
             );
-        case 'caption':
+        case 'caption1':
             return (
                 <p
                     className={classnames(
@@ -283,9 +296,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -302,9 +316,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -321,9 +336,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -340,9 +356,10 @@ const Typography = ({
                     )}
                     style={{
                         marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 ? {display: 'block'} : {}),
+                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
                         ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
                         ...(color ? {color} : {}),
+                        ...style,
                     }}
                     {...props}
                 >
@@ -351,5 +368,3 @@ const Typography = ({
             );
     }
 };
-
-export default Typography;

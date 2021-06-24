@@ -1,8 +1,7 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
 import {Order as OrderModel, Product} from '../models';
-import Typography from '../components/typography';
-import palette from '../theme/palette';
+import {Typography, palette} from '@kiwi/ui';
 import {IonButton} from '@ionic/react';
 import {statusOrderMap} from '../utils';
 import {getFormatDate, getFormatTime} from '../utils/format-date';
