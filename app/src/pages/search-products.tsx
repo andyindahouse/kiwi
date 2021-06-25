@@ -92,7 +92,7 @@ const ProductList = ({
     const {user} = useAuth();
 
     React.useEffect(() => {
-        const request = !!user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+        const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
 
         request({products: shoppingCartProducts}).catch(() => {
             throw new Error('Carrito desactualizado');

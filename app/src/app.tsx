@@ -29,18 +29,18 @@ const AuthenticatedApp: React.FC = () => {
                         <Route path="/:tab(search)/cart" component={ShoppingCart} exact />
                         <Route
                             path="/:tab(nutrition)"
-                            render={(props) => (!!user ? <Pantry {...props} /> : <UnauthenticatedPantry />)}
+                            render={(props) => (user ? <Pantry {...props} /> : <UnauthenticatedPantry />)}
                             exact
                         />
-                        <Route path="/others" component={!!user ? Others : Login} exact />
+                        <Route path="/others" component={user ? Others : Login} exact />
                         <Route
                             path="/:tab(others)/orders"
-                            render={() => (!!user ? <Orders /> : <Redirect to="/others" />)}
+                            render={() => (user ? <Orders /> : <Redirect to="/others" />)}
                             exact
                         />
                         <Route
                             path="/:tab(others)/orders/:id"
-                            render={(props) => (!!user ? <Order {...props} /> : <Redirect to="/others" />)}
+                            render={(props) => (user ? <Order {...props} /> : <Redirect to="/others" />)}
                             exact
                         />
 

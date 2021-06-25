@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
-        "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\""
+        "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
+        "lint": "eslint --ext .js,.ts,.tsx ."
     },
     "repository": {
         "type": "git",
@@ -39,5 +40,13 @@
         "rider-app",
         "scrapper",
         "packages/*"
-    ]
+    ],
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.28.0",
+        "@typescript-eslint/parser": "^4.28.0",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-react": "^6.10.3",
+        "eslint-plugin-react-hooks": "^4.2.0"
+    }
 }

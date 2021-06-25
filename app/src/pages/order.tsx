@@ -89,7 +89,7 @@ const getMesaggeStatus = (status: OrderStatus) => {
     }
 };
 
-const Order: React.FC<RouteComponentProps<{id: string}>> = ({match}) => {
+const Order = ({match}: RouteComponentProps<{id: string}>) => {
     const classes = useStyles();
     const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);

@@ -11,7 +11,6 @@ const PantrySchema = Schema({
     img: String,
     name: String,
     buyedDate: Date,
-    email: String,
     date: Date,
 });
 

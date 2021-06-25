@@ -20,19 +20,15 @@ const getProductSaleType = (productSaleType) => {
         // one piece or sold by % pieces (Example: 200gr salmon or one salmon)
         case 'SELLING_TYPE_WEIGHT_AND_UNIT':
             return 'weight_and_unit';
-            break;
         // products sold by unit (Example: bottle of water)
         case 'SELLING_TYPE_TRAY':
         case 'SELLING_TYPE_UNIT':
             return 'unit';
-            break;
         // full pieces (price -> X kg of piece)  (Example: one chicken)
         case 'SELLING_TYPE_PIECE':
             return 'piece';
-            break;
         default:
             return 'unit';
-            break;
     }
 };
 
@@ -40,16 +36,14 @@ const getProducts = async (page) => {
     const data = await page.evaluate(() => {
         const getDiscountType = (specialOffer) => {
             if (/(\d+).* unidad al (\d+).* de descuento/.test(specialOffer)) {
-                const [text, valueOne, valueTwo] = /(\d+).* unidad al (\d+).* de descuento/.exec(
-                    specialOffer
-                );
+                const [, valueOne, valueTwo] = /(\d+).* unidad al (\d+).* de descuento/.exec(specialOffer);
                 return {
                     specialOffer: 'offerDiscount',
                     specialOfferValue: [valueOne, valueTwo],
                 };
             }
             if (/Lleva (\d+) y paga (\d+)/.test(specialOffer)) {
-                const [text, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
+                const [, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
                 return {
                     specialOffer: 'quantityDiscount',
                     specialOfferValue: [valueOne, valueTwo],
@@ -60,7 +54,7 @@ const getProducts = async (page) => {
             .filter((elem) => !!elem)
             .map((elem) => {
                 const jsonData = elem.getAttribute('data-json');
-                const productDefaultListOption = elem.getAttribute('data-product-default_list_options');
+                // const productDefaultListOption = elem.getAttribute('data-product-default_list_options');
                 const productSaleType = elem.getAttribute('data-product-sale_type');
                 const hasPreparations = !!elem.getAttribute('data-product-preparations');
                 const isCooled = elem.querySelector('span[title="Producto refrigerado"]');
@@ -136,7 +130,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
 
             const products = await getTotalProducts(page);
             console.log({products});
-            let urlWithPage = `${url}`;
             let client;
 
             const paginationEnabled = await page.evaluate(
