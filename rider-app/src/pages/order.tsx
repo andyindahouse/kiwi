@@ -79,7 +79,7 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
-const Order: React.FC<RouteComponentProps<{id: string}>> = ({history, match}) => {
+const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
     const classes = useStyles();
     const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);

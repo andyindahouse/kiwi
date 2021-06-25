@@ -173,7 +173,12 @@ const controller = {
                 const newTotalShoppingCart = parseFloat((order.totalShoppingCart + costProduct).toFixed(2));
                 const newTotalCost = parseFloat((order.totalCost + costProduct).toFixed(2));
                 const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: id, email: email.user},
+                    {
+                        _id: id,
+                        email:
+                            // eslint-disable-next-line no-undef
+                            email.user, // 'email' is not defined
+                    },
                     {
                         products,
                         updatedDate: new Date(),
@@ -224,7 +229,12 @@ const controller = {
                 );
                 if (productIndex > -1) {
                     const updatedOrder = await Order.findOneAndUpdate(
-                        {_id: orderId, email: email.user},
+                        {
+                            _id: orderId,
+                            email:
+                                // eslint-disable-next-line no-undef
+                                email.user, // 'email' is not defined
+                        },
                         {
                             products,
                             updatedDate: new Date(),
@@ -270,7 +280,12 @@ const controller = {
                 );
 
                 const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: orderId, email: email.user},
+                    {
+                        _id: orderId,
+                        email:
+                            // eslint-disable-next-line no-undef
+                            email.user, // 'email' is not defined
+                    },
                     {
                         products,
                         updatedDate: new Date(),

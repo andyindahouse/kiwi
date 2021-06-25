@@ -50,7 +50,7 @@ const getParam = (search: string, param: string) => {
     return new URLSearchParams(search).get(param) as Segment;
 };
 
-const Orders: React.FC<RouteComponentProps> = ({history, location: {search}}) => {
+const Orders = ({history, location: {search}}: RouteComponentProps) => {
     const classes = useStyles();
     const [segment, setSegment] = React.useState<Segment>(getParam(search, 'tab') || 'active');
     const [filter, setFilter] = React.useState<{

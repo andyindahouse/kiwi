@@ -114,6 +114,7 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         ref={sliderRef}
                         options={{speed: 400}}
                         /** workaround to avoid this issue https://github.com/ionic-team/ionic-framework/issues/19638 */
+                        // eslint-disable-next-line no-unused-vars
                         onIonSlidesDidLoad={function (this: any) {
                             this.update();
                         }}

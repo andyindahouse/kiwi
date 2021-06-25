@@ -148,7 +148,7 @@ const ShoppingCart = () => {
         },
     });
     const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
-        const request = !!user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+        const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
 
         request({products: updatedProducts})
             .then((res) => {
@@ -191,7 +191,7 @@ const ShoppingCart = () => {
     };
 
     useIonViewWillEnter(() => {
-        if (!!user) {
+        if (user) {
             kiwiApi.getShoppingCart().then((res) => {
                 dispatch({
                     type: SYNC_SHOPPING_CART,
@@ -245,7 +245,7 @@ const ShoppingCart = () => {
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
-                                                {!!user
+                                                {user
                                                     ? `${product.cost}€`
                                                     : `${(getUnits(product) * Number(price.final)).toFixed(
                                                           2
@@ -560,7 +560,7 @@ const ShoppingCart = () => {
                             expand="full"
                             size="large"
                             onClick={() => {
-                                if (!!user) {
+                                if (user) {
                                     setShowModal(true);
                                 } else {
                                     setShowRegisterAlert(true);

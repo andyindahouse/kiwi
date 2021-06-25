@@ -11,11 +11,11 @@ jobs:
               run: yarn install --immutable --immutable-cache
             - name: Prettier
               run: yarn prettier-check
+            - name: Lint
+              run: yarn lint
             - name: Build (Packages)
-              run: yarn ui build
-            - name: Build (App)
-              working-directory: ./app
-              run: yarn app build
-            - name: Build (Rider App)
-              working-directory: ./rider-app
-              run: yarn rider-app build
+              run: yarn workspace @kiwi/ui build
+            - name: TypeScript (App)
+              run: yarn workspace app typescript-check
+            - name: TypeScript (Rider App)
+              run: yarn workspace rider-app typescript-check
