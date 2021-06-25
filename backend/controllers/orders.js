@@ -144,7 +144,7 @@ const controller = {
             next(err);
         }
     },
-    addProduct: async ({params, body}, res, next) => {
+    addProduct: async ({user, params, body}, res, next) => {
         try {
             if (!body.id) {
                 next(new errorTypes.Error400('Falta parametro id.'));
@@ -175,9 +175,7 @@ const controller = {
                 const updatedOrder = await Order.findOneAndUpdate(
                     {
                         _id: id,
-                        email:
-                            // eslint-disable-next-line no-undef
-                            email.user, // 'email' is not defined
+                        email: user.email,
                     },
                     {
                         products,
@@ -203,7 +201,7 @@ const controller = {
             next(err);
         }
     },
-    updateProduct: async ({params, body}, res, next) => {
+    updateProduct: async ({user, params, body}, res, next) => {
         try {
             const orderId = new ObjectID(params.orderId);
             const order = await Order.findById(orderId);
@@ -231,9 +229,7 @@ const controller = {
                     const updatedOrder = await Order.findOneAndUpdate(
                         {
                             _id: orderId,
-                            email:
-                                // eslint-disable-next-line no-undef
-                                email.user, // 'email' is not defined
+                            email: user.email,
                         },
                         {
                             products,
@@ -262,7 +258,7 @@ const controller = {
             next(err);
         }
     },
-    deleteProduct: async ({params, body}, res, next) => {
+    deleteProduct: async ({user, params, body}, res, next) => {
         try {
             const orderId = new ObjectID(params.orderId);
             const order = await Order.findById(orderId);
@@ -282,9 +278,7 @@ const controller = {
                 const updatedOrder = await Order.findOneAndUpdate(
                     {
                         _id: orderId,
-                        email:
-                            // eslint-disable-next-line no-undef
-                            email.user, // 'email' is not defined
+                        email: user.email,
                     },
                     {
                         products,

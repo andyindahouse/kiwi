@@ -1,13 +1,12 @@
 {
-    // Please, talk to AppsCore before changing this file!
     "editor.formatOnSave": true,
     "javascript.validate.enable": false,
-    "flow.useNPMPackagedFlow": true,
     "search.exclude": {
         "**/node_modules": true,
         "**/bundles": true,
         "**/build": true,
-        "**/dist": true
+        "**/dist": true,
+        ".yarn": true
     },
     "files.eol": "\n"
 }
