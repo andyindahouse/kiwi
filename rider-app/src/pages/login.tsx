@@ -86,6 +86,7 @@ const Login: React.FC = () => {
                                     }}
                                     render={({onChange, onBlur, value, name, ref}) => (
                                         <IonInput
+                                            type="email"
                                             onIonChange={onChange}
                                             name={name}
                                             ref={ref}
