@@ -1,6 +1,6 @@
 import React from 'react';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import Fragment from '../components/fragment';
+import {Fragment} from '@kiwi/ui';
 import {rocketOutline} from 'ionicons/icons';
 import FoodToExpire from '../components/food-to-expire';
 import NextShopping from '../components/next-shopping';
