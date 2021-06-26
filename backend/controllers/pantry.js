@@ -32,11 +32,13 @@ const controller = {
 
                 const result = await Pantry.aggregate([
                     {$match: {$and: match}},
-                    ...(query.orderBy === 'date' && [
-                        {$addFields: {fieldType: {$type: '$date'}}},
-                        {$sort: {fieldType: 1, ...order}},
-                        {$project: {fieldType: 0}},
-                    ]),
+                    ...(query.orderBy === 'date'
+                        ? [
+                              {$addFields: {fieldType: {$type: '$date'}}},
+                              {$sort: {fieldType: 1, ...order}},
+                              {$project: {fieldType: 0}},
+                          ]
+                        : []),
                     {$skip: skip},
                     {$limit: limit},
                 ]);

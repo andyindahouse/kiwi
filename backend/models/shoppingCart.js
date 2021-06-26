@@ -1,9 +1,8 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema, model} = require('mongoose');
 
-const ShoppingCartSchema = Schema({
+const ShoppingCartSchema = new Schema({
     email: String,
     products: [
         {
@@ -14,4 +13,4 @@ const ShoppingCartSchema = Schema({
     ],
 });
 
-module.exports = mongoose.model('ShoppingCart', ShoppingCartSchema, 'shoppingCarts');
+module.exports = model('ShoppingCart', ShoppingCartSchema, 'shoppingCarts');

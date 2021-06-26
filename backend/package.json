@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "start": "node index.js https",
-        "start-dev": "nodemon index.js "
+        "start-dev": "nodemon index.js",
+        "ts-check": "tsc"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -19,6 +20,12 @@
         "passport-local": "^1.0.0"
     },
     "devDependencies": {
-        "nodemon": "^2.0.7"
+        "@types/bcrypt": "^5.0.0",
+        "@types/cors": "^2.8.10",
+        "@types/passport": "^1.0.6",
+        "@types/passport-jwt": "^3.0.5",
+        "@types/passport-local": "^1.0.33",
+        "nodemon": "^2.0.7",
+        "typescript": "^4.3.4"
     }
 }
