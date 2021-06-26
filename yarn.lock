@@ -2768,7 +2768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^15.12.4":
+"@types/node@npm:*":
   version: 15.12.4
   resolution: "@types/node@npm:15.12.4"
   checksum: 64b121a7e805379382aeb3eefed56c4c34f1ebf5e818ba2c732e43beebc4fbde20be438f3eaaffd8dba5062f0e0c9ae085127b7239906d170eda816885a6c508
@@ -3687,13 +3687,13 @@ __metadata:
     "@types/classnames": ^2.3.1
     "@types/jest": ^26.0.23
     "@types/lodash": ^4.14.170
-    "@types/node": ^15.12.4
     "@types/react": ^17.0.11
     "@types/react-dom": ^17.0.8
     "@types/react-router": ^5.1.15
     "@types/react-router-dom": ^5.1.7
     chartist: ^0.11.4
     classnames: ^2.3.1
+    cross-env: ^7.0.3
     date-fns: ^2.22.1
     ionicons: ^5.5.2
     lodash: ^4.17.21
@@ -5576,7 +5576,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2":
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: ^7.0.1
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: af4fa4dab3ddf6c25ed5e0c95ef53ea363aceb41741e22b7eae83a12cc10cb2416e3aba29c95f2f2c3a1aa918d3444fe92fab318a8ba761e8d52ae88388496cc
+  languageName: node
+  linkType: hard
+
+"cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -14662,12 +14674,12 @@ resolve@^2.0.0-next.3:
     "@types/classnames": ^2.3.1
     "@types/jest": ^26.0.23
     "@types/lodash": ^4.14.170
-    "@types/node": ^15.12.4
     "@types/react": ^17.0.11
     "@types/react-dom": ^17.0.8
     "@types/react-router": ^5.1.15
     "@types/react-router-dom": ^5.1.7
     classnames: ^2.3.1
+    cross-env: ^7.0.3
     date-fns: ^2.22.1
     ionicons: ^5.5.2
     lodash: ^4.17.21

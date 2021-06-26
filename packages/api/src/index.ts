@@ -30,3 +30,5 @@ export const getApiCall =
         const response = await rawResponse.json();
         return response.data || response;
     };
+
+export type ApiCaller = ReturnType<typeof getApiCall>;
