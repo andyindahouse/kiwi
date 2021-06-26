@@ -16,6 +16,8 @@ jobs:
             - name: Build (Packages)
               run: yarn workspace @kiwi/ui build
             - name: TypeScript (App)
-              run: yarn workspace app typescript-check
+              run: yarn workspace app ts-check
             - name: TypeScript (Rider App)
-              run: yarn workspace rider-app typescript-check
+              run: yarn workspace rider-app ts-check
+            - name: TypeScript (Backend)
+              run: yarn workspace backend ts-check

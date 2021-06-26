@@ -28,7 +28,7 @@
         "build-dev": "NODE_ENV=development react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "typescript-check": "tsc"
+        "ts-check": "tsc"
     },
     "browserslist": {
         "production": [

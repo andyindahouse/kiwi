@@ -14,7 +14,7 @@ const controller = {
                 if (data) {
                     throw new errorTypes.InfoError('User already exists');
                 } else {
-                    const hash = bcrypt.hashSync(req.body.password, parseInt(PASSPORT_CONFIG.BCRYPT_ROUNDS));
+                    const hash = bcrypt.hashSync(req.body.password, PASSPORT_CONFIG.BCRYPT_ROUNDS);
                     const document = new User({
                         email: req.body.email,
                         password: hash,
@@ -75,12 +75,14 @@ const controller = {
             } else {
                 const payload = {
                     sub: user._id,
-                    exp: Date.now() + parseInt(PASSPORT_CONFIG.JWT_LIFETIME),
+                    exp: Date.now() + PASSPORT_CONFIG.JWT_LIFETIME,
                     email: user.email,
                 };
-                const token = jwt.sign(JSON.stringify(payload), PASSPORT_CONFIG.JWT_SECRET, {
-                    algorithm: PASSPORT_CONFIG.JWT_ALGORITHM,
-                });
+                const token =
+                    // @ts-ignore TS2769: No overload matches this call (...) 'algorithm' does not exist in type 'SignCallback'
+                    jwt.sign(JSON.stringify(payload), PASSPORT_CONFIG.JWT_SECRET, {
+                        algorithm: PASSPORT_CONFIG.JWT_ALGORITHM,
+                    });
                 res.json({data: {token: token}});
             }
         })(req, res);
@@ -197,7 +199,7 @@ const controller = {
             const updatedUserPassword = await User.findOneAndUpdate(
                 {email: req.user.email},
                 {
-                    password: bcrypt.hashSync(req.body.newPassword, parseInt(PASSPORT_CONFIG.BCRYPT_ROUNDS)),
+                    password: bcrypt.hashSync(req.body.newPassword, PASSPORT_CONFIG.BCRYPT_ROUNDS),
                 },
                 {
                     new: true,
