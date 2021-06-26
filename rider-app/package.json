@@ -8,6 +8,7 @@
         "@capacitor/ios": "^2.4.7",
         "@ionic/react": "^5.6.10",
         "@ionic/react-router": "^5.6.10",
+        "@kiwi/api": "workspace:*",
         "@kiwi/ui": "workspace:*",
         "classnames": "^2.3.1",
         "date-fns": "^2.22.1",

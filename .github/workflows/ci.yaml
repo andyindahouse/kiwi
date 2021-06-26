@@ -14,7 +14,7 @@ jobs:
             - name: Lint
               run: yarn lint
             - name: Build (Packages)
-              run: yarn workspace @kiwi/ui build
+              run: yarn build-packages
             - name: TypeScript (App)
               run: yarn workspace app ts-check
             - name: TypeScript (Rider App)

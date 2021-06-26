@@ -1,7 +1,7 @@
+import {getApiCall} from '@kiwi/api';
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
 import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart, User} from '../models';
 
-const serverIp = 'https://kiwiapp.es:3001';
 const PAGE_SIZE = 20;
 
 export type PaginatedResponse<T> = {
@@ -11,85 +11,60 @@ export type PaginatedResponse<T> = {
     totalSize: number;
 };
 
-const apiClient = async (
-    {url, body, customMethod}: {url: string; body?: Record<string, any> | FormData; customMethod?: string},
-    authenticated = true
-) => {
-    const method = customMethod || (body ? 'POST' : 'GET');
-    console.log(`API ${method} REQUEST ${url}:`, body);
-    const rawResponse = await fetch(`${serverIp}/api${url}`, {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...(authenticated
-                ? {Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE)}`}
-                : {}),
-        },
-        ...(body ? {body: JSON.stringify(body)} : {}),
-    });
-
-    if (rawResponse.ok) {
-        const response = await rawResponse.json();
-        console.log(`API ${method} RESPONSE ${url}:`, response);
-        return response.data ? response.data : response;
-    } else {
-        throw Error(`ERROR API ${method} RESPONSE ${url}: ${rawResponse.status}`);
-    }
-};
+const call = getApiCall('https://kiwiapp.es:3001', () => localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE));
 
 const kiwiApi = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
-        apiClient({url: '/login', body}, false),
-    registerUser: (body: User & {password: string}): Promise<User> =>
-        apiClient({url: '/register', body}, false),
+        call({url: '/login', body}, false),
+    registerUser: (body: User & {password: string}): Promise<User> => call({url: '/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
-        apiClient({url: `/emailTaken?email=${email}`}, false),
-    getUser: (): Promise<User> => apiClient({url: '/me'}),
-    setUser: (body: Partial<User>): Promise<User> => apiClient({url: '/me', body, customMethod: 'PATCH'}),
+        call({url: `/emailTaken?email=${email}`}, false),
+    getUser: (): Promise<User> => call({url: '/me'}),
+    setUser: (body: Partial<User>): Promise<User> => call({url: '/me', body, customMethod: 'PATCH'}),
     changeUserPassword: (body: {oldPassword: string; newPassword: string}) =>
-        apiClient({url: '/me/password', body}),
+        call({url: '/me/password', body}),
     getProducts: (queryParams: {
         searchText: string | null;
         pageNumber: number;
     }): Promise<PaginatedResponse<ReadonlyArray<Product>>> =>
-        apiClient(
+        call(
             {
                 url: `/products?pageSize=${PAGE_SIZE}&searchText=${queryParams.searchText}&pageNumber=${queryParams.pageNumber}`,
             },
             false
         ),
-    getProductDetail: (id: string): Promise<Product> => apiClient({url: `/products/${id}`}, false),
+    getProductDetail: (id: string): Promise<Product> => call({url: `/products/${id}`}, false),
     setShoppingCart: (body: {products: ReadonlyArray<Product>}): Promise<ShoppingCart> =>
-        apiClient({url: '/shoppingCart', body}),
-    getShoppingCart: (): Promise<ShoppingCart> => apiClient({url: '/shoppingCart'}),
+        call({url: '/shoppingCart', body}),
+    getShoppingCart: (): Promise<ShoppingCart> => call({url: '/shoppingCart'}),
     checkout: (body: {
         note: string;
         deliveryAddress: string;
         deliveryDate: string;
         deliveryHour: string;
         replaceProducts: boolean;
-    }): Promise<Order> => apiClient({url: '/checkout', body, customMethod: 'PUT'}),
+    }): Promise<Order> => call({url: '/checkout', body, customMethod: 'PUT'}),
     getOrders: ({pageNumber}: {pageNumber: number}): Promise<PaginatedResponse<ReadonlyArray<Order>>> =>
-        apiClient({url: `/orders?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`}),
+        call({url: `/orders?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`}),
     getOrder: ({id}: {id: string}): Promise<Order> =>
-        apiClient({url: `/orders/${id}`}).then((res: Order) => {
+        call({url: `/orders/${id}`}).then((res: Order) => {
             return {
                 ...res,
                 products: res.products.map((e) => ({...e, units: e.items?.length || 0})),
             };
         }),
     updateOrderProduct: (body: Product, id: string): Promise<Order> =>
-        apiClient({url: `/orders/${id}/products/${body.id}`, body}).then((data: Order) => ({
+        call({url: `/orders/${id}/products/${body.id}`, body}).then((data: Order) => ({
             ...data,
             products: data.products.map((e) => ({...e, units: e.items?.length || 0})),
         })),
     updateStatusOrder: (id: string): Promise<Order> =>
-        apiClient({url: `/orders/${id}/status`, body: {status: 'cancelled'}}).then((data: Order) => ({
+        call({url: `/orders/${id}/status`, body: {status: 'cancelled'}}).then((data: Order) => ({
             ...data,
             products: data.products.map((e) => ({...e, units: e.items?.length || 0})),
         })),
     deleteOrderProduct: (product: Product, id: string): Promise<Order> =>
-        apiClient({url: `/orders/${id}/products/${product.id}`, customMethod: 'DELETE'}),
+        call({url: `/orders/${id}/products/${product.id}`, customMethod: 'DELETE'}),
     getPantry: (queryParams: {
         pageNumber: number;
         searchText?: string;
@@ -101,14 +76,14 @@ const kiwiApi = {
         const inStorageParam = queryParams.inStorage ? `&inStorage=${queryParams.inStorage}` : '';
         const perishableParam = queryParams.perishable ? `&perishable=true` : '';
 
-        return apiClient({
+        return call({
             url: `/pantry?pageSize=${queryParams.pageSize || 200}&pageNumber=${
                 queryParams.pageNumber
             }${searchTextParam}${inStorageParam}${perishableParam}&orderBy=date&orderDir=asc`,
         });
     },
     updatePantryProduct: (body: PantryProduct): Promise<PantryProduct> =>
-        apiClient({url: `/pantry/${body._id}`, body}),
+        call({url: `/pantry/${body._id}`, body}),
 };
 
 export default kiwiApi;
