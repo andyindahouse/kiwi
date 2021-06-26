@@ -15,16 +15,14 @@ import kiwiApi from '../api';
 import {Product} from '../models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import {Box} from '@kiwi/ui';
+import {Box, InfiniteScroll, Fragment} from '@kiwi/ui';
 import {
     UpdateShoppingCartProduct,
     UPDATE_SHOPPING_CART_PRODUCT,
     useShoppingCart,
 } from '../contexts/shopping-cart';
 import {cartOutline, searchOutline} from 'ionicons/icons';
-import Fragment from '../components/fragment';
 import {extendRawProducts} from '../utils';
-import {InfiniteScroll} from '@kiwi/ui';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
 import {Capacitor, Plugins} from '@capacitor/core';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {IonIcon, IonRouterLink} from '@ionic/react';
-import {Typography} from '@kiwi/ui';
+import {Typography} from './typography';
 import {createUseStyles} from 'react-jss';
 import {chevronForwardSharp} from 'ionicons/icons';
 
@@ -28,7 +28,7 @@ type Props = {
     margin?: boolean;
 };
 
-const Fragment = ({icon, text, link, color = 'primary', margin = false}: Props) => {
+export const Fragment = ({icon, text, link, color = 'primary', margin = false}: Props) => {
     const classes = useStyles();
 
     return (
@@ -41,5 +41,3 @@ const Fragment = ({icon, text, link, color = 'primary', margin = false}: Props) 
         </IonRouterLink>
     );
 };
-
-export default Fragment;
