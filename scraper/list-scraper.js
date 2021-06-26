@@ -12,26 +12,6 @@ const getTotalProducts = async (page) => {
     return products;
 };
 
-const getProductSaleType = (productSaleType) => {
-    switch (productSaleType) {
-        // only sold by weigth (Example: 300gr steak)
-        case 'SELLING_TYPE_WEIGHT':
-            return 'weight';
-        // one piece or sold by % pieces (Example: 200gr salmon or one salmon)
-        case 'SELLING_TYPE_WEIGHT_AND_UNIT':
-            return 'weight_and_unit';
-        // products sold by unit (Example: bottle of water)
-        case 'SELLING_TYPE_TRAY':
-        case 'SELLING_TYPE_UNIT':
-            return 'unit';
-        // full pieces (price -> X kg of piece)  (Example: one chicken)
-        case 'SELLING_TYPE_PIECE':
-            return 'piece';
-        default:
-            return 'unit';
-    }
-};
-
 const getProducts = async (page) => {
     const data = await page.evaluate(() => {
         const getDiscountType = (specialOffer) => {
@@ -50,6 +30,25 @@ const getProducts = async (page) => {
                 };
             }
         };
+        const getProductSaleType = (productSaleType) => {
+            switch (productSaleType) {
+                // only sold by weigth (Example: 300gr steak)
+                case 'SELLING_TYPE_WEIGHT':
+                    return 'weight';
+                // one piece or sold by % pieces (Example: 200gr salmon or one salmon)
+                case 'SELLING_TYPE_WEIGHT_AND_UNIT':
+                    return 'weight_and_unit';
+                // products sold by unit (Example: bottle of water)
+                case 'SELLING_TYPE_TRAY':
+                case 'SELLING_TYPE_UNIT':
+                    return 'unit';
+                // full pieces (price -> X kg of piece)  (Example: one chicken)
+                case 'SELLING_TYPE_PIECE':
+                    return 'piece';
+                default:
+                    return 'unit';
+            }
+        };
         return [...document.querySelectorAll('.grid-item')]
             .filter((elem) => !!elem)
             .map((elem) => {
@@ -57,10 +56,10 @@ const getProducts = async (page) => {
                 // const productDefaultListOption = elem.getAttribute('data-product-default_list_options');
                 const productSaleType = elem.getAttribute('data-product-sale_type');
                 const hasPreparations = !!elem.getAttribute('data-product-preparations');
-                const isCooled = elem.querySelector('span[title="Producto refrigerado"]');
-                const isGlutenFree = elem.querySelector('span[title="Producto sin gluten"]');
-                const isLactoseFree = elem.querySelector('span[title="Producto sin lactosa"]');
-                const offerData = elem.querySelector('.offer-description');
+                const isCooled = !!elem.querySelector('span[title="Producto refrigerado"]');
+                const isGlutenFree = !!elem.querySelector('span[title="Producto sin gluten"]');
+                const isLactoseFree = !!elem.querySelector('span[title="Producto sin lactosa"]');
+                const offerData = !!elem.querySelector('.offer-description');
 
                 if (jsonData) {
                     return {
@@ -105,7 +104,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     return await getProducts(page);
 };
 
-(async () => {
+const initScrapper = async () => {
     console.log('Starting scraping list...');
     console.log(new Date());
     console.time('Scraping time');
@@ -203,4 +202,6 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     console.log(new Date());
     console.timeEnd('Scraping time');
     process.exit();
-})();
+};
+
+initScrapper();
