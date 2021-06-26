@@ -1,17 +1,23 @@
 import {getApiCall} from '@kiwi/api';
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
-import {Order, PantryProduct, PantryProductStatus, Product, ShoppingCart, User} from '../models';
+import {
+    Order,
+    PaginatedResponse,
+    PantryProduct,
+    PantryProductStatus,
+    Product,
+    ShoppingCart,
+    User,
+} from '../models';
+import {callStub} from './stubs';
+import {USE_STUBS} from './dev-config';
 
 const PAGE_SIZE = 20;
 
-export type PaginatedResponse<T> = {
-    content: T;
-    pageNumber: number;
-    pageSize: number;
-    totalSize: number;
-};
-
-const call = getApiCall('https://kiwiapp.es:3001', () => localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE));
+const call =
+    process.env.NODE_ENV === 'development' && USE_STUBS
+        ? callStub
+        : getApiCall('https://kiwiapp.es:3001', () => localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE));
 
 const kiwiApi = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
