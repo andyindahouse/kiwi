@@ -1,3 +1,10 @@
+export type PaginatedResponse<T> = {
+    content: T;
+    pageNumber: number;
+    pageSize: number;
+    totalSize: number;
+};
+
 export type User = {
     firstName: string;
     email: string;

@@ -24,8 +24,8 @@ const utils = {
             deliverFee: FEES.deliverFee,
             shopperFee: FEES.shopperFee,
             deliveryDiscount: FEES.discount,
-            finalDeliverFee: FEES.discount ? FEES.deliverFee * FEES.discount : FEES.deliverFee,
-            finalShopperFee: FEES.discount ? FEES.shopperFee * FEES.discount : FEES.shopperFee,
+            finalDeliverFee: FEES.deliverFee * (1 - FEES.discount),
+            finalShopperFee: FEES.shopperFee * (1 - FEES.discount),
         };
     },
 };
