@@ -2072,9 +2072,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kiwi/ui@workspace:*, @kiwi/ui@workspace:packages/kiwi-ui":
+"@kiwi/api@workspace:*, @kiwi/api@workspace:packages/api":
   version: 0.0.0-use.local
-  resolution: "@kiwi/ui@workspace:packages/kiwi-ui"
+  resolution: "@kiwi/api@workspace:packages/api"
+  dependencies:
+    rimraf: ^3.0.2
+    typescript: 4.3.4
+  peerDependencies:
+    "@ionic/react": "*"
+    classnames: "*"
+    react: "*"
+    react-dom: "*"
+    react-jss: "*"
+  languageName: unknown
+  linkType: soft
+
+"@kiwi/ui@workspace:*, @kiwi/ui@workspace:packages/ui":
+  version: 0.0.0-use.local
+  resolution: "@kiwi/ui@workspace:packages/ui"
   dependencies:
     rimraf: ^3.0.2
     typescript: 4.3.4
@@ -3663,6 +3678,7 @@ __metadata:
     "@capacitor/ios": ^2.4.7
     "@ionic/react": ^5.6.10
     "@ionic/react-router": ^5.6.10
+    "@kiwi/api": "workspace:*"
     "@kiwi/ui": "workspace:*"
     "@testing-library/jest-dom": ^5.14.1
     "@testing-library/react": ^12.0.0
@@ -14638,6 +14654,7 @@ resolve@^2.0.0-next.3:
     "@capacitor/ios": ^2.4.7
     "@ionic/react": ^5.6.10
     "@ionic/react-router": ^5.6.10
+    "@kiwi/api": "workspace:*"
     "@kiwi/ui": "workspace:*"
     "@testing-library/jest-dom": ^5.14.1
     "@testing-library/react": ^12.0.0

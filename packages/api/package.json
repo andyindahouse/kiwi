@@ -1,13 +1,9 @@
 {
-    "name": "@kiwi/ui",
-    "version": "1.0.0",
-    "description": "",
+    "name": "@kiwi/api",
     "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc --outDir dist"
     },
-    "author": "",
-    "license": "ISC",
     "devDependencies": {
         "rimraf": "^3.0.2",
         "typescript": "4.3.4"
