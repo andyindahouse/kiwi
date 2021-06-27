@@ -70,9 +70,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
 export const useAuth = () => {
     const context = React.useContext(AuthContext);
-
     if (context === undefined) {
-        throw new Error('useFoodToExpire must be used within a FoodToExpireProvider');
+        throw new Error('No authentication context');
     }
 
     return context;

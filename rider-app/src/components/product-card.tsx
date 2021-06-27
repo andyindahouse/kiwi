@@ -111,7 +111,7 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
             spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
             timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
         };
-    }, [units]);
+    }, [openUnits, units, updateUnits]);
 
     return (
         <div className={classes.container}>

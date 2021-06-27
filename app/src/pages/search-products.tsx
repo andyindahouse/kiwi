@@ -96,6 +96,7 @@ const ProductList = ({
         });
         // TODO: Refactor to avoid duplicated products after login (with products in localstorage)
         // I can't add user like a dependecy because this make a post with login so if i have products in cart these are uploaded and merge after in the shopping-context
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [shoppingCartProducts]);
 
     if (products.length === 0 && !isLoading) {
@@ -198,7 +199,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 }
             });
         }
-    }, [filter]);
+    }, [filter, shoppingCart]);
 
     return (
         <IonPage>

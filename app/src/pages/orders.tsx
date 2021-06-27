@@ -149,7 +149,7 @@ const Orders: React.FC = () => {
                 data: orders.data.concat(res.content),
             }));
         });
-    }, []);
+    }, [orders.pageNumber]);
 
     return (
         <IonPage>

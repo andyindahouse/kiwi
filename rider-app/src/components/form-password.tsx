@@ -22,7 +22,7 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>

@@ -63,7 +63,7 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>
