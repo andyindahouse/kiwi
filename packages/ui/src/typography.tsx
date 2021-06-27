@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from './styles';
+import {createUseStyles, useTheme} from './styles';
 import {typos} from './typos';
 import classnames from 'classnames';
 
@@ -30,6 +30,19 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
+type TextProps = {
+    children: React.ReactNode;
+    className?: string;
+    style?: any;
+    color?: string;
+    as?: keyof JSX.IntrinsicElements;
+};
+
+const Text = ({color, as = 'span', className, style, children}: TextProps) => {
+    const {palette} = useTheme();
+    return React.createElement(as, {className, style, color: color || palette.textPrimary}, children);
+};
+
 interface Props {
     gutterBottom?: 0 | 4 | 8 | 16 | 32;
     ellipsis?: boolean;
@@ -41,15 +54,12 @@ interface Props {
         | 'h3'
         | 'h4'
         | 'h5'
-        | 'h6'
         | 'body1'
         | 'body2'
         | 'subtitle1'
         | 'subtitle2'
-        | 'button'
         | 'caption1'
-        | 'caption2'
-        | 'overline';
+        | 'caption2';
     color?: string;
     style?: React.CSSProperties;
 }
@@ -70,7 +80,8 @@ export const Typography = ({
     switch (variant) {
         case 'h1':
             return (
-                <h1
+                <Text
+                    as="h1"
                     className={classnames(
                         classes.h1,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -86,11 +97,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </h1>
+                </Text>
             );
         case 'h2':
             return (
-                <h2
+                <Text
+                    as="h2"
                     className={classnames(
                         classes.h2,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -106,7 +118,7 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </h2>
+                </Text>
             );
         case 'h3':
             return (
@@ -130,7 +142,8 @@ export const Typography = ({
             );
         case 'h4':
             return (
-                <h4
+                <Text
+                    as="h4"
                     className={classnames(
                         classes.h4,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -146,11 +159,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </h4>
+                </Text>
             );
         case 'h5':
             return (
-                <h5
+                <Text
+                    as="h5"
                     className={classnames(
                         classes.h5,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -166,30 +180,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </h5>
-            );
-        case 'h6':
-            return (
-                <h6
-                    className={classnames(
-                        classes.h6,
-                        {[classes.ellipsis]: ellipsis, [classes.center]: center},
-                        className
-                    )}
-                    style={{
-                        marginBottom: gutterBottom,
-                        ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
-                        ...(color ? {color} : {}),
-                        ...style,
-                    }}
-                    {...props}
-                >
-                    {children}
-                </h6>
+                </Text>
             );
         case 'body1':
             return (
-                <p
+                <Text
+                    as="p"
                     className={classnames(
                         classes.body1,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -204,11 +200,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </p>
+                </Text>
             );
         case 'body2':
             return (
-                <p
+                <Text
+                    as="p"
                     className={classnames(
                         classes.body2,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -224,11 +221,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </p>
+                </Text>
             );
         case 'subtitle1':
             return (
-                <span
+                <Text
+                    as="span"
                     className={classnames(
                         classes.subtitle1,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -244,11 +242,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </span>
+                </Text>
             );
         case 'subtitle2':
             return (
-                <span
+                <Text
+                    as="span"
                     className={classnames(
                         classes.subtitle2,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -264,31 +263,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </span>
-            );
-        case 'button':
-            return (
-                <p
-                    className={classnames(
-                        classes.button,
-                        {[classes.ellipsis]: ellipsis, [classes.center]: center},
-                        className
-                    )}
-                    style={{
-                        marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
-                        ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
-                        ...(color ? {color} : {}),
-                        ...style,
-                    }}
-                    {...props}
-                >
-                    {children}
-                </p>
+                </Text>
             );
         case 'caption1':
             return (
-                <p
+                <Text
+                    as="p"
                     className={classnames(
                         classes.caption,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -304,11 +284,12 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </p>
+                </Text>
             );
         case 'caption2':
             return (
-                <p
+                <Text
+                    as="p"
                     className={classnames(
                         classes.caption2,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -324,31 +305,11 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </p>
-            );
-        case 'overline':
-            return (
-                <p
-                    className={classnames(
-                        classes.overline,
-                        {[classes.ellipsis]: ellipsis, [classes.center]: center},
-                        className
-                    )}
-                    style={{
-                        marginBottom: gutterBottom,
-                        ...(gutterBottom !== 0 && !ellipsis ? {display: 'block'} : {}),
-                        ...(ellipsis ? {WebkitLineClamp: lineClamp} : {}),
-                        ...(color ? {color} : {}),
-                        ...style,
-                    }}
-                    {...props}
-                >
-                    {children}
-                </p>
+                </Text>
             );
         default:
             return (
-                <p
+                <Text
                     className={classnames(
                         classes.body1,
                         {[classes.ellipsis]: ellipsis, [classes.center]: center},
@@ -364,7 +325,7 @@ export const Typography = ({
                     {...props}
                 >
                     {children}
-                </p>
+                </Text>
             );
     }
 };
