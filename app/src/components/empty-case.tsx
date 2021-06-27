@@ -1,7 +1,6 @@
 import {IonIcon} from '@ionic/react';
 import * as React from 'react';
-import {Box, Typography} from '@kiwi/ui';
-import {createUseStyles} from 'react-jss';
+import {Box, Typography, createUseStyles} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

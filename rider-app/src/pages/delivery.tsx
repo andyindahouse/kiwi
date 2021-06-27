@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -18,9 +18,7 @@ import {
 } from '@ionic/react';
 import kiwiApi from '../api';
 import {useHistory, useParams} from 'react-router-dom';
-
 import type {Order as OrderModel} from '../models';
-import {Typography, palette} from '@kiwi/ui';
 import {getFormatDate} from '../utils/format-date';
 import {chevronForwardOutline} from 'ionicons/icons';
 
@@ -35,6 +33,7 @@ const useStyles = createUseStyles(() => ({
 
 const Delivery = () => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const history = useHistory();
     const {id = null} = useParams<{id: string}>();
     const [order, setOrder] = React.useState<OrderModel | null>(null);

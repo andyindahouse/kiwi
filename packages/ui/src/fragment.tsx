@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {IonIcon, IonRouterLink} from '@ionic/react';
 import {Typography} from './typography';
-import {createUseStyles} from 'react-jss';
+import {createUseStyles} from './styles';
 import {chevronForwardSharp} from 'ionicons/icons';
 
 const useStyles = createUseStyles(() => ({

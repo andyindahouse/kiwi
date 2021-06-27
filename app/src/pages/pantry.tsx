@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -13,7 +13,6 @@ import {
     IonToast,
 } from '@ionic/react';
 import {Product, PantryProductStatus, PantryProduct} from '../models';
-import {Typography, palette} from '@kiwi/ui';
 import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';
 import {getFormatDate} from '../utils/format-date';
@@ -21,11 +20,11 @@ import {differenceInDays} from 'date-fns';
 import {RouteComponentProps, useHistory} from 'react-router';
 import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import ProductItem, {ProductListItemSkeleton} from '../components/product-item';
-import {getExpiryObj} from '../utils';
+import {useGetExpiryObj} from '../utils';
 import EmptyCase from '../components/empty-case';
 import {helpOutline, nutritionOutline} from 'ionicons/icons';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     center: {
         marginTop: 100,
         display: 'flex',
@@ -115,6 +114,7 @@ const ProductList = ({
     const [showToast, setShowToast] = React.useState(false);
     const listRef = React.useRef<HTMLIonListElement | null>(null);
     const [showChart, setShowChart] = React.useState(false);
+    const getExpiryObj = useGetExpiryObj();
 
     const getProduct = React.useCallback((id: string) => kiwiApi.getProductDetail(id), []);
     const updatePantryProduct = React.useCallback(

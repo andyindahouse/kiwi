@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -11,10 +11,9 @@ import {
     IonIcon,
 } from '@ionic/react';
 import {useHistory, useLocation} from 'react-router-dom';
-import {palette, Typography} from '@kiwi/ui';
 import {cashOutline} from 'ionicons/icons';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
@@ -31,6 +30,7 @@ const useStyles = createUseStyles(() => ({
 
 const Feedback = () => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const history = useHistory();
     const {search} = useLocation();
     const earns = new URLSearchParams(search).get('earns');

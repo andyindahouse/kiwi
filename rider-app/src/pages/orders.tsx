@@ -1,5 +1,5 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, InfiniteScroll, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -15,7 +15,6 @@ import {
 } from '@ionic/react';
 import kiwiApi from '../api';
 import {Order, Order as OrderModel, OrderStatus} from '../models';
-import {Typography, InfiniteScroll} from '@kiwi/ui';
 import {RouteComponentProps} from 'react-router';
 import OrderCard from '../components/order-card';
 

@@ -1,11 +1,10 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, InfiniteScroll, createUseStyles} from '@kiwi/ui';
 import {IonRefresher, IonRefresherContent, IonList} from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import {Order} from '../models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline} from 'ionicons/icons';
-import {Typography, InfiniteScroll} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     container: {

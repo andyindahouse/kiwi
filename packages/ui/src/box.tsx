@@ -1,9 +1,17 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {createUseStyles} from './styles';
 import classnames from 'classnames';
 
+interface StyleProps {
+    padding?: number | string;
+    paddingTop?: number | string;
+    paddingLeft?: number | string;
+    paddingBottom?: number | string;
+    paddingRight?: number | string;
+}
+
 const useStyles = createUseStyles(() => ({
-    container: ({padding, paddingTop, paddingLeft, paddingBottom, paddingRight}) => ({
+    container: ({padding, paddingTop, paddingLeft, paddingBottom, paddingRight}: StyleProps) => ({
         padding,
         ...(paddingTop ? {paddingTop} : {}),
         ...(paddingLeft ? {paddingLeft} : {}),
@@ -12,15 +20,10 @@ const useStyles = createUseStyles(() => ({
     }),
 }));
 
-type Props = {
+interface Props extends StyleProps {
     children: React.ReactNode;
-    padding?: number | string;
-    paddingTop?: number | string;
-    paddingLeft?: number | string;
-    paddingBottom?: number | string;
-    paddingRight?: number | string;
     cssClass?: string;
-};
+}
 
 export const Box = ({
     children,

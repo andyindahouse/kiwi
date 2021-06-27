@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -19,7 +19,6 @@ import {
     IonIcon,
 } from '@ionic/react';
 import ProductDetail from '../components/product-detail';
-import {palette, Typography} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
@@ -27,7 +26,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import type {Order as OrderModel, Product, ProductOrderStatus} from '../models';
 import {chevronForwardOutline} from 'ionicons/icons';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     list: {
         display: 'grid',
         gridGap: 16,
@@ -81,6 +80,7 @@ const useStyles = createUseStyles(() => ({
 
 const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);

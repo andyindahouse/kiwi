@@ -1,12 +1,11 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles} from '@kiwi/ui';
 import {Order as OrderModel, Product} from '../models';
-import {Typography, palette} from '@kiwi/ui';
 import {IonButton} from '@ionic/react';
-import {statusOrderMap} from '../utils';
+import {useStatusOrderMap} from '../utils';
 import {getFormatDate, getFormatTime} from '../utils/format-date';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         boxShadow: 'rgba(0, 0, 0, 0.25) 0px 0px 4px',
         borderRadius: 8,
@@ -87,6 +86,7 @@ type Props = {
 
 const OrderCard = ({order, handleOpen, handleManageOrder, labelCta = 'Seleccionar pedido'}: Props) => {
     const classes = useStyles();
+    const statusOrderMap = useStatusOrderMap();
     const {totalCost, products, deliveryAddress, firstName, phone, deliveryDate, deliveryHour} = order;
 
     return (

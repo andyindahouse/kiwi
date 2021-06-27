@@ -1,14 +1,13 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, Box, createUseStyles, useTheme} from '@kiwi/ui';
 import {IonIcon, IonList} from '@ionic/react';
 import {cartOutline} from 'ionicons/icons';
-import {Typography, palette, Box} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '../models';
 import {Link} from 'react-router-dom';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         margin: '32px 0px',
     },
@@ -44,6 +43,7 @@ const useStyles = createUseStyles(() => ({
 
 const NextShopping = () => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {products} = useShoppingCart();
 
     return (

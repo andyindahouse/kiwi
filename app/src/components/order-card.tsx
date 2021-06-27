@@ -1,15 +1,14 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
 import {Order as OrderModel, Product} from '../models';
-import {Typography, palette} from '@kiwi/ui';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {IonButton, IonIcon} from '@ionic/react';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 import classnames from 'classnames';
-import {statusOrderMap} from '../utils';
+import {useStatusOrderMap} from '../utils';
 import PaymentFooter from './payment-fields';
 import {getFormatDate, getFormatTime} from '../utils/format-date';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         boxShadow: 'rgba(0, 0, 0, 0.25) 0px 0px 4px',
         borderRadius: 8,
@@ -90,6 +89,7 @@ const useStyles = createUseStyles(() => ({
 
 const IconStatus = ({icon, activated}: {icon: string; activated: boolean}) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     return (
         <div
             className={classes.iconStatus}
@@ -123,6 +123,7 @@ type Props = {
 
 const OrderCard = ({order, selected, handleOpen, handleManageOrder}: Props) => {
     const classes = useStyles();
+    const statusOrderMap = useStatusOrderMap();
     const {
         totalCost,
         products,

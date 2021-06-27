@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {createUseStyles} from './styles';
 import {typos} from './typos';
 import classnames from 'classnames';
 

@@ -10,7 +10,7 @@ $ npx cap add android
 $ npx cap add ios
 
 // Build and update web assets
-$ yarn workspace @kiwi/ui build // build the UI package
+$ yarn build-packages
 $ yarn workspace app build // build the app
 $ yarn workspace rider-app build // build the rider-app
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {cartOutline, chevronForwardOutline, documentTextOutline, trashOutline} from 'ionicons/icons';
 import {
     IonContent,
@@ -28,7 +28,6 @@ import {
 import {Product} from '../models';
 import ProductDetail from '../components/product-detail';
 import {EMPTY_SHOPPING_CART, SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
-import {Typography, palette} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
 import kiwiApi from '../api';
 import {useHistory} from 'react-router-dom';
@@ -40,7 +39,7 @@ import {useAuth} from '../contexts/auth';
 import PaymentFooter from '../components/payment-fields';
 import {setPersistedShoppingCartProducts} from '../utils/unauthenticated-persistence';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     list: {
         display: 'grid',
         gridGap: 16,
@@ -115,6 +114,7 @@ const getAllowDays = () => {
 
 const ShoppingCart = () => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const history = useHistory();
     const {
         products,
