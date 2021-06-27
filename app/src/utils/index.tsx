@@ -1,5 +1,5 @@
 import {OrderStatus, Product, SpecialOffers} from '@kiwi/models';
-import {palette} from '@kiwi/ui';
+import {useTheme} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
 
@@ -14,37 +14,40 @@ export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart
     });
 };
 
-export const statusOrderMap: Record<OrderStatus, {color: string; label: string; icon: string}> = {
-    pending: {
-        color: palette.secondary.main,
-        label: 'Pendiente',
-        icon: checkmarkDoneOutline,
-    },
-    cancelled: {
-        color: palette.error.main,
-        label: 'Cancelado',
-        icon: checkmarkDoneOutline,
-    },
-    'in-progress': {
-        color: palette.secondary.main,
-        label: 'En progreso',
-        icon: cartOutline,
-    },
-    comming: {
-        color: palette.primary.dark,
-        label: 'En camino',
-        icon: bicycleOutline,
-    },
-    issue: {
-        color: palette.error.main,
-        label: 'Error',
-        icon: checkmarkDoneOutline,
-    },
-    finalized: {
-        color: palette.primary.dark,
-        label: 'Completado',
-        icon: homeOutline,
-    },
+export const useStatusOrderMap = () => {
+    const {palette} = useTheme();
+    return {
+        pending: {
+            color: palette.secondary.main,
+            label: 'Pendiente',
+            icon: checkmarkDoneOutline,
+        },
+        cancelled: {
+            color: palette.error.main,
+            label: 'Cancelado',
+            icon: checkmarkDoneOutline,
+        },
+        'in-progress': {
+            color: palette.secondary.main,
+            label: 'En progreso',
+            icon: cartOutline,
+        },
+        comming: {
+            color: palette.primary.dark,
+            label: 'En camino',
+            icon: bicycleOutline,
+        },
+        issue: {
+            color: palette.error.main,
+            label: 'Error',
+            icon: checkmarkDoneOutline,
+        },
+        finalized: {
+            color: palette.primary.dark,
+            label: 'Completado',
+            icon: homeOutline,
+        },
+    };
 };
 
 export const getUnitPriceWithOffer = (
@@ -89,44 +92,47 @@ export const getLabelDiscount = (specialOffer: SpecialOffers, specialOfferValue:
     return '';
 };
 
-export const getExpiryObj = (date: string) => {
-    const expiryDate = new Date(date);
-    const currentDate = new Date();
-    const daysDiff = differenceInDays(
-        new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate()),
-        new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
-    );
+export const useGetExpiryObj = () => {
+    const {palette} = useTheme();
+    return (date: string) => {
+        const expiryDate = new Date(date);
+        const currentDate = new Date();
+        const daysDiff = differenceInDays(
+            new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate()),
+            new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+        );
 
-    if (daysDiff < 0) {
-        return {
-            color: palette.error.main,
-            label: 'Caducado',
-        };
-    }
+        if (daysDiff < 0) {
+            return {
+                color: palette.error.main,
+                label: 'Caducado',
+            };
+        }
 
-    if (isSameDay(expiryDate, currentDate)) {
-        return {
-            color: palette.error.main,
-            label: 'Hoy',
-        };
-    }
+        if (isSameDay(expiryDate, currentDate)) {
+            return {
+                color: palette.error.main,
+                label: 'Hoy',
+            };
+        }
 
-    if (isTomorrow(expiryDate)) {
-        return {
-            color: palette.warning.main,
-            label: 'Mañana',
-        };
-    }
+        if (isTomorrow(expiryDate)) {
+            return {
+                color: palette.warning.main,
+                label: 'Mañana',
+            };
+        }
 
-    if (daysDiff <= 3) {
+        if (daysDiff <= 3) {
+            return {
+                color: palette.warning.dark,
+                label: `${daysDiff} días`,
+            };
+        }
+
         return {
-            color: palette.warning.dark,
+            color: palette.primary.dark,
             label: `${daysDiff} días`,
         };
-    }
-
-    return {
-        color: palette.primary.dark,
-        label: `${daysDiff} días`,
     };
 };

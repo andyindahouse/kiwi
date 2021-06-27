@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
-import {palette, Typography} from '@kiwi/ui';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     feeZone: {
@@ -40,6 +39,7 @@ const PaymentFooter = ({
     deliveryDiscount,
 }: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
 
     return (
         <div className={classes.feeZone}>

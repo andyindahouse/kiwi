@@ -1,5 +1,5 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Box, InfiniteScroll, Fragment, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -15,7 +15,6 @@ import kiwiApi from '../api';
 import {Product} from '@kiwi/models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import {Box, InfiniteScroll, Fragment} from '@kiwi/ui';
 import {
     UpdateShoppingCartProduct,
     UPDATE_SHOPPING_CART_PRODUCT,

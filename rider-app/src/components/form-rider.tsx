@@ -1,7 +1,6 @@
 import {IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
-import {Typography, palette} from '@kiwi/ui';
 import {Controller, useForm} from 'react-hook-form';
 
 const useStyles = createUseStyles(() => ({
@@ -49,6 +48,7 @@ type Props = {
 
 const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,

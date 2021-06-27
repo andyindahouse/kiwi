@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
-
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {
     IonItemSliding,
     IonItem,
@@ -12,11 +11,10 @@ import {
     IonList,
     IonIcon,
 } from '@ionic/react';
-import {Typography, palette} from '@kiwi/ui';
 import {alertCircleOutline} from 'ionicons/icons';
 import classNames from 'classnames';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     cardContainer: {
         width: '100%',
     },
@@ -110,6 +108,7 @@ const ProductItem = ({
     showDiscountIcon,
 }: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     return (
         <IonItemSliding disabled={disableSwipeOptions}>
             <IonItem onClick={handleClickDetail}>
