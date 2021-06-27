@@ -291,8 +291,11 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
         novaGroups,
         available,
         updateDate,
+        saleType,
     } = product;
     const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
+    const isUnitSaleType = saleType === 'unit';
+    const unit = isUnitSaleType ? 1 : 100;
 
     return (
         <>
@@ -309,7 +312,9 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                     <div className={classes.image} style={{backgroundImage: `url(${img})`}}>
                         {!!initialUnits && (
                             <div className={classes.units}>
-                                <Typography variant="h3">{units}&nbsp;ud</Typography>
+                                <Typography variant="h3">
+                                    {units}&nbsp;{isUnitSaleType ? 'ud' : 'gr'}
+                                </Typography>
                             </div>
                         )}
                     </div>
@@ -322,7 +327,8 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                         {name.replace(brand, '').trim()}
                     </Typography>
                     <Typography variant="h1" {...(discount ? {color: palette.secondary.main} : {})}>
-                        {price.final} € <Typography variant="subtitle1">/ ud</Typography>
+                        {price.final} €{' '}
+                        <Typography variant="subtitle1">/&nbsp;{isUnitSaleType ? 'ud' : 'gr'}</Typography>
                     </Typography>
 
                     {discount && price.original && (
@@ -440,7 +446,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                                 icon={removeCircleSharp}
                                 onClick={() => {
                                     if (units > 0) {
-                                        setUnits(units - 1);
+                                        setUnits(units - unit);
                                     }
                                 }}
                             />
@@ -461,7 +467,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                                         : `Añadir ${units} unidades`
                                     : units === 0
                                     ? 'Borrar producto'
-                                    : `Actualizar unidades (${units})`}
+                                    : `Actualizar ${isUnitSaleType ? 'unidades' : 'gramos'} (${units})`}
                             </IonButton>
                             <IonIcon
                                 size="large"
@@ -469,7 +475,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                                 className={classes.icon}
                                 icon={addCircleSharp}
                                 onClick={() => {
-                                    setUnits(units + 1);
+                                    setUnits(units + unit);
                                 }}
                             />
                         </div>

@@ -15,8 +15,11 @@ const utils = {
             const quotient = Math.floor(units / product.specialOfferValue[0]);
             const productsQuantity = quotient * product.specialOfferValue[1] + rest;
             return parseFloat((productsQuantity * value).toFixed(2));
-        } else {
+        } else if (product.saleType === 'unit') {
             return parseFloat((units * product.price.final).toFixed(2));
+        } else {
+            const priceFor100gr = product.price.final / 10;
+            return parseFloat(units * priceFor100gr).toFixed(2);
         }
     },
     getDeliveryPrice: () => {
