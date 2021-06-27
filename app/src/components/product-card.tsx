@@ -77,13 +77,9 @@ type UnitsButtonProps = {
     isUnitSaleType: boolean;
     initialUnits: number;
     updateUnits: (units: number) => void;
-}
+};
 
-const UnitsButton = ({
-    isUnitSaleType,
-    initialUnits,
-    updateUnits,
-}: UnitsButtonProps) => {
+const UnitsButton = ({isUnitSaleType, initialUnits, updateUnits}: UnitsButtonProps) => {
     const theme = useTheme();
     const classes = useStyles({theme});
     const [units, setUnits] = React.useState(initialUnits);
@@ -160,87 +156,6 @@ const UnitsButton = ({
                     onClick={() => {
                         setOpenUnits(true);
                         setUnits(units + unit);
-                    }}
-                />
-            )}
-        </div>
-    );
-};
-
-const GrButton = ({initialGr, updateGr}: {initialGr: number; updateGr: (units: number) => void}) => {
-    const theme = useTheme();
-    const classes = useStyles({theme});
-    const [gr, setGr] = React.useState(initialGr);
-    const [openUnits, setOpenUnits] = React.useState(false);
-    const [showSpinner, setShowSpinner] = React.useState(false);
-    const timerTimeOutRef = React.useRef<number | null>(null);
-    const spinnerTimeOutRef = React.useRef<number | null>(null);
-    const increment = React.useEffect(() => {
-        setGr(initialGr);
-    }, [initialGr]);
-
-    React.useEffect(() => {
-        if (openUnits) {
-            setShowSpinner(false);
-            spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
-            timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
-
-            spinnerTimeOutRef.current = window.setTimeout(() => {
-                setShowSpinner(true);
-            }, 3000);
-
-            timerTimeOutRef.current = window.setTimeout(() => {
-                updateGr(gr);
-                setShowSpinner(false);
-                setOpenUnits(false);
-            }, 5000);
-        }
-
-        return () => {
-            spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
-            timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
-        };
-    }, [gr, openUnits, updateGr]);
-
-    return (
-        <div
-            className={classes.units}
-            style={{
-                left: openUnits ? '0' : 'unset',
-                padding: openUnits || gr === 0 ? 0 : 'unset',
-                justifyContent: !openUnits ? 'center' : 'space-between',
-            }}
-        >
-            {openUnits && (
-                <IonIcon
-                    role="button"
-                    className={classes.icon}
-                    icon={removeCircleSharp}
-                    onClick={() => {
-                        if (gr > 0) {
-                            setGr(gr - 100);
-                        }
-                    }}
-                />
-            )}
-            {(gr > 0 || openUnits) &&
-                (showSpinner ? (
-                    <IonSpinner className={classes.spinner} name="crescent" />
-                ) : (
-                    <p
-                        className={classes.unitsText}
-                        onClick={() => {
-                            setOpenUnits(true);
-                        }}
-                    >{`${gr} gr`}</p>
-                ))}
-            {(gr === 0 || openUnits) && (
-                <IonIcon
-                    className={classes.icon}
-                    icon={addCircleSharp}
-                    onClick={() => {
-                        setOpenUnits(true);
-                        setGr(gr + 100);
                     }}
                 />
             )}
