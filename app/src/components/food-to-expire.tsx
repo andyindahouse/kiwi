@@ -1,18 +1,17 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, Box, createUseStyles} from '@kiwi/ui';
 import {IonIcon, IonList, useIonViewDidEnter} from '@ionic/react';
 import {alarmOutline} from 'ionicons/icons';
-import {Typography, palette, Box} from '@kiwi/ui';
 import {PantryProduct} from '@kiwi/models';
 import ProductItem, {ProductListItemSkeleton} from '../components/product-item';
-import {getExpiryObj} from '../utils';
+import {useGetExpiryObj} from '../utils';
 import {getFormatDate} from '../utils/format-date';
 import kiwiApi from '../api';
 import {Link, useHistory} from 'react-router-dom';
 import {Plugins, Capacitor} from '@capacitor/core';
 import {isFuture, isPast, subDays} from 'date-fns';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         margin: '32px 0px',
     },
@@ -122,6 +121,7 @@ const FoodToExpire = () => {
         data: ReadonlyArray<PantryProduct>;
         isLoading: boolean;
     }>({data: [], isLoading: true});
+    const getExpiryObj = useGetExpiryObj();
 
     useIonViewDidEnter(() => {
         setPantryProducts({

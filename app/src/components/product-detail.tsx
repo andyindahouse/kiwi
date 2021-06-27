@@ -10,9 +10,8 @@ import {
 } from '@ionic/react';
 import {addCircleSharp, alertCircleOutline, pricetag, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {Product} from '@kiwi/models';
-import {palette, Typography} from '@kiwi/ui';
 import {getLabelDiscount, getUnitPriceWithOffer} from '../utils';
 import ChartistGraph from './chartist-graph';
 import classnames from 'classnames';
@@ -36,7 +35,7 @@ const novaMap = {
     },
 };
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         padding: 16,
     },
@@ -93,12 +92,6 @@ const useStyles = createUseStyles(() => ({
         '&::first-letter': {
             textTransform: 'uppercase',
         },
-    },
-    section: {
-        padding: (paddingSides) => (!paddingSides ? '16px 0' : 16),
-    },
-    sectionTitle: {
-        padding: (paddingSides) => (!paddingSides ? '0 16px' : 0),
     },
     jsfe: {
         justifySelf: 'flex-end',
@@ -182,14 +175,27 @@ const useStyles = createUseStyles(() => ({
     },
 }));
 
+interface SectionStyleProps {
+    withPadding?: boolean;
+}
+
+const useSectionStyles = createUseStyles(() => ({
+    section: {
+        padding: (props: SectionStyleProps) => (!props.withPadding ? '16px 0' : 16),
+    },
+    sectionTitle: {
+        padding: (props: SectionStyleProps) => (!props.withPadding ? '0 16px' : 0),
+    },
+}));
+
 type SectionProps = {
     title: string;
     children: React.ReactNode;
-    paddingSides?: boolean;
+    withPadding?: boolean;
 };
 
-const Section = ({title, paddingSides, children}: SectionProps) => {
-    const classes = useStyles(paddingSides);
+const Section = ({title, withPadding, children}: SectionProps) => {
+    const classes = useSectionStyles({withPadding});
 
     return (
         <div className={classes.section}>
@@ -277,6 +283,7 @@ interface Props {
 
 const ProductDetail = ({product, closeModal, updateProduct, disabled = false, showChart}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {
         name,
         price,
@@ -366,7 +373,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                 </div>
 
                 {(nutriscoreGrade || novaGroups) && (
-                    <Section title="Observaciones" paddingSides>
+                    <Section title="Observaciones" withPadding>
                         {novaGroups && <NovaGroup value={novaGroups} />}
                         {nutriscoreGrade && <NutriScoreBar value={nutriscoreGrade} />}
                     </Section>

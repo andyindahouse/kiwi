@@ -10,14 +10,13 @@ import {
     IonTitle,
     IonToolbar,
 } from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
 import kiwiApi from '../api';
 import {RegisterUser} from '@kiwi/models';
 import FormUser from '../components/form-user';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
-import {Typography, palette} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     registerForm: {
@@ -45,6 +44,7 @@ type Props = {
 
 const Register: React.FC<Props> = ({closeModal}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const sliderRef = React.useRef<HTMLIonSlidesElement | null>(null);
     const [data, setData] = React.useState<RegisterUser>({
         email: '',

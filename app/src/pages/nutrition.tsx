@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Box, Fragment, createUseStyles} from '@kiwi/ui';
 import {restaurantOutline} from 'ionicons/icons';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import {Box, Fragment} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     test: {

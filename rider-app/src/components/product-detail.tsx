@@ -17,11 +17,10 @@ import {
 } from '@ionic/react';
 import {addCircleOutline, removeCircleOutline, syncOutline} from 'ionicons/icons';
 import * as React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {Product, ProductOrderStatus} from '@kiwi/models/rider';
-import {Typography, palette} from '@kiwi/ui';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         padding: 16,
     },
@@ -82,6 +81,7 @@ const Units = ({
     handleOnChange: (units: number) => void;
 }) => {
     const classes = useStyles();
+    const {palette} = useTheme();
 
     return (
         <div className={classes.unitsContainer}>
@@ -150,6 +150,7 @@ type Props = {
 
 const ProductDetail = ({product, closeModal, updateProduct, disabled = false, replaceProduct}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {name, price, img, brand, note, items = []} = product;
     const [currentPrice, setCurrentPrice] = React.useState<number | null>();
     const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);

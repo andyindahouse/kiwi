@@ -31,6 +31,13 @@
     },
     "rules": {
         "react-hooks/exhaustive-deps": "warn", // TODO: should be error, fix these before
-        "no-unused-vars": 0 // False negatives with arguments on type definitions that are really used. We will rely on the strict mode of TypeScript
+        "no-unused-vars": 0, // False negatives with arguments on type definitions that are really used. We will rely on the strict mode of TypeScript
+        "no-restricted-imports": [
+            "error",
+            {
+                "paths": ["react-jss"],
+                "patterns": ["react-jss/*"]
+            }
+        ]
     }
 }

@@ -1,8 +1,7 @@
 import React from 'react';
 import {IonApp} from '@ionic/react';
-import {ThemeProvider} from 'react-jss';
+import {ThemeProvider} from '@kiwi/ui';
 import {AuthProvider} from './contexts/auth';
-import {palette} from '@kiwi/ui';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -26,7 +25,7 @@ import '@kiwi/ui/theme.css';
 function AppProviders({children}: {children: React.ReactNode}) {
     return (
         <IonApp>
-            <ThemeProvider theme={{palette}}>
+            <ThemeProvider>
                 <AuthProvider>{children}</AuthProvider>;
             </ThemeProvider>
         </IonApp>
