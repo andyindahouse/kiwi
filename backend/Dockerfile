@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:14-alpine
 
 # Stop using Root user
 ENV USER dockerfileUser

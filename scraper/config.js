@@ -1,22 +1,22 @@
-// const chromePathWindows = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
-// const chromePathMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const chromePathServer = '/usr/bin/google-chrome';
-
-const chromePath = chromePathServer;
-const timeout = 20000;
-const pupetterOptions = {
+const chromePath = {
+    win32: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    linux: '/usr/bin/google-chrome',
+}[process.platform];
+export const timeout = 20000;
+export const pupetterOptions = {
     executablePath: chromePath,
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox', `--window-size=${1200},${1200}`],
 };
-const configMongo = {
+export const configMongo = {
     url: `mongodb://root:${encodeURIComponent('2q"GtK:W{b+<xmt?')}@localhost/kiwi?authSource=admin&w=1`,
     db: 'kiwi',
 };
-const marketUrl = 'https://www.elcorteingles.es';
-const indexCollection = 0;
-const collectionProducts = [{market: 'eci', collection: 'productsEci'}];
-const scrapingUrls = [
+export const marketUrl = 'https://www.elcorteingles.es';
+export const indexCollection = 0;
+export const collectionProducts = [{market: 'eci', collection: 'productsEci'}];
+export const scrapingUrls = [
     {
         name: 'alimentacion',
         url: `${marketUrl}/supermercado/alimentacion-general/`,
@@ -79,15 +79,4 @@ const scrapingUrls = [
     },
 ];
 
-const openFoodApi = 'https://world.openfoodfacts.org/api/v0/product';
-
-module.exports = {
-    timeout,
-    pupetterOptions,
-    marketUrl,
-    scrapingUrls,
-    configMongo,
-    openFoodApi,
-    collectionProducts,
-    indexCollection,
-};
+export const openFoodApi = 'https://world.openfoodfacts.org/api/v0/product';

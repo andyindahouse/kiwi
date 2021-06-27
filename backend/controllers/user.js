@@ -1,13 +1,11 @@
-'use strict';
+import bcrypt from 'bcrypt';
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import {PASSPORT_CONFIG, POSTAL_CODES_ALLOWED} from '../config.js';
+import User from '../models/user.js';
+import errorTypes from './errorTypes.js';
 
-const bcrypt = require('bcrypt');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const {PASSPORT_CONFIG, POSTAL_CODES_ALLOWED} = require('../config');
-const User = require('../models/user');
-const errorTypes = require('./errorTypes');
-
-const controller = {
+export default {
     register: (req, res, next) => {
         User.findOne({email: req.body.email})
             .then((data) => {
@@ -232,5 +230,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;

@@ -1,6 +1,4 @@
-'use strict';
-
-const errorTypes = {
+export default {
     Error400: function (msg) {
         const err = Error.apply(this, [msg]);
         this.name = err.name = 'Error400';
@@ -37,5 +35,3 @@ const errorTypes = {
         return this;
     },
 };
-
-module.exports = errorTypes;

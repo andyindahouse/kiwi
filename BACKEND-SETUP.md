@@ -4,4 +4,4 @@
 2. Run `docker-compose up` in root folder
 3. Change `CONFIG_MONGO.URL` to `CONFIG_MONGO.URL_LOCAL` in backend/index
 4. Run backend with `yarn start-dev`.
-5. Change `serverIp`in client to localhost:3000
+5. Change `getApiCall` in client to use http://localhost:3000

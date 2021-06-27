@@ -1,11 +1,9 @@
-'use strict';
+import Pantry from '../models/pantry.js';
+import Product from '../models/product.js';
+import errorTypes from './errorTypes.js';
+import mongodb from 'mongodb';
 
-const Pantry = require('../models/pantry');
-const Product = require('../models/product');
-const errorTypes = require('./errorTypes');
-const ObjectID = require('mongodb').ObjectID;
-
-const controller = {
+export default {
     get: async ({query, user}, res, next) => {
         try {
             const pageNumber = parseInt(query.pageNumber || 0);
@@ -60,7 +58,7 @@ const controller = {
             return next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
-            const id = new ObjectID(params.id);
+            const id = new mongodb.ObjectID(params.id);
             const updateProductPantry = await Pantry.findOneAndUpdate(
                 {_id: id, email: user.email},
                 {
@@ -82,5 +80,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;

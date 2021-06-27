@@ -1,11 +1,9 @@
-'use strict';
-
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const customMdw = require('../middleware/custom');
-const UserController = require('../controllers/user');
-const OrdersRiderController = require('../controllers/orders-rider');
-const ConfigController = require('../controllers/config');
+import customMdw from '../middleware/custom.js';
+import UserController from '../controllers/user.js';
+import OrdersRiderController from '../controllers/orders-rider.js';
+import ConfigController from '../controllers/config.js';
 
 router.get('/config', ConfigController.config);
 
@@ -61,4 +59,4 @@ router.post(
     OrdersRiderController.finalizeOrder
 );
 
-module.exports = router;
+export default router;

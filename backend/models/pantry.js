@@ -1,8 +1,6 @@
-'use strict';
+import mongoose from 'mongoose';
 
-const {Schema, model} = require('mongoose');
-
-const PantrySchema = new Schema({
+const PantrySchema = new mongoose.Schema({
     email: String,
     inStorage: String,
     id: String,
@@ -13,4 +11,4 @@ const PantrySchema = new Schema({
     date: Date,
 });
 
-module.exports = model('Pantry', PantrySchema, 'pantries');
+export default mongoose.model('Pantry', PantrySchema, 'pantries');

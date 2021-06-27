@@ -34,7 +34,7 @@
         "backend",
         "app",
         "rider-app",
-        "scrapper",
+        "scraper",
         "packages/*"
     ],
     "devDependencies": {

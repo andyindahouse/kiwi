@@ -1,13 +1,11 @@
-'use strict';
+import mongoose from 'mongoose';
 
-const {Schema, model} = require('mongoose');
-
-const OrderSchema = new Schema(
+const OrderSchema = new mongoose.Schema(
     {
-        _id: Schema.Types.ObjectId,
+        _id: mongoose.Schema.Types.ObjectId,
         deliveryDays: [],
     },
     {capped: {size: 1}}
 );
 
-module.exports = model('Config', OrderSchema, 'config');
+export default mongoose.model('Config', OrderSchema, 'config');

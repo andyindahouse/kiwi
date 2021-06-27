@@ -1,10 +1,8 @@
-'use strict';
-
-const ShoppingCart = require('../models/shoppingCart');
-const Product = require('../models/product');
-const errorTypes = require('./errorTypes');
-const {FEES} = require('../config');
-const utils = require('./utils');
+import ShoppingCart from '../models/shoppingCart.js';
+import Product from '../models/product.js';
+import errorTypes from './errorTypes.js';
+import {FEES} from '../config.js';
+import {getDeliveryPrice, getPrice} from './utils.js';
 
 const calculateShoppingCart = async (shopppingCart) => {
     if (shopppingCart && shopppingCart.products) {
@@ -13,7 +11,7 @@ const calculateShoppingCart = async (shopppingCart) => {
         let totalShoppingCart = 0;
         const shoppingCartWithProducts = products.map((product) => {
             const productInCart = shopppingCart.products.find((prodInCart) => prodInCart.id === product.id);
-            const costProduct = utils.getPrice(product._doc, productInCart.units);
+            const costProduct = getPrice(product._doc, productInCart.units);
             if (product._doc.available === true) {
                 totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
             }
@@ -24,7 +22,7 @@ const calculateShoppingCart = async (shopppingCart) => {
                 cost: costProduct,
             };
         });
-        const deliveryPrice = utils.getDeliveryPrice();
+        const deliveryPrice = getDeliveryPrice();
         const totalCost = parseFloat(
             (totalShoppingCart + deliveryPrice.finalDeliverFee + deliveryPrice.finalShopperFee).toFixed(2)
         );
@@ -45,7 +43,7 @@ const calculateShoppingCart = async (shopppingCart) => {
         };
     }
 };
-const controller = {
+export default {
     get: async (req, res, next) => {
         try {
             const shopppingCart = await ShoppingCart.findOne({email: req.user.email});
@@ -76,5 +74,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;
