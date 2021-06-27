@@ -1,9 +1,8 @@
 import {addCircleSharp, removeCircleSharp, pricetag} from 'ionicons/icons';
 import * as React from 'react';
 import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
-import {IonIcon} from '@ionic/react';
+import {IonIcon, IonSpinner} from '@ionic/react';
 import {Product} from '@kiwi/models';
-import {IonSpinner} from '@ionic/react';
 import {getLabelDiscount} from '../utils';
 
 const useStyles = createUseStyles(({palette}) => ({
