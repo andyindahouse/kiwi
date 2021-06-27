@@ -1,8 +1,8 @@
-const puppeteer = require('puppeteer-extra');
-const mongodb = require('mongodb');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const axios = require('axios');
-const config = require('./config');
+import puppeteer from 'puppeteer-extra';
+import mongodb from 'mongodb';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import axios from 'axios';
+import * as config from './config.js';
 
 puppeteer.use(StealthPlugin());
 
@@ -101,6 +101,6 @@ const getOpenFoodDataByEan = async (ean) => {
     } catch (e) {
         console.log(e);
     } finally {
-        client.close();
+        client?.close();
     }
 })();

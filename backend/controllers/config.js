@@ -1,9 +1,7 @@
-'use strict';
+import Config from '../models/config.js';
+import errorTypes from './errorTypes.js';
 
-const Config = require('../models/config');
-const errorTypes = require('./errorTypes');
-
-const controller = {
+export default {
     config: async (req, res, next) => {
         try {
             const config = await Config.findOne();
@@ -22,5 +20,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;

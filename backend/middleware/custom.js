@@ -1,8 +1,7 @@
-'use strict';
-const passport = require('passport');
-const errorTypes = require('../controllers/errorTypes');
+import passport from 'passport';
+import errorTypes from '../controllers/errorTypes.js';
 
-const middlewares = {
+export default {
     ensureAuthenticated: (req, res, next) => {
         passport.authenticate('jwt', {session: false}, (err, user, info) => {
             if (info) {
@@ -41,5 +40,3 @@ const middlewares = {
         res.status(404).json({error: 'Endpoint not found'});
     },
 };
-
-module.exports = middlewares;

@@ -1,8 +1,6 @@
-'use strict';
+import mongoose from 'mongoose';
 
-const {Schema, model} = require('mongoose');
-
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
     email: {type: String, required: true},
     password: {type: String, required: true},
     firstName: String,
@@ -18,4 +16,4 @@ const UserSchema = new Schema({
     active: Boolean,
 });
 
-module.exports = model('User', UserSchema, 'users');
+export default mongoose.model('User', UserSchema, 'users');

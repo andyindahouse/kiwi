@@ -1,5 +1,5 @@
-const mongodb = require('mongodb');
-const config = require('./config');
+import mongodb from 'mongodb';
+import * as config from './config.js';
 
 (async () => {
     if (process.argv.length !== 5) {
@@ -37,7 +37,7 @@ const config = require('./config');
         } catch (e) {
             console.log(e);
         } finally {
-            client.close();
+            client?.close();
         }
     }
 })();

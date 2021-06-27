@@ -1,13 +1,11 @@
-'use strict';
+import bcrypt from 'bcrypt';
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import {PASSPORT_CONFIG} from '../config.js';
+import Product from '../models/product.js';
+import errorTypes from './errorTypes.js';
 
-const bcrypt = require('bcrypt');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const {PASSPORT_CONFIG} = require('../config');
-const Product = require('../models/product');
-const errorTypes = require('./errorTypes');
-
-const controller = {
+export default {
     products: async ({query}, res, next) => {
         const pageNumber = parseInt(query.pageNumber || 0);
         const pageSize = parseInt(query.pageSize || 20);
@@ -113,5 +111,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;

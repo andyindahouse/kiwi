@@ -1,8 +1,8 @@
 {
     "name": "backend",
-    "version": "1.0.0",
-    "description": "backend",
     "main": "index.js",
+    "type": "module",
+    "private": true,
     "scripts": {
         "start": "node index.js https",
         "start-dev": "nodemon index.js",
