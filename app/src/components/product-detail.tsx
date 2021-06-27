@@ -11,7 +11,7 @@ import {
 import {addCircleSharp, alertCircleOutline, pricetag, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Product} from '../models';
+import {Product} from '@kiwi/models';
 import {palette, Typography} from '@kiwi/ui';
 import {getLabelDiscount, getUnitPriceWithOffer} from '../utils';
 import ChartistGraph from './chartist-graph';

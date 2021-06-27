@@ -13,7 +13,7 @@ import {
 import {createUseStyles} from 'react-jss';
 import * as React from 'react';
 import kiwiApi from '../api';
-import {RegisterUser} from '../models';
+import {RegisterUser} from '@kiwi/models';
 import FormUser from '../components/form-user';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';

@@ -14,7 +14,7 @@ import {
 } from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
-import {Order, Order as OrderModel} from '../models';
+import {Order, Order as OrderModel} from '@kiwi/models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline, rocketOutline} from 'ionicons/icons';
 import {InfiniteScroll} from '@kiwi/ui';

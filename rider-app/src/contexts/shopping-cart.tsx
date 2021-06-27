@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Product, ShoppingCart} from '../models';
+import {Product, ShoppingCart} from '@kiwi/models/rider';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {

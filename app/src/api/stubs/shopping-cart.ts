@@ -1,4 +1,4 @@
-import {Product, ShoppingCart} from '../../models';
+import {Product, ShoppingCart} from '@kiwi/models';
 
 const deliverFee = 3;
 const shopperFee = 4;

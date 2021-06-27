@@ -2,7 +2,7 @@ import {addCircleSharp, removeCircleSharp, pricetag} from 'ionicons/icons';
 import * as React from 'react';
 import {createUseStyles, useTheme} from 'react-jss';
 import {IonIcon} from '@ionic/react';
-import {Product} from '../models';
+import {Product} from '@kiwi/models';
 import {IonSpinner} from '@ionic/react';
 import {Typography, palette} from '@kiwi/ui';
 import {getLabelDiscount} from '../utils';

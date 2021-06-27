@@ -12,7 +12,7 @@ import {
     IonAlert,
     IonToast,
 } from '@ionic/react';
-import {Product, PantryProductStatus, PantryProduct} from '../models';
+import {Product, PantryProductStatus, PantryProduct} from '@kiwi/models';
 import {Typography, palette} from '@kiwi/ui';
 import ProductDetail from '../components/product-detail';
 import kiwiApi from '../api';

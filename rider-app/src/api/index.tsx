@@ -1,6 +1,6 @@
 import {getApiCall} from '@kiwi/api';
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
-import {Order, OrderStatus, Product, User} from '../models';
+import {Order, OrderStatus, Product, User} from '@kiwi/models/rider';
 
 export type PaginatedResponse<T> = {
     content: T;

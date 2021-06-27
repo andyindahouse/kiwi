@@ -14,7 +14,7 @@ import {
     IonList,
 } from '@ionic/react';
 import kiwiApi from '../api';
-import {Order, Order as OrderModel, OrderStatus} from '../models';
+import {Order, Order as OrderModel, OrderStatus} from '@kiwi/models/rider';
 import {Typography, InfiniteScroll} from '@kiwi/ui';
 import {RouteComponentProps} from 'react-router';
 import OrderCard from '../components/order-card';

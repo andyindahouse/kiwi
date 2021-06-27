@@ -1,4 +1,4 @@
-import {User} from '../../models';
+import {User} from '@kiwi/models';
 
 export const user: User = {
     firstName: 'Test User',

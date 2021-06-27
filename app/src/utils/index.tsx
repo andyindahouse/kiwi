@@ -1,4 +1,4 @@
-import {OrderStatus, Product, SpecialOffers} from '../models';
+import {OrderStatus, Product, SpecialOffers} from '@kiwi/models';
 import {palette} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';

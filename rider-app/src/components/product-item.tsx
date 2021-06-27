@@ -2,7 +2,7 @@ import * as React from 'react';
 import {createUseStyles} from 'react-jss';
 import {documentTextOutline, trashOutline} from 'ionicons/icons';
 import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
-import {Product} from '../models';
+import {Product} from '@kiwi/models/rider';
 import {Typography} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({

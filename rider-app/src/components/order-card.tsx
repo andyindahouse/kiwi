@@ -1,6 +1,6 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Order as OrderModel, Product} from '../models';
+import {Order as OrderModel, Product} from '@kiwi/models/rider';
 import {Typography, palette} from '@kiwi/ui';
 import {IonButton} from '@ionic/react';
 import {statusOrderMap} from '../utils';

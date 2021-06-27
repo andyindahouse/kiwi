@@ -29,7 +29,7 @@ import {
 import {Typography} from '@kiwi/ui';
 import {useAuth} from '../contexts/auth';
 import FormUser from '../components/form-user';
-import {User} from '../models';
+import {User} from '@kiwi/models';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
 import kiwiApi from '../api';

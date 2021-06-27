@@ -19,7 +19,7 @@ import {
 import kiwiApi from '../api';
 import {useHistory, useParams} from 'react-router-dom';
 
-import type {Order as OrderModel} from '../models';
+import type {Order as OrderModel} from '@kiwi/models/rider';
 import {Typography, palette} from '@kiwi/ui';
 import {getFormatDate} from '../utils/format-date';
 import {chevronForwardOutline} from 'ionicons/icons';
