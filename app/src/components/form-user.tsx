@@ -29,7 +29,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>

@@ -61,6 +61,12 @@ const Login: React.FC = () => {
                 });
         }
     };
+    const handleCloseModal = React.useCallback((registerSuccess) => {
+        if (registerSuccess) {
+            setShowRegisterMessage(true);
+        }
+        setShowRegister(false);
+    }, []);
 
     return (
         <IonPage>
@@ -173,14 +179,7 @@ const Login: React.FC = () => {
                         setShowRegister(false);
                     }}
                 >
-                    <Register
-                        closeModal={(registerSuccess) => {
-                            if (registerSuccess) {
-                                setShowRegisterMessage(true);
-                            }
-                            setShowRegister(false);
-                        }}
-                    />
+                    <Register closeModal={handleCloseModal} />
                 </IonModal>
             </IonContent>
         </IonPage>

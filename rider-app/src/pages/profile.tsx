@@ -65,27 +65,33 @@ const Others: React.FC = () => {
             selectedData,
         });
     };
-    const updateData = (stepData: Partial<User>) => {
-        kiwiApi.setUser(stepData).then((user) => {
-            setUser(user);
-            setModalData({
-                ...modalData,
-                open: false,
+    const updateData = React.useCallback(
+        (stepData: Partial<User>) => {
+            kiwiApi.setUser(stepData).then((user) => {
+                setUser(user);
+                setModalData({
+                    ...modalData,
+                    open: false,
+                });
+                setShowToast({
+                    show: true,
+                    message: MSG_UPDATED_SUCESSFULLY,
+                });
             });
-            setShowToast({
-                show: true,
-                message: MSG_UPDATED_SUCESSFULLY,
+        },
+        [modalData, setUser]
+    );
+    const updatePassword = React.useCallback(
+        ({oldPassword, password}: {oldPassword: string; password: string}) => {
+            kiwiApi.changeUserPassword({oldPassword, newPassword: password}).then(() => {
+                setModalData({
+                    ...modalData,
+                    open: false,
+                });
             });
-        });
-    };
-    const updatePassword = ({oldPassword, password}: {oldPassword: string; password: string}) => {
-        kiwiApi.changeUserPassword({oldPassword, newPassword: password}).then(() => {
-            setModalData({
-                ...modalData,
-                open: false,
-            });
-        });
-    };
+        },
+        [modalData]
+    );
     const requestNotificationsPermission = async () => {
         Plugins.LocalNotifications.requestPermission().then((res) => {
             setNotificationsEnabled(res.granted);
@@ -106,6 +112,31 @@ const Others: React.FC = () => {
             });
         }
     }, []);
+
+    const formUserControlRef = React.useCallback(
+        (handleSubmit) => {
+            setFormUserRef({
+                submit: handleSubmit(updateData),
+            });
+        },
+        [updateData]
+    );
+    const formRiderControlRef = React.useCallback(
+        (handleSubmit: any) => {
+            setFormDeliveryRef({
+                submit: handleSubmit(updateData),
+            });
+        },
+        [updateData]
+    );
+    const formPasswordControlRef = React.useCallback(
+        (handleSubmit: any) => {
+            setFormPasswordRef({
+                submit: handleSubmit(updatePassword),
+            });
+        },
+        [updatePassword]
+    );
 
     return (
         <IonPage>
@@ -194,11 +225,7 @@ const Others: React.FC = () => {
                         {modalData.selectedData === 'user' && user && (
                             <FormUser
                                 disableEmail
-                                controlRef={(handleSubmit: any) => {
-                                    setFormUserRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
+                                controlRef={formUserControlRef}
                                 defaultValues={{
                                     email: user.email,
                                     firstName: user.firstName,
@@ -209,11 +236,7 @@ const Others: React.FC = () => {
                         )}
                         {modalData.selectedData === 'rider' && user && (
                             <FormRider
-                                controlRef={(handleSubmit: any) => {
-                                    setFormDeliveryRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
+                                controlRef={formRiderControlRef}
                                 defaultValues={{
                                     deliveryCity: user.deliveryCity,
                                     deliveryVehicle: user.deliveryVehicle,
@@ -221,14 +244,7 @@ const Others: React.FC = () => {
                             />
                         )}
                         {modalData.selectedData === 'password' && user && (
-                            <FormPassword
-                                showOldPasswordField
-                                controlRef={(handleSubmit: any) => {
-                                    setFormPasswordRef({
-                                        submit: handleSubmit(updatePassword),
-                                    });
-                                }}
-                            />
+                            <FormPassword showOldPasswordField controlRef={formPasswordControlRef} />
                         )}
                     </IonContent>
                     <IonFooter>

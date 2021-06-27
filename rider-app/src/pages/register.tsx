@@ -92,10 +92,26 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                 sliderRef.current?.lockSwipeToNext(true);
             }
         });
-    }, [data]);
+    }, [closeModal, data]);
 
     React.useEffect(() => {
         sliderRef.current?.lockSwipeToNext(true);
+    }, []);
+
+    const formUserControlRef = React.useCallback((handleSubmit: any) => {
+        setFormUserRef({
+            submit: handleSubmit(updateData),
+        });
+    }, []);
+    const formRiderControlRef = React.useCallback((handleSubmit: any) => {
+        setFormDeliveryRef({
+            submit: handleSubmit(updateData),
+        });
+    }, []);
+    const formPasswordControlRef = React.useCallback((handleSubmit: any) => {
+        setFormPasswordRef({
+            submit: handleSubmit(updateData),
+        });
     }, []);
 
     return (
@@ -125,34 +141,13 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         }}
                     >
                         <IonSlide>
-                            <FormUser
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormUserRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormUser showHeader controlRef={formUserControlRef} />
                         </IonSlide>
                         <IonSlide>
-                            <FormRider
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormDeliveryRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormRider showHeader controlRef={formRiderControlRef} />
                         </IonSlide>
                         <IonSlide>
-                            <FormPassword
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormPasswordRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormPassword showHeader controlRef={formPasswordControlRef} />
                             {registerError && (
                                 <Typography color={palette.error.main}>
                                     Ha ocurrido un error desconocido

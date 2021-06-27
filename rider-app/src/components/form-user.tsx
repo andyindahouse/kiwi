@@ -13,8 +13,13 @@ const useStyles = createUseStyles(() => ({
 }));
 
 type Props = {
-    controlRef: (handleSubmit: any) => void;
-    defaultValues?: {email: string; firstName: string; lastName: string; phone: string};
+    controlRef: (handleSubmit: ReturnType<typeof useForm>['handleSubmit']) => void;
+    defaultValues?: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+    };
     showHeader?: boolean;
     disableEmail?: boolean;
 };
@@ -29,7 +34,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>

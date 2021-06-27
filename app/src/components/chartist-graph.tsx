@@ -133,7 +133,7 @@ const ChartistGraph = ({series}: Props) => {
                 }
             );
         }
-    }, []);
+    }, [classes.carboHydrates, classes.fat, classes.proteins, series]);
 
     return (
         <div ref={chartRef} className={classnames(['ct-golden-section', classes.custom])}>
