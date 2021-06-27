@@ -6,108 +6,105 @@ export type PaginatedResponse<T> = {
 };
 
 export type User = {
-    firstName: string;
-    email: string;
-    phone: string;
     deliveryAddress: string;
+    deliveryHour: string;
     deliveryPostalCode: string;
     deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
-    deliveryHour: string;
+    email: string;
+    firstName: string;
+    phone: string;
 };
 
 export type RegisterUser = User & {password: string; rePassword: string};
 
 export interface Nutriments {
-    nutritionDataPer: number;
+    carbohydrates100g: number;
     energyKcal100g: number;
     fat100g: number;
-    saturedFat100g: number;
-    carbohydrates100g: number;
-    sugar100g: number;
+    nutritionDataPer: number;
     proteins100g: number;
     salt100g: number;
+    saturedFat100g: number;
+    sugar100g: number;
 }
 
 export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
 
 export interface Product {
     _id: string;
-    id: string;
+    available: boolean;
     brand: string;
     category: ReadonlyArray<string>;
-    name: string;
-    price: {
-        original?: string;
-        final: string;
-    };
     cost?: number;
-    discount: boolean;
-    specialOffer?: SpecialOffers;
-    specialOfferValue?: [string, string];
-    status: string;
-    quantity: number;
     currency: string;
-    img: string;
-    url: string;
+    discount: boolean;
     ean?: string;
-    units: number;
-    note?: string;
-    items?: ReadonlyArray<string>;
-    available: boolean;
-    updateDate: string;
-    nutriments?: Nutriments;
-    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
-    novaGroups: '1' | '2' | '3' | '4';
-    saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
     hasPreparations: boolean;
+    id: string;
+    img: string;
     isCooled: boolean;
     isGlutenFree: boolean;
     isLactoseFree: boolean;
+    items?: ReadonlyArray<string>;
+    name: string;
+    note?: string;
+    novaGroups: '1' | '2' | '3' | '4';
+    nutriments?: Nutriments;
+    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
+    price: {original?: string; final: string};
+    quantity: number;
+    saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
+    specialOffer?: SpecialOffers;
+    specialOfferValue?: [string, string];
+    status: string;
+    units: number;
+    updateDate: string;
+    url: string;
 }
 
 export interface ShoppingCart {
-    products: ReadonlyArray<Product>;
     deliverFee: number;
-    finalDeliverFee: number;
-    shopperFee: number;
-    finalShopperFee: number;
-    totalShoppingCart: number;
-    totalCost: number;
     deliveryDiscount: number;
+    finalDeliverFee: number;
+    finalShopperFee: number;
+    products: ReadonlyArray<Product>;
+    shopperFee: number;
+    totalCost: number;
+    totalShoppingCart: number;
 }
 
-export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'issue' | 'comming' | 'finalized';
+export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'finalized' | 'issue';
 
 export interface Order {
     _id: string;
     createdDate: string;
-    email: string;
-    products: ReadonlyArray<Product>;
-    status: OrderStatus;
+    deliverFee: number;
     deliveryAdrres: string;
     deliveryDate: string;
-    deliveryHour: string;
-    note: string;
-    replaceProducts: false;
     deliveryDiscount: number;
-    deliverFee: number;
+    deliveryHour: string;
+    email: string;
     finalDeliverFee: number;
-    shopperFee: number;
     finalShopperFee: number;
-    totalShoppingCart: number;
+    note: string;
+    products: ReadonlyArray<Product>;
+    replaceProducts: false;
+    shopperFee: number;
+    status: OrderStatus;
     totalCost: number;
+    totalShoppingCart: number;
 }
 
 export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' | 'others' | 'consumed';
 
 export interface PantryProduct {
+    _id: string;
     buyedDate: string;
+    consumedDate: string;
     date: string;
-    id: string;
     email: string;
+    id: string;
     img: string;
     inStorage: PantryProductStatus;
     name: string;
-    _id: string;
-    consumedDate: string;
 }

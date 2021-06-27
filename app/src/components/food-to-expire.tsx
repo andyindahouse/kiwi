@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import {IonIcon, IonList, useIonViewDidEnter} from '@ionic/react';
 import {alarmOutline} from 'ionicons/icons';
 import {Typography, palette, Box} from '@kiwi/ui';
-import {PantryProduct} from '../models';
+import {PantryProduct} from '@kiwi/models';
 import ProductItem, {ProductListItemSkeleton} from '../components/product-item';
 import {getExpiryObj} from '../utils';
 import {getFormatDate} from '../utils/format-date';

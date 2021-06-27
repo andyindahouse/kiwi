@@ -1,0 +1,9 @@
+{
+    "name": "@kiwi/models",
+    "scripts": {
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "4.3.4"
+    }
+}

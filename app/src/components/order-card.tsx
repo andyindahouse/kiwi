@@ -1,6 +1,6 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Order as OrderModel, Product} from '../models';
+import {Order as OrderModel, Product} from '@kiwi/models';
 import {Typography, palette} from '@kiwi/ui';
 import {IonButton, IonIcon} from '@ionic/react';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';

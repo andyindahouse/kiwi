@@ -12,7 +12,7 @@ import {
     IonButton,
 } from '@ionic/react';
 import kiwiApi from '../api';
-import {Product} from '../models';
+import {Product} from '@kiwi/models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
 import {Box, InfiniteScroll, Fragment} from '@kiwi/ui';

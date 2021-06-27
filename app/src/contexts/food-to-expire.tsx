@@ -1,7 +1,7 @@
 import * as React from 'react';
 import kiwiApi from '../api';
 import {Plugins, Capacitor} from '@capacitor/core';
-import {PantryProduct} from '../models';
+import {PantryProduct} from '@kiwi/models';
 import {useIonViewDidEnter} from '@ionic/react';
 
 const setLocalNotifications = async (pantryProducts: ReadonlyArray<PantryProduct>) => {

@@ -1,4 +1,4 @@
-import {Product} from '../models';
+import {Product} from '@kiwi/models/rider';
 import {palette} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 

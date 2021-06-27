@@ -1,7 +1,7 @@
 import * as React from 'react';
 import kiwiApi from '../api';
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
-import {User} from '../models';
+import {User} from '@kiwi/models';
 import {IonSpinner} from '@ionic/react';
 
 type Auth = {

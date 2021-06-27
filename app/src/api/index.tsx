@@ -8,7 +8,7 @@ import {
     Product,
     ShoppingCart,
     User,
-} from '../models';
+} from '@kiwi/models';
 import {callStub} from './stubs';
 import {USE_STUBS} from './dev-config';
 

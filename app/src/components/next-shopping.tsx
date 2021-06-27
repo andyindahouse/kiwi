@@ -5,7 +5,7 @@ import {cartOutline} from 'ionicons/icons';
 import {Typography, palette, Box} from '@kiwi/ui';
 import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
-import {Product} from '../models';
+import {Product} from '@kiwi/models';
 import {Link} from 'react-router-dom';
 
 const useStyles = createUseStyles(() => ({

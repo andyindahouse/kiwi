@@ -25,7 +25,7 @@ import {
     useIonViewWillEnter,
     IonToggle,
 } from '@ionic/react';
-import {Product} from '../models';
+import {Product} from '@kiwi/models';
 import ProductDetail from '../components/product-detail';
 import {EMPTY_SHOPPING_CART, SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import {Typography, palette} from '@kiwi/ui';

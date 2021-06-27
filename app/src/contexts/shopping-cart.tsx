@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Product, ShoppingCart} from '../models';
+import {Product, ShoppingCart} from '@kiwi/models';
 import kiwiApi from '../api';
 import {useAuth} from './auth';
 import {getPersistedShoppingCart, clearPersistedShoppingCart} from '../utils/unauthenticated-persistence';

@@ -1,4 +1,4 @@
-import {PaginatedResponse, PantryProduct} from '../../models';
+import {PaginatedResponse, PantryProduct} from '@kiwi/models';
 
 export const pantry: PaginatedResponse<ReadonlyArray<PantryProduct>> = {
     pageNumber: 0,

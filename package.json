@@ -7,7 +7,7 @@
         "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
         "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
         "lint": "eslint --ext .js,.ts,.tsx .",
-        "build-packages": "yarn workspace @kiwi/api build && yarn workspace @kiwi/ui build"
+        "build-packages": "yarn workspace @kiwi/models build && yarn workspace @kiwi/api build && yarn workspace @kiwi/ui build"
     },
     "repository": {
         "type": "git",
@@ -30,11 +30,6 @@
             "git add"
         ]
     },
-    "dependencies": {
-        "husky": "^4.3.8",
-        "lint-staged": "^10.5.4",
-        "prettier": "^2.3.1"
-    },
     "workspaces": [
         "backend",
         "app",
@@ -48,6 +43,9 @@
         "eslint": "^7.29.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-react": "^7.24.0",
-        "eslint-plugin-react-hooks": "^4.2.0"
+        "eslint-plugin-react-hooks": "^4.2.0",
+        "husky": "^4.3.8",
+        "lint-staged": "^10.5.4",
+        "prettier": "^2.3.1"
     }
 }

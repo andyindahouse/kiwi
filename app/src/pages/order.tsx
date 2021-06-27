@@ -21,7 +21,7 @@ import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
 import {statusOrderMap} from '../utils';
 
-import type {Order as OrderModel, OrderStatus, Product} from '../models';
+import type {Order as OrderModel, OrderStatus, Product} from '@kiwi/models';
 import PaymentFooter from '../components/payment-fields';
 
 const useStyles = createUseStyles(() => ({
