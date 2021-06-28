@@ -13,7 +13,7 @@ import {
 import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
 import kiwiApi from '../api';
-import {RegisterUser} from '@kiwi/models/rider';
+import {RegisterUser} from '@kiwi/models';
 import FormUser from '../components/form-user';
 import FormRider from '../components/form-rider';
 import FormPassword from '../components/form-password';
@@ -55,6 +55,10 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
         deliveryVehicle: '',
         password: '',
         rePassword: '',
+        deliveryAddress: '',
+        deliveryHour: '',
+        deliveryPostalCode: '',
+        deliveryWeekDay: '0',
     });
     const [formUserRef, setFormUserRef] = React.useState<null | {submit: () => void}>();
     const [formDeliveryRef, setFormDeliveryRef] = React.useState<null | {submit: () => void}>();

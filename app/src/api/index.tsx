@@ -6,6 +6,7 @@ import {
     PantryProduct,
     PantryProductStatus,
     Product,
+    RegisterUser,
     ShoppingCart,
     User,
 } from '@kiwi/models';
@@ -22,7 +23,7 @@ const call =
 const kiwiApi = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
         call({url: '/login', body}, false),
-    registerUser: (body: User & {password: string}): Promise<User> => call({url: '/register', body}, false),
+    registerUser: (body: RegisterUser): Promise<User> => call({url: '/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
         call({url: `/emailTaken?email=${email}`}, false),
     getUser: (): Promise<User> => call({url: '/me'}),

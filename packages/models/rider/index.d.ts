@@ -1,68 +1,56 @@
-export type User = {
-    deliveryCity: string;
-    deliveryVehicle: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    password?: string;
-    phone: string;
-};
-
-export type RegisterUser = User & {password: string; rePassword: string};
-
 export type ProductOrderStatus = 'pending' | 'saved' | 'not-available';
 
 export interface Product {
-    brand: string;
-    category: ReadonlyArray<string>;
-    currency: string;
-    daysAfterOpened?: number;
-    discount: boolean;
-    ean?: string;
-    id: string;
-    img: string;
-    items?: ReadonlyArray<{date: string | null}>;
-    name: string;
-    note?: string;
-    novaGroups: '1' | '2' | '3' | '4';
-    nutriments?: Nutriments;
-    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
-    price: {original?: string; final: string};
-    quantity: number;
-    specialOffer?: SpecialOffers;
-    specialOfferValue?: [string, string];
-    status: string;
-    statusOrder?: 'pending' | 'saved' | 'not-available';
-    units: number;
-    url: string;
+    readonly brand: string;
+    readonly category: ReadonlyArray<string>;
+    readonly currency: string;
+    readonly daysAfterOpened?: number;
+    readonly discount: boolean;
+    readonly ean?: string;
+    readonly id: string;
+    readonly img: string;
+    readonly items?: ReadonlyArray<{readonly date: string | null}>;
+    readonly name: string;
+    readonly note?: string;
+    readonly novaGroups: '1' | '2' | '3' | '4';
+    readonly nutriments?: Nutriments;
+    readonly nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
+    readonly price: {readonly original?: string; readonly final: string};
+    readonly quantity: number;
+    readonly specialOffer?: SpecialOffers;
+    readonly specialOfferValue?: [string, string];
+    readonly status: string;
+    readonly statusOrder?: 'pending' | 'saved' | 'not-available';
+    readonly units: number;
+    readonly url: string;
 }
 
 export interface ShoppingCart {
-    deliverFee: number;
-    products: ReadonlyArray<Product>;
-    shopperFee: number;
-    totalCost: number;
-    totalShoppingCart: number;
+    readonly deliverFee: number;
+    readonly products: ReadonlyArray<Product>;
+    readonly shopperFee: number;
+    readonly totalCost: number;
+    readonly totalShoppingCart: number;
 }
 
 export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'finalized';
 
 export interface Order {
-    _id: string;
-    createdDate: string;
-    deliverFee: number;
-    deliveryAddress: string;
-    deliveryDate: string;
-    deliveryHour: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    note: string;
-    phone: string;
-    products: ReadonlyArray<Product>;
-    replaceProducts: boolean;
-    shopperFee: number;
-    status: OrderStatus;
-    totalCost: number;
-    totalShoppingCart: number;
+    readonly _id: string;
+    readonly createdDate: string;
+    readonly deliverFee: number;
+    readonly deliveryAddress: string;
+    readonly deliveryDate: string;
+    readonly deliveryHour: string;
+    readonly email: string;
+    readonly firstName: string;
+    readonly lastName: string;
+    readonly note: string;
+    readonly phone: string;
+    readonly products: ReadonlyArray<Product>;
+    readonly replaceProducts: boolean;
+    readonly shopperFee: number;
+    readonly status: OrderStatus;
+    readonly totalCost: number;
+    readonly totalShoppingCart: number;
 }

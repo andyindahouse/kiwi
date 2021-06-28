@@ -1,6 +1,7 @@
 import {getApiCall} from '@kiwi/api';
 import {TOKEN_KEY_LOCAL_STORAGE} from '../constants';
-import {Order, OrderStatus, Product, User} from '@kiwi/models/rider';
+import {RegisterUser, User} from '@kiwi/models';
+import {Order, OrderStatus, Product} from '@kiwi/models/rider';
 
 export type PaginatedResponse<T> = {
     content: T;
@@ -14,8 +15,7 @@ const call = getApiCall('http://51.210.87.239:3000', () => localStorage.getItem(
 const api = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
         call({url: '/rider/login', body}, false),
-    registerUser: (body: User & {password: string}): Promise<User> =>
-        call({url: '/rider/register', body}, false),
+    registerUser: (body: RegisterUser): Promise<User> => call({url: '/rider/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
         call({url: `/emailTaken?email=${email}`}, false),
     getUser: (): Promise<User> => call({url: '/rider/me'}),
