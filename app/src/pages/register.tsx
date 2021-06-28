@@ -49,6 +49,7 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
     const [data, setData] = React.useState<RegisterUser>({
         email: '',
         firstName: '',
+        lastName: '',
         phone: '',
         deliveryAddress: '',
         deliveryPostalCode: '',
@@ -56,6 +57,8 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
         deliveryHour: '',
         password: '',
         rePassword: '',
+        deliveryVehicle: '',
+        deliveryCity: '',
     });
     const [formUserRef, setFormUserRef] = React.useState<null | {submit: () => void}>();
     const [formDeliveryRef, setFormDeliveryRef] = React.useState<null | {submit: () => void}>();
