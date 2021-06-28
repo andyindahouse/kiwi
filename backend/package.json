@@ -1,11 +1,11 @@
 {
     "name": "backend",
-    "main": "index.js",
-    "type": "module",
+    "main": "build/index.js",
     "private": true,
     "scripts": {
-        "start": "node index.js https",
-        "start-dev": "nodemon index.js",
+        "start": "node build/index.js https",
+        "start-dev": "nodemon build/index.js",
+        "build": "tsc",
         "ts-check": "tsc"
     },
     "dependencies": {
