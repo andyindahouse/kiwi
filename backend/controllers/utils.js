@@ -1,21 +1,23 @@
 import {FEES} from '../config.js';
 
 export const getPrice = (product, units) => {
+    const priceFinal = Number(product.price.final);
+
     if (product.specialOffer === 'offerDiscount') {
         const quotient = Math.floor(units / product.specialOfferValue[0]);
-        const discount = quotient * ((product.price.final * (100 - product.specialOfferValue[1])) / 100);
+        const discount = quotient * ((priceFinal * (100 - product.specialOfferValue[1])) / 100);
         const withoutDiscount = units - quotient;
-        return parseFloat((withoutDiscount * product.price.final + discount).toFixed(2));
+        return parseFloat((withoutDiscount * priceFinal + discount).toFixed(2));
     } else if (product.specialOffer === 'quantityDiscount') {
-        const value = product.price.final;
+        const value = priceFinal;
         const rest = units % product.specialOfferValue[0];
         const quotient = Math.floor(units / product.specialOfferValue[0]);
         const productsQuantity = quotient * product.specialOfferValue[1] + rest;
         return parseFloat((productsQuantity * value).toFixed(2));
     } else if (product.saleType === 'unit') {
-        return parseFloat((units * product.price.final).toFixed(2));
+        return parseFloat((units * priceFinal).toFixed(2));
     } else {
-        const priceFor100gr = product.price.final / 10;
+        const priceFor100gr = priceFinal / 10;
         const unitsOf100gr = units / 100;
         return parseFloat((unitsOf100gr * priceFor100gr).toFixed(2));
     }
