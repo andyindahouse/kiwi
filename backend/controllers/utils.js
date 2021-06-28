@@ -1,6 +1,10 @@
 import {FEES} from '../config.js';
 
 export const getPrice = (product, units) => {
+    if (!product.saleType) {
+        return '0';
+    }
+
     if (product.specialOffer === 'offerDiscount') {
         const quotient = Math.floor(units / product.specialOfferValue[0]);
         const discount = quotient * ((product.price.final * (100 - product.specialOfferValue[1])) / 100);
@@ -16,9 +20,11 @@ export const getPrice = (product, units) => {
         return parseFloat((units * product.price.final).toFixed(2));
     } else {
         const priceFor100gr = product.price.final / 10;
-        return (units * priceFor100gr).toFixed(2);
+        const unitsOf100gr = units / 100;
+        return parseFloat((unitsOf100gr * priceFor100gr).toFixed(2));
     }
 };
+
 export const getDeliveryPrice = () => ({
     deliverFee: FEES.deliverFee,
     shopperFee: FEES.shopperFee,
