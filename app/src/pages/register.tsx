@@ -10,14 +10,13 @@ import {
     IonTitle,
     IonToolbar,
 } from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
 import kiwiApi from '../api';
 import {RegisterUser} from '@kiwi/models';
 import FormUser from '../components/form-user';
 import FormDelivery from '../components/form-delivery';
 import FormPassword from '../components/form-password';
-import {Typography, palette} from '@kiwi/ui';
 
 const useStyles = createUseStyles(() => ({
     registerForm: {
@@ -45,6 +44,7 @@ type Props = {
 
 const Register: React.FC<Props> = ({closeModal}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const sliderRef = React.useRef<HTMLIonSlidesElement | null>(null);
     const [data, setData] = React.useState<RegisterUser>({
         email: '',
@@ -93,10 +93,25 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                 sliderRef.current?.lockSwipeToNext(true);
             }
         });
-    }, [data]);
+    }, [closeModal, data]);
 
     React.useEffect(() => {
         sliderRef.current?.lockSwipeToNext(true);
+    }, []);
+    const formPasswordControlRef = React.useCallback((handleSubmit: any) => {
+        setFormPasswordRef({
+            submit: handleSubmit(updateData),
+        });
+    }, []);
+    const formUserControlRef = React.useCallback((handleSubmit: any) => {
+        setFormUserRef({
+            submit: handleSubmit(updateData),
+        });
+    }, []);
+    const formDeliveryControlRef = React.useCallback((handleSubmit: any) => {
+        setFormDeliveryRef({
+            submit: handleSubmit(updateData),
+        });
     }, []);
 
     return (
@@ -125,34 +140,13 @@ const Register: React.FC<Props> = ({closeModal}: Props) => {
                         }}
                     >
                         <IonSlide>
-                            <FormUser
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormUserRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormUser showHeader controlRef={formUserControlRef} />
                         </IonSlide>
                         <IonSlide>
-                            <FormDelivery
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormDeliveryRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormDelivery showHeader controlRef={formDeliveryControlRef} />
                         </IonSlide>
                         <IonSlide>
-                            <FormPassword
-                                showHeader
-                                controlRef={(handleSubmit: any) => {
-                                    setFormPasswordRef({
-                                        submit: handleSubmit(updateData),
-                                    });
-                                }}
-                            />
+                            <FormPassword showHeader controlRef={formPasswordControlRef} />
                             {registerError && (
                                 <Typography color={palette.error.main}>
                                     Ha ocurrido un error desconocido

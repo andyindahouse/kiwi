@@ -1,7 +1,6 @@
 import {IonInput, IonItem, IonLabel, IonList} from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {createUseStyles, Typography, useTheme} from '@kiwi/ui';
 import * as React from 'react';
-import {Typography, palette} from '@kiwi/ui';
 import {Controller, useForm} from 'react-hook-form';
 
 const useStyles = createUseStyles(() => ({
@@ -16,13 +15,14 @@ type Props = {controlRef: (handleSubmit: any) => void; showHeader?: boolean; sho
 
 const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {handleSubmit, errors, watch, control} = useForm({
         shouldFocusError: true,
     });
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>

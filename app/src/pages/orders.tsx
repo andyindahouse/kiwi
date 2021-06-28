@@ -1,5 +1,5 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {InfiniteScroll, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -17,7 +17,6 @@ import kiwiApi from '../api';
 import {Order, Order as OrderModel} from '@kiwi/models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline, rocketOutline} from 'ionicons/icons';
-import {InfiniteScroll} from '@kiwi/ui';
 import {useHistory} from 'react-router-dom';
 import EmptyCase from '../components/empty-case';
 
@@ -150,7 +149,7 @@ const Orders: React.FC = () => {
                 data: orders.data.concat(res.content),
             }));
         });
-    }, []);
+    }, [orders.pageNumber]);
 
     return (
         <IonPage>

@@ -1,9 +1,7 @@
-'use strict';
+import mongoose from 'mongoose';
 
-const {Schema, model} = require('mongoose');
-
-const OrderSchema = new Schema({
-    _id: Schema.Types.ObjectId,
+const OrderSchema = new mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     email: String,
     firstName: String,
     lastName: String,
@@ -27,4 +25,4 @@ const OrderSchema = new Schema({
     replaceProducts: Boolean,
 });
 
-module.exports = model('Order', OrderSchema, 'orders');
+export default mongoose.model('Order', OrderSchema, 'orders');

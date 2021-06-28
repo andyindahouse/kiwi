@@ -1,5 +1,5 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, Box, useTheme} from '@kiwi/ui';
 import {
     IonButton,
     IonContent,
@@ -15,7 +15,6 @@ import {
     IonToolbar,
 } from '@ionic/react';
 import Register from './register';
-import {Typography, palette, Box} from '@kiwi/ui';
 import {useAuth} from '../contexts/auth';
 import {useForm, Controller} from 'react-hook-form';
 import KiwiLogo from '../components/logo';
@@ -44,6 +43,7 @@ const useStyles = createUseStyles(() => ({
 
 const Login: React.FC = () => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {login} = useAuth();
     const [showRegister, setShowRegister] = React.useState(false);
     const [loginError, setLoginError] = React.useState(false);
@@ -68,6 +68,12 @@ const Login: React.FC = () => {
         },
         [login]
     );
+    const handleCloseModal = React.useCallback((registerSuccess) => {
+        if (registerSuccess) {
+            setShowRegisterMessage(true);
+        }
+        setShowRegister(false);
+    }, []);
 
     return (
         <IonPage>
@@ -189,14 +195,7 @@ const Login: React.FC = () => {
                         setShowRegister(false);
                     }}
                 >
-                    <Register
-                        closeModal={(registerSuccess) => {
-                            if (registerSuccess) {
-                                setShowRegisterMessage(true);
-                            }
-                            setShowRegister(false);
-                        }}
-                    />
+                    <Register closeModal={handleCloseModal} />
                 </IonModal>
             </IonContent>
         </IonPage>

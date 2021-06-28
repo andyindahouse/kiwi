@@ -1,12 +1,10 @@
 import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
-import {createUseStyles, useTheme} from 'react-jss';
-import {IonIcon} from '@ionic/react';
+import {Typography, createUseStyles} from '@kiwi/ui';
+import {IonIcon, IonSpinner} from '@ionic/react';
 import {Product} from '@kiwi/models/rider';
-import {IonSpinner} from '@ionic/react';
-import {Typography} from '@kiwi/ui';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     container: {
         background: '#FFFFFF',
         height: 210,
@@ -24,7 +22,7 @@ const useStyles = createUseStyles(() => ({
         top: 0,
         right: 0,
         left: 0,
-        backgroundColor: ({theme}) => theme.palette.primary.main,
+        backgroundColor: palette.primary.main,
         borderRadius: 32,
         display: 'flex',
         alignItems: 'center',
@@ -79,8 +77,7 @@ interface Props {
 
 const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
     const {name, price, img, id, ean, discount, units: initialUnits} = product;
-    const theme = useTheme();
-    const classes = useStyles({theme});
+    const classes = useStyles();
     const [units, setUnits] = React.useState(initialUnits);
     const [openUnits, setOpenUnits] = React.useState(false);
     const [showSpinner, setShowSpinner] = React.useState(false);
@@ -113,7 +110,7 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
             spinnerTimeOutRef.current && clearTimeout(spinnerTimeOutRef.current);
             timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
         };
-    }, [units]);
+    }, [openUnits, units, updateUnits]);
 
     return (
         <div className={classes.container}>

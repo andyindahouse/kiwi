@@ -1,15 +1,13 @@
-'use strict';
+import Order from '../models/order.js';
+import ShoppingCart from '../models/shoppingCart.js';
+import Product from '../models/product.js';
+import Pantry from '../models/pantry.js';
+import errorTypes from './errorTypes.js';
+import mongodb from 'mongodb';
+import {FEES} from '../config.js';
+import {getDeliveryPrice, getPrice} from './utils.js';
 
-const Order = require('../models/order');
-const ShoppingCart = require('../models/shoppingCart');
-const Product = require('../models/product');
-const Pantry = require('../models/pantry');
-const errorTypes = require('./errorTypes');
-const ObjectID = require('mongodb').ObjectID;
-const {FEES} = require('../config');
-const utils = require('./utils');
-
-const controller = {
+export default {
     get: async ({query, user}, res, next) => {
         try {
             const pageNumber = parseInt(query.pageNumber || 0);
@@ -38,7 +36,7 @@ const controller = {
             next(new errorTypes.Error400('Falta parametro id.'));
         }
         try {
-            const id = new ObjectID(params.id);
+            const id = new mongodb.ObjectID(params.id);
             const result = await Order.findOne({_id: id, email: user.email});
             if (!result) {
                 next(new errorTypes.Error404('Order not found.'));
@@ -62,7 +60,7 @@ const controller = {
                         const productInCart = shopppingCart.products.find(
                             (prodInCart) => prodInCart.id === product.id
                         );
-                        const costProduct = utils.getPrice(product._doc, productInCart.units);
+                        const costProduct = getPrice(product._doc, productInCart.units);
                         totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                         return {
                             ...product._doc,
@@ -74,7 +72,7 @@ const controller = {
                 if (!orderWithProducts.length) {
                     return next(new errorTypes.Error400('Order without products availables.'));
                 }
-                const deliveryPrice = utils.getDeliveryPrice();
+                const deliveryPrice = getDeliveryPrice();
                 const totalCost = parseFloat(
                     (
                         totalShoppingCart +
@@ -83,7 +81,7 @@ const controller = {
                     ).toFixed(2)
                 );
                 const order = {
-                    _id: new ObjectID(),
+                    _id: new mongodb.ObjectID(),
                     email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName,
@@ -122,7 +120,7 @@ const controller = {
     },
     updateStatus: async ({params, body, user}, res, next) => {
         try {
-            const id = new ObjectID(params.id);
+            const id = new mongodb.ObjectID(params.id);
             const updatedOrder = await Order.findOneAndUpdate(
                 {_id: id, email: user.email},
                 {
@@ -151,7 +149,7 @@ const controller = {
             } else if (!body.units) {
                 next(new errorTypes.Error400('Falta parametro units.'));
             }
-            const id = new ObjectID(params.id);
+            const id = new mongodb.ObjectID(params.id);
             const order = await Order.findById(id);
             const productsExist = order.products.find((product) => body.id === product.id);
             if (productsExist) {
@@ -163,7 +161,7 @@ const controller = {
                     next(new errorTypes.Error404('Product not found.'));
                 }
                 const products = [...order.products];
-                const costProduct = utils.getPrice(product._doc, body.units);
+                const costProduct = getPrice(product._doc, body.units);
                 products.push({
                     ...product._doc,
                     items: new Array(body.units).fill({date: null}),
@@ -203,7 +201,7 @@ const controller = {
     },
     updateProduct: async ({user, params, body}, res, next) => {
         try {
-            const orderId = new ObjectID(params.orderId);
+            const orderId = new mongodb.ObjectID(params.orderId);
             const order = await Order.findById(orderId);
             if (order) {
                 if (!body.items || !body.items.length) {
@@ -212,7 +210,7 @@ const controller = {
                 const productIndex = order.products.findIndex((product) => params.id === product.id);
                 const products = [...order.products];
                 const oldCostProduct = products[productIndex].cost;
-                const newCostProduct = utils.getPrice(products[productIndex], body.items.length);
+                const newCostProduct = getPrice(products[productIndex], body.items.length);
                 products[productIndex] = {
                     ...products[productIndex],
                     items: body.items,
@@ -260,7 +258,7 @@ const controller = {
     },
     deleteProduct: async ({user, params, body}, res, next) => {
         try {
-            const orderId = new ObjectID(params.orderId);
+            const orderId = new mongodb.ObjectID(params.orderId);
             const order = await Order.findById(orderId);
             if (order) {
                 const productToDelete = order.products.find((product) => params.id === product.id);
@@ -306,5 +304,3 @@ const controller = {
         }
     },
 };
-
-module.exports = controller;

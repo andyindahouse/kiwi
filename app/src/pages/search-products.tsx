@@ -1,5 +1,5 @@
 import React from 'react';
-import {createUseStyles} from 'react-jss';
+import {Box, InfiniteScroll, Fragment, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
@@ -15,7 +15,6 @@ import kiwiApi from '../api';
 import {Product} from '@kiwi/models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import {Box, InfiniteScroll, Fragment} from '@kiwi/ui';
 import {
     UpdateShoppingCartProduct,
     UPDATE_SHOPPING_CART_PRODUCT,
@@ -97,6 +96,7 @@ const ProductList = ({
         });
         // TODO: Refactor to avoid duplicated products after login (with products in localstorage)
         // I can't add user like a dependecy because this make a post with login so if i have products in cart these are uploaded and merge after in the shopping-context
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [shoppingCartProducts]);
 
     if (products.length === 0 && !isLoading) {
@@ -199,7 +199,7 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                 }
             });
         }
-    }, [filter]);
+    }, [filter, shoppingCart]);
 
     return (
         <IonPage>

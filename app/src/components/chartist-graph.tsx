@@ -2,11 +2,10 @@ import * as React from 'react';
 import Chartist from 'chartist';
 import 'chartist/dist/chartist.css';
 import classnames from 'classnames';
-import {createUseStyles} from 'react-jss';
-import {palette} from '@kiwi/ui';
+import {createUseStyles} from '@kiwi/ui';
 import {isNumber} from 'lodash';
 
-const useStyles = createUseStyles(() => ({
+const useStyles = createUseStyles(({palette}) => ({
     proteins: {
         fill: palette.primary.main,
     },
@@ -134,7 +133,7 @@ const ChartistGraph = ({series}: Props) => {
                 }
             );
         }
-    }, []);
+    }, [classes.carboHydrates, classes.fat, classes.proteins, series]);
 
     return (
         <div ref={chartRef} className={classnames(['ct-golden-section', classes.custom])}>

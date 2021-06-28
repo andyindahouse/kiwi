@@ -1,8 +1,7 @@
 import {IonInput, IonItem, IonLabel, IonList} from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
 import kiwiApi from '../api';
-import {Typography, palette} from '@kiwi/ui';
 import {Controller, useForm} from 'react-hook-form';
 
 const useStyles = createUseStyles(() => ({
@@ -14,14 +13,20 @@ const useStyles = createUseStyles(() => ({
 }));
 
 type Props = {
-    controlRef: (handleSubmit: any) => void;
-    defaultValues?: {email: string; firstName: string; lastName: string; phone: string};
+    controlRef: (handleSubmit: ReturnType<typeof useForm>['handleSubmit']) => void;
+    defaultValues?: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+    };
     showHeader?: boolean;
     disableEmail?: boolean;
 };
 
 const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
@@ -29,7 +34,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>

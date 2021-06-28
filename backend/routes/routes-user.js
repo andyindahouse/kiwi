@@ -1,14 +1,12 @@
-'use strict';
-
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const customMdw = require('../middleware/custom');
-const UserController = require('../controllers/user');
-const ProductsController = require('../controllers/products');
-const ShoppingCartController = require('../controllers/shoppingCart');
-const PantryController = require('../controllers/pantry');
-const OrdersController = require('../controllers/orders');
-const ConfigController = require('../controllers/config');
+import customMdw from '../middleware/custom.js';
+import UserController from '../controllers/user.js';
+import ProductsController from '../controllers/products.js';
+import ShoppingCartController from '../controllers/shoppingCart.js';
+import PantryController from '../controllers/pantry.js';
+import OrdersController from '../controllers/orders.js';
+import ConfigController from '../controllers/config.js';
 
 router.get('/config', ConfigController.config);
 
@@ -38,4 +36,4 @@ router.put('/orders/:id/products', customMdw.ensureAuthenticated, OrdersControll
 router.post('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.updateProduct);
 router.delete('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
 
-module.exports = router;
+export default router;

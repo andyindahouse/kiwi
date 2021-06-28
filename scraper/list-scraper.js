@@ -1,7 +1,7 @@
-const puppeteer = require('puppeteer-extra');
-const mongodb = require('mongodb');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const config = require('./config');
+import puppeteer from 'puppeteer-extra';
+import mongodb from 'mongodb';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import * as config from './config.js';
 
 puppeteer.use(StealthPlugin());
 
@@ -147,7 +147,7 @@ const initScrapper = async () => {
             let numberPage = 2;
             let pageSize = 24;
             while (numberPage * pageSize < products) {
-                await page.waitForResponse(supermarket.api.replace('%NUMBERPAGE%', numberPage), {
+                await page.waitForResponse(supermarket.api.replace('%NUMBERPAGE%', String(numberPage)), {
                     timeout: 9999,
                 });
                 numberPage += 1;

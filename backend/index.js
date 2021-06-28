@@ -1,21 +1,22 @@
-'use strict';
+import express from 'express';
+import bodyParser from 'body-parser';
+import fs from 'fs';
+import https from 'https';
+import http from 'http';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import passportJwt from 'passport-jwt';
+import passportLocal from 'passport-local';
+import bcrypt from 'bcrypt';
+import cors from 'cors';
+import {PORT, CONFIG_MONGO, PASSPORT_CONFIG} from './config.js';
+import User from './models/user.js';
+import customMdw from './middleware/custom.js';
+import routesUser from './routes/routes-user.js';
+import routesRider from './routes/routes-rider.js';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const https = require('https');
-const http = require('http');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const {Strategy: JwtStrategy, ExtractJwt} = require('passport-jwt');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
-const cors = require('cors');
-const {PORT, CONFIG_MONGO, PASSPORT_CONFIG} = require('./config');
-const User = require('./models/user');
-const customMdw = require('./middleware/custom');
-const routesUser = require('./routes/routes-user');
-const routesRider = require('./routes/routes-rider');
+const {Strategy: JwtStrategy, ExtractJwt} = passportJwt;
+const {Strategy: LocalStrategy} = passportLocal;
 
 mongoose.connect(CONFIG_MONGO.URL, {useNewUrlParser: true}).catch((err) => {
     console.log(err);

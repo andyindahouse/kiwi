@@ -22,57 +22,51 @@ const setLocalNotifications = async (pantryProducts: ReadonlyArray<PantryProduct
     }
 };
 
-type FoodToExpire = {
+type State = {
     products: ReadonlyArray<PantryProduct>;
     isLoading: boolean;
 };
 
-const initialState = {
-    products: [],
-    isLoading: false,
-};
-
-const FoodToExpireContext = React.createContext<
-    FoodToExpire & {setFoodToExpire: (state: FoodToExpire) => void}
->({
-    ...initialState,
-    setFoodToExpire: (state: FoodToExpire) => {},
-});
+const FoodToExpireContext = React.createContext<State | null>(null);
 
 export const FoodToExpireProvider = ({children}: {children: React.ReactNode}) => {
-    const [foodToExpire, setFoodToExpire] = React.useState<FoodToExpire>(initialState);
+    const [products, setProducts] = React.useState([] as readonly PantryProduct[]);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() => {
-        console.log('FoodToExpireProvider');
-        setFoodToExpire({
-            ...foodToExpire,
-            isLoading: true,
-        });
+        let cancel = false;
+        setIsLoading(true);
         kiwiApi
             .getPantry({
                 pageNumber: 0,
                 pageSize: 5,
                 perishable: true,
             })
-            .then((res) => {
-                setFoodToExpire({
-                    products: res.content,
-                    isLoading: false,
-                });
+            .then(({content}) => {
+                if (!cancel) {
+                    setProducts(content);
+                }
+            })
+            .finally(() => {
+                if (!cancel) {
+                    setIsLoading(false);
+                }
             });
+
+        return () => {
+            cancel = true;
+        };
     }, []);
 
-    return (
-        <FoodToExpireContext.Provider value={{...foodToExpire, setFoodToExpire}}>
-            {children}
-        </FoodToExpireContext.Provider>
-    );
+    const context = React.useMemo(() => ({isLoading, products}), [isLoading, products]);
+    return <FoodToExpireContext.Provider value={context}>{children}</FoodToExpireContext.Provider>;
 };
 
-export const useFoodToExpire = () => {
+export const useFoodToExpire = (): State => {
     const context = React.useContext(FoodToExpireContext);
-    if (context === undefined) {
+    if (!context) {
         throw new Error('useFoodToExpire must be used within a FoodToExpireProvider');
     }
+
     return context;
 };

@@ -1,7 +1,6 @@
 import {IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from '@ionic/react';
-import {createUseStyles} from 'react-jss';
+import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import * as React from 'react';
-import {Typography, palette} from '@kiwi/ui';
 import {Controller, useForm} from 'react-hook-form';
 
 const useStyles = createUseStyles(() => ({
@@ -39,7 +38,7 @@ const vehicles = [
 ];
 
 type Props = {
-    controlRef: (handleSubmit: any) => void;
+    controlRef: (handleSubmit: ReturnType<typeof useForm>['handleSubmit']) => void;
     defaultValues?: {
         deliveryCity: string;
         deliveryVehicle: string;
@@ -49,6 +48,7 @@ type Props = {
 
 const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
+    const {palette} = useTheme();
     const {handleSubmit, errors, control} = useForm({
         shouldFocusError: true,
         defaultValues,
@@ -56,14 +56,14 @@ const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
 
     React.useEffect(() => {
         controlRef(handleSubmit);
-    }, []);
+    }, [controlRef, handleSubmit]);
 
     return (
         <form className={classes.slideContainer}>
             {showHeader && (
                 <>
                     <Typography gutterBottom={32} variant="h3">
-                        Cuentanos un poco más,
+                        Cuéntanos un poco más,
                     </Typography>
                 </>
             )}

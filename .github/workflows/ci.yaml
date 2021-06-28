@@ -9,10 +9,6 @@ jobs:
             - uses: actions/setup-node@v1
             - name: Install dependencies
               run: yarn install --immutable --immutable-cache
-            - name: Prettier
-              run: yarn prettier-check
-            - name: Lint
-              run: yarn lint
             - name: Build (Packages)
               run: yarn build-packages
             - name: TypeScript (App)
@@ -21,3 +17,7 @@ jobs:
               run: yarn workspace rider-app ts-check
             - name: TypeScript (Backend)
               run: yarn workspace backend ts-check
+            - name: Prettier
+              run: yarn prettier-check
+            - name: Lint
+              run: yarn lint

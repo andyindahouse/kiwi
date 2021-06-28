@@ -1,21 +1,22 @@
 {
-    "name": "scrapper",
-    "version": "1.0.0",
-    "description": "",
+    "name": "scraper",
     "main": "index.js",
+    "type": "module",
+    "private": true,
     "scripts": {
         "list": "node ./list-scraper.js",
         "products": "node ./products-scraper.js",
         "markNotFound": "node ./mark-not-found.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "ts-check": "tsc"
     },
-    "author": "",
-    "license": "ISC",
     "dependencies": {
         "axios": "^0.21.1",
         "mongodb": "^3.5.9",
         "puppeteer": "^5.5.0",
         "puppeteer-extra": "^3.1.15",
         "puppeteer-extra-plugin-stealth": "^2.6.5"
+    },
+    "devDependencies": {
+        "typescript": "^4.3.4"
     }
 }
