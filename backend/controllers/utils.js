@@ -1,10 +1,6 @@
 import {FEES} from '../config.js';
 
 export const getPrice = (product, units) => {
-    if (!product.saleType) {
-        return '0';
-    }
-
     if (product.specialOffer === 'offerDiscount') {
         const quotient = Math.floor(units / product.specialOfferValue[0]);
         const discount = quotient * ((product.price.final * (100 - product.specialOfferValue[1])) / 100);

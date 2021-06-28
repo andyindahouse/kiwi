@@ -11,7 +11,8 @@ const calculateShoppingCart = async (shopppingCart) => {
         let totalShoppingCart = 0;
         const shoppingCartWithProducts = products.map((product) => {
             const productInCart = shopppingCart.products.find((prodInCart) => prodInCart.id === product.id);
-            const costProduct = getPrice(product._doc, productInCart.units);
+            const costProduct =
+                product._doc.available === true ? getPrice(product._doc, productInCart.units) : 0;
             if (product._doc.available === true) {
                 totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
             }
