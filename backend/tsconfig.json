@@ -1,6 +1,10 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "noImplicitAny": false
-    }
+        "noImplicitAny": false,
+        "noEmit": false,
+        "outDir": "build",
+        "module": "CommonJS"
+    },
+    "include": ["src"]
 }

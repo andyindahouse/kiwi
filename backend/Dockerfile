@@ -19,12 +19,7 @@ RUN yarn --production && \
     rm -rf /tmp/npm-*
 
 # Copy the rest of the app
-ADD ./index.js .
-ADD ./config.js .
-ADD ./routes ./routes
-ADD ./models ./models
-ADD ./middleware ./middleware
-ADD ./controllers ./controllers
+ADD ./build .
 
 # Expose app port
 EXPOSE 3000 3001
