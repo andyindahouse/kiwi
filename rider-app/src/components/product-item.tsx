@@ -20,48 +20,28 @@ const useStyles = createUseStyles(() => ({
 type Props = {
     product: Product;
     handleClickDetail: () => void;
-    handleAddNote: () => void;
-    handleRemoveProduct: (product: Product) => void;
-    disabled?: boolean;
 };
 
 const getUnits = (product: Product) => product.units ?? product.items?.length;
 
-const ProductItem = ({
-    product,
-    handleClickDetail,
-    handleAddNote,
-    handleRemoveProduct,
-    disabled = false,
-}: Props) => {
+const ProductItem = ({product, handleClickDetail}: Props) => {
     const {name, price, img} = product;
     const classes = useStyles();
     return (
-        <IonItemSliding id="item100" disabled={disabled}>
-            <IonItem onClick={handleClickDetail}>
-                <div className={classes.card}>
-                    <img className={classes.img} alt="product" src={img} />
-                    <div>
-                        <Typography ellipsis lineClamp={2}>
-                            {name}
-                        </Typography>
-                        <Typography variant="subtitle2">
-                            {getUnits(product)}ud x {price.final}€
-                        </Typography>
-                    </div>
-                    <Typography variant="h5">{price.final}€</Typography>
+        <IonItem onClick={handleClickDetail}>
+            <div className={classes.card}>
+                <img className={classes.img} alt="product" src={img} />
+                <div>
+                    <Typography ellipsis lineClamp={2}>
+                        {name}
+                    </Typography>
+                    <Typography variant="subtitle2">
+                        {getUnits(product)}ud x {price.final}€
+                    </Typography>
                 </div>
-            </IonItem>
-
-            <IonItemOptions side="end">
-                <IonItemOption onClick={handleAddNote}>
-                    <IonIcon slot="icon-only" icon={documentTextOutline} />
-                </IonItemOption>
-                <IonItemOption color="danger" onClick={() => handleRemoveProduct(product)}>
-                    <IonIcon slot="icon-only" icon={trashOutline} />
-                </IonItemOption>
-            </IonItemOptions>
-        </IonItemSliding>
+                <Typography variant="h5">{price.final}€</Typography>
+            </div>
+        </IonItem>
     );
 };
 

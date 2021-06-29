@@ -3,6 +3,7 @@ import {Product, ShoppingCart} from '@kiwi/models';
 import kiwiApi from '../api';
 import {useAuth} from './auth';
 import {getPersistedShoppingCart, clearPersistedShoppingCart} from '../utils/unauthenticated-persistence';
+import {getCost} from '../utils';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {
@@ -50,11 +51,15 @@ function reducer(state: ShoppingCart, action: Actions) {
         }
         case UPDATE_SHOPPING_CART_PRODUCT: {
             const productIndex = state.products.findIndex((e) => e.id === action.product.id);
+            const newProduct: Product = {
+                ...action.product,
+                cost: action.product.cost ?? getCost(action.product),
+            };
 
             if (productIndex === -1) {
                 return {
                     ...state,
-                    products: [...state.products, action.product],
+                    products: [...state.products, newProduct],
                 };
             }
 
@@ -71,9 +76,7 @@ function reducer(state: ShoppingCart, action: Actions) {
                 ...state,
                 products: [
                     ...state.products.slice(0, productIndex),
-                    {
-                        ...action.product,
-                    },
+                    newProduct,
                     ...state.products.slice(productIndex + 1),
                 ],
             };

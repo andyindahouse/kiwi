@@ -6,6 +6,8 @@ import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '@kiwi/models';
 import {Link} from 'react-router-dom';
+import {useAuth} from '../contexts/auth';
+import {getCostSubtitle} from '../utils';
 
 const useStyles = createUseStyles(({palette}) => ({
     container: {
@@ -45,6 +47,7 @@ const NextShopping = () => {
     const classes = useStyles();
     const {palette} = useTheme();
     const {products} = useShoppingCart();
+    const {user} = useAuth();
 
     return (
         <div className={classes.container}>
@@ -68,13 +71,13 @@ const NextShopping = () => {
                                     key={product.id}
                                     img={img}
                                     title={name}
-                                    subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                    subtitle={getCostSubtitle(product)}
                                     handleClickDetail={() => console.log()}
                                     showAlertIcon={!product.available}
                                 >
                                     <div>
                                         <Typography color={palette.secondary.main} variant="caption1">
-                                            {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                            {product.cost}€
                                         </Typography>
                                     </div>
                                 </ProductItem>

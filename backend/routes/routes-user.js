@@ -32,8 +32,6 @@ router.put('/checkout', customMdw.ensureAuthenticated, OrdersController.create);
 router.get('/orders', customMdw.ensureAuthenticated, OrdersController.get);
 router.get('/orders/:id', customMdw.ensureAuthenticated, OrdersController.getById);
 router.post('/orders/:id/status', customMdw.ensureAuthenticated, OrdersController.updateStatus);
-router.put('/orders/:id/products', customMdw.ensureAuthenticated, OrdersController.addProduct);
-router.post('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.updateProduct);
 router.delete('/orders/:orderId/products/:id', customMdw.ensureAuthenticated, OrdersController.deleteProduct);
 
 export default router;

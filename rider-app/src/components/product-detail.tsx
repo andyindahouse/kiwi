@@ -309,6 +309,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
                                         updateProduct({
                                             ...product,
                                             items: units,
+                                            units: units.length,
                                             price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,
                                         });
