@@ -59,11 +59,6 @@ const kiwiApi = {
                 products: res.products.map((e) => ({...e, units: e.items?.length || 0})),
             };
         }),
-    updateOrderProduct: (body: Product, id: string): Promise<Order> =>
-        call({url: `/orders/${id}/products/${body.id}`, body}).then((data: Order) => ({
-            ...data,
-            products: data.products.map((e) => ({...e, units: e.items?.length || 0})),
-        })),
     updateStatusOrder: (id: string): Promise<Order> =>
         call({url: `/orders/${id}/status`, body: {status: 'cancelled'}}).then((data: Order) => ({
             ...data,
