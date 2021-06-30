@@ -3,7 +3,7 @@ import {palette} from './palette';
 
 export const typos = {
     h1: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: 32,
         letterSpacing: '-0.24px',
@@ -11,7 +11,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     h2: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: 24,
         letterSpacing: '-0.24px',
@@ -19,7 +19,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     h3: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: 20,
         letterSpacing: '-0.2px',
@@ -27,7 +27,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     h4: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: '20px',
         letterSpacing: '-0.06px',
@@ -35,7 +35,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     h5: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: '16px',
         letterSpacing: '-0.05px',
@@ -43,7 +43,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     h6: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontWeight: 500,
         fontSize: '16px',
         letterSpacing: '-0.05px',
@@ -51,21 +51,21 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     body1: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontSize: 14,
         letterSpacing: 'normal',
         lineHeight: 1.3,
         fontSmoothing: 'antialiased',
     },
     body2: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontSize: 12,
         letterSpacing: '-0.05px',
         lineHeight: 1.2,
         fontSmoothing: 'antialiased',
     },
     subtitle1: {
-        color: palette.text.secondary,
+        color: palette.textSecondary,
         fontWeight: 500,
         fontSize: 14,
         letterSpacing: '-0.05px',
@@ -73,7 +73,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     subtitle2: {
-        color: palette.text.secondary,
+        color: palette.textSecondary,
         fontWeight: 500,
         fontSize: 12,
         letterSpacing: '-0.05px',
@@ -81,12 +81,12 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     button: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontSize: 14,
         fontSmoothing: 'antialiased',
     },
     caption: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontSize: 14,
         fontWeight: 600,
         letterSpacing: 'normal',
@@ -94,7 +94,7 @@ export const typos = {
         fontSmoothing: 'antialiased',
     },
     caption2: {
-        color: palette.text.primary,
+        color: palette.textPrimary,
         fontSize: 12,
         fontWeight: 600,
         letterSpacing: '-0.05px',

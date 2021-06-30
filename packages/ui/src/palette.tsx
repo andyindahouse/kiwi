@@ -1,9 +1,15 @@
+/* CSS Variables */
+const textPrimary = 'var(--text-primary)';
+const textSecondary = 'var(--text-secondary)';
+
 const white = '#FFFFFF';
 const black = '#000000';
 
 export const palette = {
     black,
     white,
+    textPrimary,
+    textSecondary,
     primary: {
         contrastText: black,
         dark: '#84D901',

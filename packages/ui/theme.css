@@ -1,6 +1,19 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+/* Colors */
+:root {
+    --text-primary: #000000;
+    --text-secondary: #92949c;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #ffffff;
+        --text-secondary: #92949c;
+    }
+}
+
 /** Ionic CSS Variables **/
 :root {
     /** primary **/
@@ -78,9 +91,9 @@ http://ionicframework.com/docs/theming/ */
 
 @media (prefers-color-scheme: dark) {
     /*
-   * Dark Colors
-   * -------------------------------------------
-   */
+     * Dark Colors
+     * -------------------------------------------
+     */
 
     body {
         --ion-color-primary: #428cff;
@@ -148,9 +161,9 @@ http://ionicframework.com/docs/theming/ */
     }
 
     /*
-   * iOS Dark Theme
-   * -------------------------------------------
-   */
+     * iOS Dark Theme
+     * -------------------------------------------
+     */
 
     .ios body {
         --ion-background-color: #000000;
@@ -187,9 +200,9 @@ http://ionicframework.com/docs/theming/ */
     }
 
     /*
-   * Material Design Dark Theme
-   * -------------------------------------------
-   */
+     * Material Design Dark Theme
+     * -------------------------------------------
+     */
 
     .md body {
         --ion-background-color: #121212;
