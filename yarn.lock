@@ -3833,7 +3833,7 @@ __metadata:
     lodash: ^4.17.21
     react: ^17.0.2
     react-dom: ^17.0.2
-    react-hook-form: ^6.15.8
+    react-hook-form: ^7.9.0
     react-jss: 10.7.1
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
@@ -14163,12 +14163,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^6.15.8":
-  version: 6.15.8
-  resolution: "react-hook-form@npm:6.15.8"
+"react-hook-form@npm:^7.9.0":
+  version: 7.9.0
+  resolution: "react-hook-form@npm:7.9.0"
   peerDependencies:
     react: ^16.8.0 || ^17
-  checksum: fbf7d635ab991e38aad9a433c044342414c00b30176c5e1775df297337959a1ccd3ff2dea53d449a30eac831439d164b5fa55027d5df02431ba35943c589022c
+  checksum: 99bbae35ca15ec4462f306a9a5a326d262fadd7518b3542fd0f133170af86d088581536209d3601b3d4ba02b06dfe357b84992b8832930d633cc9b2e4e7ba240
   languageName: node
   linkType: hard
 
@@ -14879,7 +14879,7 @@ resolve@^2.0.0-next.3:
     lodash: ^4.17.21
     react: ^17.0.2
     react-dom: ^17.0.2
-    react-hook-form: ^6.15.8
+    react-hook-form: ^7.9.0
     react-jss: 10.7.1
     react-router: ^5.2.0
     react-router-dom: ^5.2.0

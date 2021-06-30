@@ -56,7 +56,11 @@ type Props = {
 const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -81,15 +85,8 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                autocomplete="street-address"
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} autocomplete="street-address" />
                         )}
                     />
                     {errors.deliveryAddress?.type === 'required' && (
@@ -107,16 +104,8 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                             required: true,
                             pattern: /^\d{5}$/g,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                autocomplete="postal-code"
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                type="number"
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} autocomplete="postal-code" />
                         )}
                     />
                     {errors.deliveryPostalCode?.type === 'required' && (
@@ -138,15 +127,12 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonSelect
-                                name={name}
-                                value={value}
-                                onBlur={onBlur}
-                                onIonChange={onChange}
+                                {...field}
+                                onIonChange={field.onChange}
                                 okText="Ok"
                                 cancelText="Cancelar"
-                                ref={ref}
                             >
                                 {days.map((e: {value: string; label: string}) => (
                                     <IonSelectOption key={e.value} value={e.value}>
@@ -173,17 +159,14 @@ const FormDelivery = ({controlRef, defaultValues, showHeader}: Props) => {
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonDatetime
-                                name={name}
-                                onBlur={onBlur}
-                                onIonChange={onChange}
+                                {...field}
+                                onIonChange={field.onChange}
                                 displayFormat="HH:mm"
                                 minuteValues="0,15,30,45"
                                 hourValues="11,12,13,14,15,16,17,18,19,20"
                                 pickerFormat="HH:mm"
-                                value={value}
-                                ref={ref}
                             />
                         )}
                     />

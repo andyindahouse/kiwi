@@ -138,7 +138,11 @@ const ShoppingCart = () => {
     const [showChart, setShowChart] = React.useState(false);
     const [replaceProducts, setReplaceProducts] = React.useState(true);
     const {user} = useAuth();
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         shouldFocusError: true,
         defaultValues: {
             deliveryAddress: user?.deliveryAddress,
@@ -393,14 +397,11 @@ const ShoppingCart = () => {
                                         rules={{
                                             required: true,
                                         }}
-                                        render={({onChange, onBlur, value, name, ref}) => (
+                                        render={({field}) => (
                                             <IonInput
+                                                {...field}
+                                                onIonChange={field.onChange}
                                                 autocomplete="street-address"
-                                                onIonChange={onChange}
-                                                name={name}
-                                                ref={ref}
-                                                onBlur={onBlur}
-                                                value={value}
                                             />
                                         )}
                                     />
@@ -418,15 +419,12 @@ const ShoppingCart = () => {
                                         rules={{
                                             required: true,
                                         }}
-                                        render={({onChange, onBlur, value, name, ref}) => (
+                                        render={({field}) => (
                                             <IonSelect
-                                                name={name}
-                                                value={value}
-                                                onBlur={onBlur}
-                                                onIonChange={onChange}
+                                                {...field}
+                                                onIonChange={field.onChange}
                                                 okText="Ok"
                                                 cancelText="Cancelar"
-                                                ref={ref}
                                             >
                                                 {getAllowDays().map((e: {value: string; label: string}) => (
                                                     <IonSelectOption key={e.value} value={e.value}>
@@ -445,17 +443,14 @@ const ShoppingCart = () => {
                                         rules={{
                                             required: true,
                                         }}
-                                        render={({onChange, onBlur, value, name, ref}) => (
+                                        render={({field}) => (
                                             <IonDatetime
-                                                name={name}
-                                                onBlur={onBlur}
-                                                onIonChange={onChange}
+                                                {...field}
+                                                onIonChange={field.onChange}
                                                 displayFormat="HH:mm"
                                                 minuteValues="0,15,30,45"
                                                 hourValues="11,12,13,14,15,16,17,18,19,20"
                                                 pickerFormat="HH:mm"
-                                                value={value}
-                                                ref={ref}
                                             />
                                         )}
                                     />
@@ -465,14 +460,8 @@ const ShoppingCart = () => {
                                     <Controller
                                         control={control}
                                         name="deliveryNote"
-                                        render={({onChange, onBlur, value, name, ref}) => (
-                                            <IonInput
-                                                onIonChange={onChange}
-                                                name={name}
-                                                ref={ref}
-                                                onBlur={onBlur}
-                                                value={value}
-                                            />
+                                        render={({field}) => (
+                                            <IonInput {...field} onIonChange={field.onChange} />
                                         )}
                                     />
                                 </IonItem>
