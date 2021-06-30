@@ -43,7 +43,11 @@ const Login: React.FC = () => {
     const [loginError, setLoginError] = React.useState(false);
     const [isLoading, setLoading] = React.useState(false);
     const [showRegisterMessage, setShowRegisterMessage] = React.useState(false);
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         defaultValues: {
             email: '',
             password: '',
@@ -90,15 +94,8 @@ const Login: React.FC = () => {
                                     rules={{
                                         required: true,
                                     }}
-                                    render={({onChange, onBlur, value, name, ref}) => (
-                                        <IonInput
-                                            type="email"
-                                            onIonChange={onChange}
-                                            name={name}
-                                            ref={ref}
-                                            onBlur={onBlur}
-                                            value={value}
-                                        />
+                                    render={({field}) => (
+                                        <IonInput {...field} onIonChange={field.onChange} type="email" />
                                     )}
                                 />
                                 {errors.email?.type === 'required' && (
@@ -115,15 +112,8 @@ const Login: React.FC = () => {
                                     rules={{
                                         required: true,
                                     }}
-                                    render={({onChange, onBlur, value, name, ref}) => (
-                                        <IonInput
-                                            type="password"
-                                            onIonChange={onChange}
-                                            name={name}
-                                            ref={ref}
-                                            onBlur={onBlur}
-                                            value={value}
-                                        />
+                                    render={({field}) => (
+                                        <IonInput {...field} onIonChange={field.onChange} type="password" />
                                     )}
                                 />
                                 {errors.password?.type === 'required' && (

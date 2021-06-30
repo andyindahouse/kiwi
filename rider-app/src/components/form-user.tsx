@@ -27,7 +27,11 @@ type Props = {
 const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -59,15 +63,8 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                                 return sameEmail || !isTaken;
                             },
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                disabled={disableEmail}
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} disabled={disableEmail} />
                         )}
                     />
 
@@ -90,15 +87,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
-                        )}
+                        render={({field}) => <IonInput {...field} onIonChange={field.onChange} />}
                     />
                     {errors.firstName?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
@@ -114,15 +103,7 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
-                        )}
+                        render={({field}) => <IonInput {...field} onIonChange={field.onChange} />}
                     />
                     {errors.lastName?.type === 'required' && (
                         <Typography color={palette.error.main} variant="caption2">
@@ -139,15 +120,8 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                             required: true,
                             pattern: /^\d{9}$/g,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                onIonChange={onChange}
-                                name={name}
-                                type="number"
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} type="number" />
                         )}
                     />
                     {errors.phone?.type === 'required' && (

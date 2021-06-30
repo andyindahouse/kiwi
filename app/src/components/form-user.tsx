@@ -22,7 +22,11 @@ type Props = {
 const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -52,15 +56,12 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                                 return sameEmail || !isTaken;
                             },
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonInput
+                                {...field}
+                                onIonChange={field.onChange}
                                 autocomplete="email"
                                 disabled={disableEmail}
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
                             />
                         )}
                     />
@@ -84,15 +85,8 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                autocomplete="name"
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} autocomplete="name" />
                         )}
                     />
                     {errors.firstName?.type === 'required' && (
@@ -110,15 +104,12 @@ const FormUser = ({controlRef, defaultValues, showHeader, disableEmail}: Props) 
                             required: true,
                             pattern: /^\d{9}$/g,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonInput
+                                {...field}
+                                onIonChange={field.onChange}
                                 autocomplete="tel"
-                                onIonChange={onChange}
-                                name={name}
                                 type="number"
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
                             />
                         )}
                     />
