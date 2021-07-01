@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {PRODUCTS_COLLECTION} from '../config.js';
+import {PRODUCTS_COLLECTION} from '../config';
 
 const ProductSchema = new mongoose.Schema({
     id: {type: String, required: true},

@@ -1,16 +1,16 @@
 import bcrypt from 'bcrypt';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
-import {PASSPORT_CONFIG, POSTAL_CODES_ALLOWED} from '../config.js';
-import User from '../models/user.js';
-import errorTypes from './errorTypes.js';
+import {PASSPORT_CONFIG, POSTAL_CODES_ALLOWED} from '../config';
+import User from '../models/user';
+import {InfoError, Error400, Error401, Error404} from './errorTypes';
 
 export default {
     register: (req, res, next) => {
         User.findOne({email: req.body.email})
             .then((data) => {
                 if (data) {
-                    throw new errorTypes.InfoError('User already exists');
+                    throw new InfoError('User already exists');
                 } else {
                     const hash = bcrypt.hashSync(req.body.password, PASSPORT_CONFIG.BCRYPT_ROUNDS);
                     const document = new User({
@@ -55,21 +55,21 @@ export default {
     login: async (req, res, next) => {
         const user = await User.findOne({email: req.body.email});
         if (!user) {
-            return next(new errorTypes.Error401('Username or password not correct.'));
+            return next(new Error401('Username or password not correct.'));
         } else {
             const isRider = req.baseUrl === '/api/rider';
             if (isRider && !user.rider) {
-                return next(new errorTypes.Error401('Username or password not correct.'));
+                return next(new Error401('Username or password not correct.'));
             } else if (!isRider && !!user.rider) {
-                return next(new errorTypes.Error401('Username or password not correct.'));
+                return next(new Error401('Username or password not correct.'));
             }
         }
 
         passport.authenticate('local', {session: false}, (error, user) => {
             if (error || !user) {
-                return next(new errorTypes.Error401('Username or password not correct.'));
+                return next(new Error401('Username or password not correct.'));
             } else if (!user.active) {
-                return next(new errorTypes.Error401('User is not active.'));
+                return next(new Error401('User is not active.'));
             } else {
                 const payload = {
                     sub: user._id,
@@ -87,7 +87,7 @@ export default {
     },
     isEmailTaken: async ({query}, res, next) => {
         if (!query.email) {
-            return next(new errorTypes.Error400('Query param email not recibed.'));
+            return next(new Error400('Query param email not recibed.'));
         }
         try {
             const user = await User.findOne({email: query.email});
@@ -102,7 +102,7 @@ export default {
     },
     isPostalCodeAllowed: async ({query}, res, next) => {
         if (!query.postalCode) {
-            return next(new errorTypes.Error400('Query param postalCode not recibed.'));
+            return next(new Error400('Query param postalCode not recibed.'));
         }
         res.json({
             data: {
@@ -180,7 +180,7 @@ export default {
                     },
                 });
             } else {
-                next(new errorTypes.Error404('User not found.'));
+                next(new Error404('User not found.'));
             }
         } catch (err) {
             next(err);
@@ -188,10 +188,10 @@ export default {
     },
     editUserPassword: async (req, res, next) => {
         if (!req.body.newPassword || !req.body.oldPassword) {
-            return next(new errorTypes.Error400('Passwords not recived.'));
+            return next(new Error400('Passwords not recived.'));
         }
         if (!bcrypt.compareSync(req.body.oldPassword, req.user.password)) {
-            return next(new errorTypes.Error400('Password error.'));
+            return next(new Error400('Password error.'));
         }
         try {
             const updatedUserPassword = await User.findOneAndUpdate(
@@ -223,7 +223,7 @@ export default {
                     },
                 });
             } else {
-                next(new errorTypes.Error404('User not found.'));
+                next(new Error404('User not found.'));
             }
         } catch (err) {
             next(err);

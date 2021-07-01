@@ -1,9 +1,5 @@
-import bcrypt from 'bcrypt';
-import passport from 'passport';
-import jwt from 'jsonwebtoken';
-import {PASSPORT_CONFIG} from '../config.js';
-import Product from '../models/product.js';
-import errorTypes from './errorTypes.js';
+import Product from '../models/product';
+import {Error400, Error404} from './errorTypes';
 
 export default {
     products: async ({query}, res, next) => {
@@ -52,12 +48,12 @@ export default {
     },
     productById: async ({params}, res, next) => {
         if (!params.id) {
-            next(new errorTypes.Error400('Falta parametro id.'));
+            next(new Error400('Falta parametro id.'));
         }
         try {
             const result = await Product.eci.findOne({id: params.id});
             if (!result) {
-                next(new errorTypes.Error404('Product not found.'));
+                next(new Error404('Product not found.'));
             } else {
                 res.json(result);
             }

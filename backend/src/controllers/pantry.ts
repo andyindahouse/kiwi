@@ -1,6 +1,5 @@
-import Pantry from '../models/pantry.js';
-import Product from '../models/product.js';
-import errorTypes from './errorTypes.js';
+import Pantry from '../models/pantry';
+import {Error400, Error404} from './errorTypes';
 import mongodb from 'mongodb';
 
 export default {
@@ -55,7 +54,7 @@ export default {
     },
     update: async ({params, body, user}, res, next) => {
         if (!params.id) {
-            return next(new errorTypes.Error400('Falta parametro id.'));
+            return next(new Error400('Falta parametro id.'));
         }
         try {
             const id = new mongodb.ObjectID(params.id);
@@ -73,7 +72,7 @@ export default {
             if (updateProductPantry) {
                 res.json({data: updateProductPantry});
             } else {
-                next(new errorTypes.Error404('Product not found.'));
+                next(new Error404('Product not found.'));
             }
         } catch (err) {
             next(err);

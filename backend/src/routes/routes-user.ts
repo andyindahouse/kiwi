@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import customMdw from '../middleware/custom.js';
-import UserController from '../controllers/user.js';
-import ProductsController from '../controllers/products.js';
-import ShoppingCartController from '../controllers/shoppingCart.js';
-import PantryController from '../controllers/pantry.js';
-import OrdersController from '../controllers/orders.js';
-import ConfigController from '../controllers/config.js';
+import customMdw from '../middleware/custom';
+import UserController from '../controllers/user';
+import ProductsController from '../controllers/products';
+import ShoppingCartController from '../controllers/shoppingCart';
+import PantryController from '../controllers/pantry';
+import OrdersController from '../controllers/orders';
+import ConfigController from '../controllers/config';
 
 router.get('/config', ConfigController.config);
 

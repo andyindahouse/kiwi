@@ -1,8 +1,6 @@
-import ShoppingCart from '../models/shoppingCart.js';
-import Product from '../models/product.js';
-import errorTypes from './errorTypes.js';
-import {FEES} from '../config.js';
-import {getDeliveryPrice, getPrice} from './utils.js';
+import ShoppingCart from '../models/shoppingCart';
+import Product from '../models/product';
+import {getDeliveryPrice, getPrice} from './utils';
 
 const calculateShoppingCart = async (shopppingCart) => {
     if (shopppingCart && shopppingCart.products) {
