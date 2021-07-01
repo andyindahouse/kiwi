@@ -1,11 +1,9 @@
-import Order from '../models/order.js';
-import ShoppingCart from '../models/shoppingCart.js';
-import Product from '../models/product.js';
-import Pantry from '../models/pantry.js';
-import errorTypes from './errorTypes.js';
+import Order from '../models/order';
+import ShoppingCart from '../models/shoppingCart';
+import Product from '../models/product';
+import {Error400, Error404} from './errorTypes';
 import mongodb from 'mongodb';
-import {FEES} from '../config.js';
-import {getDeliveryPrice, getPrice} from './utils.js';
+import {getDeliveryPrice, getPrice} from './utils';
 
 export default {
     get: async ({query, user}, res, next) => {
@@ -33,13 +31,13 @@ export default {
     },
     getById: async ({params, user}, res, next) => {
         if (!params.id) {
-            next(new errorTypes.Error400('Falta parametro id.'));
+            next(new Error400('Falta parametro id.'));
         }
         try {
             const id = new mongodb.ObjectID(params.id);
             const result = await Order.findOne({_id: id, email: user.email});
             if (!result) {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             } else {
                 res.json(result);
             }
@@ -70,7 +68,7 @@ export default {
                         };
                     });
                 if (!orderWithProducts.length) {
-                    return next(new errorTypes.Error400('Order without products availables.'));
+                    return next(new Error400('Order without products availables.'));
                 }
                 const deliveryPrice = getDeliveryPrice();
                 const totalCost = parseFloat(
@@ -136,7 +134,7 @@ export default {
             if (updatedOrder) {
                 res.json({data: updatedOrder});
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -145,20 +143,20 @@ export default {
     addProduct: async ({user, params, body}, res, next) => {
         try {
             if (!body.id) {
-                next(new errorTypes.Error400('Falta parametro id.'));
+                next(new Error400('Falta parametro id.'));
             } else if (!body.units) {
-                next(new errorTypes.Error400('Falta parametro units.'));
+                next(new Error400('Falta parametro units.'));
             }
             const id = new mongodb.ObjectID(params.id);
             const order = await Order.findById(id);
             const productsExist = order.products.find((product) => body.id === product.id);
             if (productsExist) {
-                return next(new errorTypes.Error400('El producto ya existe en el pedido.'));
+                return next(new Error400('El producto ya existe en el pedido.'));
             }
             if (order) {
                 const product = await Product.eci.findOne({id: body.id});
                 if (!product) {
-                    next(new errorTypes.Error404('Product not found.'));
+                    next(new Error404('Product not found.'));
                 }
                 const products = [...order.products];
                 const costProduct = getPrice(product._doc, body.units);
@@ -190,10 +188,10 @@ export default {
                 if (updatedOrder) {
                     res.json({data: updatedOrder});
                 } else {
-                    next(new errorTypes.Error404('Order not found.'));
+                    next(new Error404('Order not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -205,7 +203,7 @@ export default {
             const order = await Order.findById(orderId);
             if (order) {
                 if (!body.items || !body.items.length) {
-                    return next(new errorTypes.Error400('Items cannot have length 0'));
+                    return next(new Error400('Items cannot have length 0'));
                 }
                 const productIndex = order.products.findIndex((product) => params.id === product.id);
                 const products = [...order.products];
@@ -244,13 +242,13 @@ export default {
                     if (updatedOrder) {
                         res.json({data: updatedOrder});
                     } else {
-                        next(new errorTypes.Error404('Order not found.'));
+                        next(new Error404('Order not found.'));
                     }
                 } else {
-                    next(new errorTypes.Error404('Product not found.'));
+                    next(new Error404('Product not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -263,7 +261,7 @@ export default {
             if (order) {
                 const productToDelete = order.products.find((product) => params.id === product.id);
                 if (!productToDelete) {
-                    return next(new errorTypes.Error404('Product not found.'));
+                    return next(new Error404('Product not found.'));
                 }
                 const products = order.products.filter((product) => params.id !== product.id);
                 const newTotalShoppingCart = parseFloat(
@@ -294,10 +292,10 @@ export default {
                 if (updatedOrder) {
                     res.json({data: updatedOrder});
                 } else {
-                    next(new errorTypes.Error404('Order not found.'));
+                    next(new Error404('Order not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);

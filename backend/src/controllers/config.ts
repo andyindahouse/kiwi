@@ -1,5 +1,5 @@
-import Config from '../models/config.js';
-import errorTypes from './errorTypes.js';
+import Config from '../models/config';
+import {Error404} from './errorTypes';
 
 export default {
     config: async (req, res, next) => {
@@ -13,7 +13,7 @@ export default {
                     },
                 });
             } else {
-                next(new errorTypes.Error404('Config not found.'));
+                next(new Error404('Config not found.'));
             }
         } catch (err) {
             next(err);

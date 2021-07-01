@@ -1,11 +1,11 @@
-import Order from '../models/order.js';
-import ShoppingCart from '../models/shoppingCart.js';
-import Product from '../models/product.js';
-import Pantry from '../models/pantry.js';
-import errorTypes from './errorTypes.js';
+import Order from '../models/order';
+import ShoppingCart from '../models/shoppingCart';
+import Product from '../models/product';
+import Pantry from '../models/pantry';
+import {Error400, Error404} from './errorTypes';
 import mongodb from 'mongodb';
-import {FEES} from '../config.js';
-import {getDeliveryPrice, getPrice} from './utils.js';
+import {FEES} from '../config';
+import {getDeliveryPrice, getPrice} from './utils';
 
 export default {
     getAllAvailables: async ({query, user}, res, next) => {
@@ -65,13 +65,13 @@ export default {
     },
     getById: async ({params, user}, res, next) => {
         if (!params.id) {
-            return next(new errorTypes.Error400('Falta parametro id.'));
+            return next(new Error400('Falta parametro id.'));
         }
         try {
             const id = new mongodb.ObjectID(params.id);
             const result = await Order.findOne({_id: id});
             if (!result) {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             } else {
                 res.json(result);
             }
@@ -82,15 +82,15 @@ export default {
     assign: async ({params, body, user}, res, next) => {
         try {
             if (!params.id) {
-                return next(new errorTypes.Error400('Falta parametro id.'));
+                return next(new Error400('Falta parametro id.'));
             }
             const id = new mongodb.ObjectID(params.id);
             const order = await Order.findOne({_id: id});
             if (!order) {
-                return next(new errorTypes.Error404('Order not found.'));
+                return next(new Error404('Order not found.'));
             }
             if (order.rider) {
-                return next(new errorTypes.Error400('Order already had been asigned.'));
+                return next(new Error400('Order already had been asigned.'));
             }
             const updatedOrder = await Order.findOneAndUpdate(
                 {_id: id},
@@ -108,7 +108,7 @@ export default {
             if (updatedOrder) {
                 res.json({data: updatedOrder});
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -132,7 +132,7 @@ export default {
             if (updatedOrder) {
                 res.json({data: updatedOrder});
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -141,20 +141,20 @@ export default {
     addProduct: async ({params, body, user}, res, next) => {
         try {
             if (!body.id) {
-                return next(new errorTypes.Error400('Falta parametro id.'));
+                return next(new Error400('Falta parametro id.'));
             } else if (!body.units) {
-                return next(new errorTypes.Error400('Falta parametro units.'));
+                return next(new Error400('Falta parametro units.'));
             }
             const id = new mongodb.ObjectID(params.id);
             const order = await Order.findById(id);
             const productsExist = order.products.find((product) => body.id === product.id);
             if (productsExist) {
-                return next(new errorTypes.Error400('El producto ya existe en el pedido.'));
+                return next(new Error400('El producto ya existe en el pedido.'));
             }
             if (order) {
                 const product = await Product.eci.findOne({id: body.id});
                 if (!product) {
-                    next(new errorTypes.Error404('Product not found.'));
+                    next(new Error404('Product not found.'));
                 }
                 const products = [...order.products];
                 const costProduct = getPrice(product._doc, body.units);
@@ -183,10 +183,10 @@ export default {
                 if (updatedOrder) {
                     res.json({data: updatedOrder});
                 } else {
-                    next(new errorTypes.Error404('Order not found.'));
+                    next(new Error404('Order not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -198,7 +198,7 @@ export default {
             const order = await Order.findById(orderId);
             if (order) {
                 if (!body.items || !body.items.length) {
-                    return next(new errorTypes.Error400('Items cannot have length 0'));
+                    return next(new Error400('Items cannot have length 0'));
                 }
                 const productIndex = order.products.findIndex((product) => params.id === product.id);
                 const products = [...order.products];
@@ -252,13 +252,13 @@ export default {
                     if (updatedOrder) {
                         res.json({data: updatedOrder});
                     } else {
-                        next(new errorTypes.Error404('Order not found.'));
+                        next(new Error404('Order not found.'));
                     }
                 } else {
-                    next(new errorTypes.Error404('Product not found.'));
+                    next(new Error404('Product not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -271,7 +271,7 @@ export default {
             if (order) {
                 const productToDelete = order.products.find((product) => params.id === product.id);
                 if (!productToDelete) {
-                    return next(new errorTypes.Error404('Product not found.'));
+                    return next(new Error404('Product not found.'));
                 }
                 const products = order.products.filter((product) => params.id !== product.id);
                 const newTotalShoppingCart = parseFloat(
@@ -299,10 +299,10 @@ export default {
                 if (updatedOrder) {
                     res.json({data: updatedOrder});
                 } else {
-                    next(new errorTypes.Error404('Order not found.'));
+                    next(new Error404('Order not found.'));
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);
@@ -354,7 +354,7 @@ export default {
                     res.json({data: updatedOrder});
                 }
             } else {
-                next(new errorTypes.Error404('Order not found.'));
+                next(new Error404('Order not found.'));
             }
         } catch (err) {
             next(err);

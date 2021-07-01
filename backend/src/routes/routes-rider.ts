@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import customMdw from '../middleware/custom.js';
-import UserController from '../controllers/user.js';
-import OrdersRiderController from '../controllers/orders-rider.js';
-import ConfigController from '../controllers/config.js';
+import customMdw from '../middleware/custom';
+import UserController from '../controllers/user';
+import OrdersRiderController from '../controllers/orders-rider';
+import ConfigController from '../controllers/config';
 
 router.get('/config', ConfigController.config);
 

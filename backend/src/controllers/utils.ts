@@ -1,4 +1,4 @@
-import {FEES} from '../config.js';
+import {FEES} from '../config';
 
 export const getPrice = (product, units) => {
     if (product.specialOffer === 'offerDiscount') {

@@ -9,11 +9,11 @@ import passportJwt from 'passport-jwt';
 import passportLocal from 'passport-local';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
-import {PORT, CONFIG_MONGO, PASSPORT_CONFIG} from './config.js';
-import User from './models/user.js';
-import customMdw from './middleware/custom.js';
-import routesUser from './routes/routes-user.js';
-import routesRider from './routes/routes-rider.js';
+import {PORT, CONFIG_MONGO, PASSPORT_CONFIG} from './config';
+import User from './models/user';
+import customMdw from './middleware/custom';
+import routesUser from './routes/routes-user';
+import routesRider from './routes/routes-rider';
 
 const {Strategy: JwtStrategy, ExtractJwt} = passportJwt;
 const {Strategy: LocalStrategy} = passportLocal;
@@ -47,10 +47,11 @@ passport.use(
     )
 );
 
-let opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = PASSPORT_CONFIG.JWT_SECRET;
-opts.algorithms = [PASSPORT_CONFIG.JWT_ALGORITHM];
+const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: PASSPORT_CONFIG.JWT_SECRET,
+    algorithms: [PASSPORT_CONFIG.JWT_ALGORITHM],
+};
 
 passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {
