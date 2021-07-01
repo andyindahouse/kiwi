@@ -1,6 +1,6 @@
 import {Product, SpecialOffers} from '@kiwi/models';
 import {useTheme} from '@kiwi/ui';
-import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
+import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline, infiniteSharp} from 'ionicons/icons';
 import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {
@@ -137,20 +137,16 @@ export const useGetExpiryObj = () => {
     };
 };
 
-export const getCost = (product: Product) => {
-    if (product.cost) {
-        return product.cost;
+export const updateProducts = (product: Product, products: ReadonlyArray<Product>) => {
+    const productIndex = products.findIndex((e) => e.id === product.id);
+
+    if (productIndex === -1) {
+        return [...products, product];
     }
 
-    return product.saleType === 'unit'
-        ? parseFloat((product.units * Number(product.price.final)).toFixed(2))
-        : parseFloat(((Number(product.price.final) / 10) * (product.units / 100)).toFixed(2));
-};
+    if (product.units === 0) {
+        return products.slice(0, productIndex).concat(products.slice(productIndex + 1));
+    }
 
-export const getCostSubtitle = (product: Product) => {
-    return product.saleType === 'unit'
-        ? `${product.units} ud x ${product.price.final}€ / ud`
-        : `
-     ${product.units} gr (${product.price.final}€ / kg)
-    `;
+    return products.slice(0, productIndex).concat([product], products.slice(productIndex + 1));
 };

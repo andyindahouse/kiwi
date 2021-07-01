@@ -35,6 +35,11 @@ export interface Product {
     statusOrder?: 'pending' | 'saved' | 'not-available';
     units: number;
     url: string;
+    hasPreparations?: false,
+    isCooled?: false,
+    isGlutenFree?: false,
+    isLactoseFree?: false,
+    saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
 }
 
 export interface ShoppingCart {

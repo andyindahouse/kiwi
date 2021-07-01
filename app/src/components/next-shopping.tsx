@@ -7,7 +7,7 @@ import {useShoppingCart} from '../contexts/shopping-cart';
 import {Product} from '@kiwi/models';
 import {Link} from 'react-router-dom';
 import {useAuth} from '../contexts/auth';
-import {getCostSubtitle} from '../utils';
+import {getCostSubtitle} from '@kiwi/utils';
 
 const useStyles = createUseStyles(({palette}) => ({
     container: {

@@ -152,25 +152,18 @@ export default {
                     ...products[productIndex],
                     ...body,
                 };
-                const newCostProduct = getPrice(newProduct, newProduct.items.length);
+                const newCostProduct = getPrice(newProduct, newProduct.units);
                 products[productIndex] = {
-                    ...newProduct,
-                    units: newProduct.saleType === 'unit' ? newProduct.items.length : newProduct.units,
+                    ...newProduct,                    
                     cost: newCostProduct,
                 };
-
                 let totalShoppingCart = 0;
-                const orderWithProducts = products.map((product, index) => {
-                    const costProduct = getPrice(product, product.items.length);
+                products.forEach(product => {
+                    const costProduct = getPrice(product, product.units);
+                    
                     if (product.statusOrder !== 'not-available') {
                         totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
-                    }
-                    return {
-                        ...product,
-                        items: new Array(order.products[index].units).fill({date: null}),
-                        note: order.products[index].note,
-                        cost: costProduct,
-                    };
+                    }                                                    
                 });
                 const deliveryPrice = getDeliveryPrice();
                 const totalCost = parseFloat(

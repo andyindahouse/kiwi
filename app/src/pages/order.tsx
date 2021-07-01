@@ -18,7 +18,8 @@ import ProductDetail from '../components/product-detail';
 import ProductItem from '../components/product-item';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
-import {getCostSubtitle, useStatusOrderMap} from '../utils';
+import {useStatusOrderMap} from '../utils';
+import {getCostSubtitle} from '@kiwi/utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '@kiwi/models';
 import PaymentFooter from '../components/payment-fields';
@@ -127,6 +128,7 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                         <div className={classes.list}>
                             {order.products.map((product) => {
                                 const {name, img, brand} = product;
+                                console.log(product.units)
                                 return (
                                     <ProductItem
                                         key={product.id}

@@ -3,6 +3,7 @@ import {Typography, createUseStyles} from '@kiwi/ui';
 import {documentTextOutline, trashOutline} from 'ionicons/icons';
 import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
 import {Product} from '@kiwi/models/rider';
+import {getCostSubtitle} from '@kiwi/utils';
 
 const useStyles = createUseStyles(() => ({
     card: {
@@ -36,7 +37,8 @@ const ProductItem = ({product, handleClickDetail}: Props) => {
                         {name}
                     </Typography>
                     <Typography variant="subtitle2">
-                        {getUnits(product)}ud x {price.final}€
+                        {/* @ts-expect-error */}
+                        {getCostSubtitle(product)}
                     </Typography>
                 </div>
                 <Typography variant="h5">{price.final}€</Typography>

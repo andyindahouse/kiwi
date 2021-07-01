@@ -15,13 +15,9 @@ import kiwiApi from '../api';
 import {Product} from '@kiwi/models';
 import ProductCard from '../components/product-card';
 import ProductDetail from '../components/product-detail';
-import {
-    UpdateShoppingCartProduct,
-    UPDATE_SHOPPING_CART_PRODUCT,
-    useShoppingCart,
-} from '../contexts/shopping-cart';
+import {SYNC_SHOPPING_CART, useShoppingCart} from '../contexts/shopping-cart';
 import {cartOutline, searchOutline} from 'ionicons/icons';
-import {extendRawProducts} from '../utils';
+import {extendRawProducts, updateProducts} from '../utils';
 import {RouteComponentProps} from 'react-router';
 import EmptyCase from '../components/empty-case';
 import {Capacitor, Plugins} from '@capacitor/core';
@@ -74,30 +70,35 @@ const ProductList = ({
     products,
     disableInfiniteScroll,
     handleScrollEvent,
-    updateShoppingCart,
 }: {
     isLoading: boolean;
     products: ReadonlyArray<Product>;
     disableInfiniteScroll: boolean;
     handleScrollEvent: () => void;
-    updateShoppingCart: (action: UpdateShoppingCartProduct) => void;
 }) => {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<Product | null>(null);
     const [showChart, setShowChart] = React.useState(false);
-    const {products: shoppingCartProducts} = useShoppingCart();
+    const {products: shoppingCartProducts, dispatch} = useShoppingCart();
     const {user} = useAuth();
 
-    React.useEffect(() => {
-        const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+    const updateShoppingCart = React.useCallback(
+        (updatedProducts: ReadonlyArray<Product>) => {
+            const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
 
-        request({products: shoppingCartProducts}).catch(() => {
-            throw new Error('Carrito desactualizado');
-        });
-        // TODO: Refactor to avoid duplicated products after login (with products in localstorage)
-        // I can't add user like a dependecy because this make a post with login so if i have products in cart these are uploaded and merge after in the shopping-context
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [shoppingCartProducts]);
+            request({products: updatedProducts})
+                .then((res) => {
+                    dispatch({
+                        type: SYNC_SHOPPING_CART,
+                        shoppingCart: res,
+                    });
+                })
+                .catch(() => {
+                    throw new Error('Carrito desactualizado');
+                });
+        },
+        [dispatch, user]
+    );
 
     if (products.length === 0 && !isLoading) {
         return <div>No hemos encontrado productos para esa busqueda</div>;
@@ -110,10 +111,7 @@ const ProductList = ({
                     <ProductCard
                         key={index}
                         updateUnits={(units: number) => {
-                            updateShoppingCart({
-                                type: UPDATE_SHOPPING_CART_PRODUCT,
-                                product: {...product, units},
-                            });
+                            updateShoppingCart(updateProducts({...product, units}, shoppingCartProducts));
                         }}
                         handleClickDetail={() => {
                             setSelected(product);
@@ -140,11 +138,13 @@ const ProductList = ({
             >
                 {selected && (
                     <ProductDetail
-                        updateProduct={(product: Product) =>
-                            updateShoppingCart({
-                                type: UPDATE_SHOPPING_CART_PRODUCT,
-                                product,
-                            })
+                        updateProduct={
+                            (product: Product) =>
+                                updateShoppingCart(updateProducts(product, shoppingCartProducts))
+                            // updateShoppingCart({
+                            //     type: UPDATE_SHOPPING_CART_PRODUCT,
+                            //     product,
+                            // })
                         }
                         closeModal={() => setSelected(null)}
                         product={selected}
@@ -160,7 +160,7 @@ const isLastPage = (pageNumber: number, pageSize: number, totalSize: number, con
     (pageNumber > 0 ? pageNumber * pageSize + contentLength : contentLength) === totalSize;
 
 const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponentProps) => {
-    const {products: shoppingCart, dispatch} = useShoppingCart();
+    const {products: shoppingCart} = useShoppingCart();
     const [filter, setFilter] = React.useState<{searchText: string | null; pageNumber: number}>({
         searchText: '',
         pageNumber: 0,
@@ -262,7 +262,6 @@ const SearchProducts: React.FC<RouteComponentProps> = ({history}: RouteComponent
                                 });
                             }}
                             disableInfiniteScroll={disableInfiniteScroll}
-                            updateShoppingCart={dispatch}
                         />
                     ) : (
                         <>

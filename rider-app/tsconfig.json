@@ -1,8 +1,15 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "target": "es5",
-        "lib": ["dom", "dom.iterable", "esnext"]
-    },
-    "include": ["src"]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src"
+  ]
 }
