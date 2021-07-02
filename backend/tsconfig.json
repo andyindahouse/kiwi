@@ -4,6 +4,7 @@
         "target": "ES2016",
         "noImplicitAny": false,
         "noEmit": false,
+        "sourceMap": true,
         "outDir": "build",
         "module": "CommonJS"
     },

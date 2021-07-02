@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node build/index.js https",
-        "start-dev": "cross-env NODE_ENV=development nodemon build/index.js",
+        "start-dev": "cross-env NODE_ENV=development nodemon --inspect build/index.js",
         "build": "tsc",
         "ts-check": "tsc"
     },
