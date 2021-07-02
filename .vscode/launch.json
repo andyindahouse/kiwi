@@ -12,6 +12,14 @@
             "cwd": "${workspaceFolder}/scraper",
             "runtimeArgs": ["run", "list"],
             "port": 5858
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Node: Nodemon",
+            "processId": "${command:PickProcess}",
+            "restart": true,
+            "protocol": "inspector"
         }
     ]
 }
