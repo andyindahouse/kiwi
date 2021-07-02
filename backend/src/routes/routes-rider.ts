@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import customMdw from '../middleware/custom';
-import UserController from '../controllers/user';
+import * as UserController from '../controllers/user';
 import OrdersRiderController from '../controllers/orders-rider';
 import ConfigController from '../controllers/config';
 

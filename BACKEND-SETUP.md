@@ -7,8 +7,7 @@
 
 ## Debugging
 
-1. From the previous `yarn start-dev` console output, look for the node process. It looks like "(node:13764)".
 1. In Visual Studio Code, open the "Run and debug" section and start the
    [Node: Nodemon](./.vscode/launch.json) one. There you'll be prompted to choose the proper process to attach
-   to. Filter them by pasting the number node process mentioned in the first step.
+   to. Filter them by by searching for "`node inspect`", and select it.
 1. Now you can use breakpoints right in the sourcecode.

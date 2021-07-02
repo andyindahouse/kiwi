@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import customMdw from '../middleware/custom';
-import UserController from '../controllers/user';
+import * as UserController from '../controllers/user';
 import ProductsController from '../controllers/products';
 import ShoppingCartController from '../controllers/shoppingCart';
 import PantryController from '../controllers/pantry';

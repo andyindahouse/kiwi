@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
+import {User, RegisterUser} from '@kiwi/models';
 
-const UserSchema = new mongoose.Schema({
+export type FullUser = RegisterUser &
+    User & {
+        _id: string;
+    };
+
+const UserSchema = new mongoose.Schema<FullUser>({
     email: {type: String, required: true},
     password: {type: String, required: true},
     firstName: String,
@@ -16,4 +22,4 @@ const UserSchema = new mongoose.Schema({
     active: Boolean,
 });
 
-export default mongoose.model('User', UserSchema, 'users');
+export default mongoose.model<FullUser>('User', UserSchema, 'users');

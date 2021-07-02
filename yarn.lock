@@ -4417,6 +4417,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:backend"
   dependencies:
+    "@kiwi/models": "workspace:*"
     "@types/bcrypt": ^5.0.0
     "@types/cors": ^2.8.10
     "@types/passport": ^1.0.6
