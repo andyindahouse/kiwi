@@ -18,10 +18,14 @@ import routesRider from './routes/routes-rider';
 const {Strategy: JwtStrategy, ExtractJwt} = passportJwt;
 const {Strategy: LocalStrategy} = passportLocal;
 
-mongoose.connect(CONFIG_MONGO.URL, {useNewUrlParser: true}).catch((err) => {
-    console.log(err);
-    process.exit(1);
-});
+mongoose
+    .connect(process.env.NODE_ENV === 'development' ? CONFIG_MONGO.URL_LOCAL : CONFIG_MONGO.URL, {
+        useNewUrlParser: true,
+    })
+    .catch((err) => {
+        console.log(err);
+        process.exit(1);
+    });
 
 const app = express();
 
