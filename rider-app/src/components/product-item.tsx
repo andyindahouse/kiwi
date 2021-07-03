@@ -36,10 +36,7 @@ const ProductItem = ({product, handleClickDetail}: Props) => {
                     <Typography ellipsis lineClamp={2}>
                         {name}
                     </Typography>
-                    <Typography variant="subtitle2">
-                        {/* @ts-expect-error */}
-                        {getCostSubtitle(product)}
-                    </Typography>
+                    <Typography variant="subtitle2">{getCostSubtitle(product)}</Typography>
                 </div>
                 <Typography variant="h5">{price.final}€</Typography>
             </div>
