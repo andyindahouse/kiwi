@@ -38,6 +38,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {useAuth} from '../contexts/auth';
 import PaymentFooter from '../components/payment-fields';
 import {setPersistedShoppingCartProducts} from '../utils/unauthenticated-persistence';
+import {updateProducts} from '../utils';
+import {getCostSubtitle} from '@kiwi/utils';
 
 const useStyles = createUseStyles(({palette}) => ({
     list: {
@@ -151,21 +153,24 @@ const ShoppingCart = () => {
             deliveryNote: '',
         },
     });
-    const updateShoppingCart = (updatedProducts: ReadonlyArray<Product>) => {
-        const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
+    const updateShoppingCart = React.useCallback(
+        (updatedProducts: ReadonlyArray<Product>) => {
+            const request = user ? kiwiApi.setShoppingCart : setPersistedShoppingCartProducts;
 
-        request({products: updatedProducts})
-            .then((res) => {
-                listRef.current?.closeSlidingItems();
-                dispatch({
-                    type: SYNC_SHOPPING_CART,
-                    shoppingCart: res,
+            request({products: updatedProducts})
+                .then((res) => {
+                    listRef.current?.closeSlidingItems();
+                    dispatch({
+                        type: SYNC_SHOPPING_CART,
+                        shoppingCart: res,
+                    });
+                })
+                .catch(() => {
+                    throw new Error('Carrito desactualizado');
                 });
-            })
-            .catch(() => {
-                throw new Error('Carrito desactualizado');
-            });
-    };
+        },
+        [dispatch, user]
+    );
     const handleCheckout = ({
         deliveryAddress,
         deliveryDate,
@@ -221,13 +226,13 @@ const ShoppingCart = () => {
                         <div className={classes.list}>
                             {products.map((product, index) => {
                                 const {name, price, img} = product;
-                                const getUnits = (product: Product) => product.units ?? product.items?.length;
+
                                 return (
                                     <ProductItem
                                         key={product.id}
                                         img={img}
                                         title={name}
-                                        subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                        subtitle={getCostSubtitle(product)}
                                         handleClickDetail={() => setSelected(product)}
                                         labelLeftAction={
                                             <IonIcon slot="icon-only" icon={documentTextOutline} />
@@ -236,7 +241,13 @@ const ShoppingCart = () => {
                                         handleClickLeftAction={() => setProductWithNote({product, index})}
                                         handleClickRightAction={() =>
                                             updateShoppingCart(
-                                                products.slice(0, index).concat(products.slice(index + 1))
+                                                updateProducts(
+                                                    {
+                                                        ...product,
+                                                        units: 0,
+                                                    },
+                                                    products
+                                                )
                                             )
                                         }
                                         showAlertIcon={!product.available}
@@ -249,11 +260,7 @@ const ShoppingCart = () => {
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
-                                                {user
-                                                    ? `${product.cost}€`
-                                                    : `${(getUnits(product) * Number(price.final)).toFixed(
-                                                          2
-                                                      )}€`}
+                                                {product.cost}€
                                             </Typography>
                                         </div>
                                     </ProductItem>
@@ -302,19 +309,11 @@ const ShoppingCart = () => {
                             text: productWithNote?.product.note ? 'Modificar' : 'Añadir',
                             handler: ({note}: {note: string}) => {
                                 if (productWithNote && note) {
-                                    console.log(note, productWithNote);
                                     const updatedProduct = {
                                         ...productWithNote.product,
                                         note,
                                     };
-                                    updateShoppingCart(
-                                        products
-                                            .slice(0, productWithNote.index)
-                                            .concat(
-                                                [updatedProduct],
-                                                products.slice(productWithNote.index + 1)
-                                            )
-                                    );
+                                    updateShoppingCart(updateProducts(updatedProduct, products));
                                 }
                             },
                         },
@@ -345,20 +344,7 @@ const ShoppingCart = () => {
                         <ProductDetail
                             showChart={showChart}
                             updateProduct={(product) => {
-                                const productIndex = products.findIndex((e) => e.id === product.id);
-                                if (product.units === 0) {
-                                    updateShoppingCart(
-                                        products
-                                            .slice(0, productIndex)
-                                            .concat(products.slice(productIndex + 1))
-                                    );
-                                } else {
-                                    updateShoppingCart(
-                                        products
-                                            .slice(0, productIndex)
-                                            .concat([product], products.slice(productIndex + 1))
-                                    );
-                                }
+                                updateShoppingCart(updateProducts(product, products));
                             }}
                             closeModal={() => setSelected(null)}
                             product={selected}

@@ -1,6 +1,6 @@
-import {OrderStatus, Product, SpecialOffers} from '@kiwi/models';
+import {Product, SpecialOffers} from '@kiwi/models';
 import {useTheme} from '@kiwi/ui';
-import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
+import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline, infiniteSharp} from 'ionicons/icons';
 import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {
@@ -135,4 +135,18 @@ export const useGetExpiryObj = () => {
             label: `${daysDiff} días`,
         };
     };
+};
+
+export const updateProducts = (product: Product, products: ReadonlyArray<Product>) => {
+    const productIndex = products.findIndex((e) => e.id === product.id);
+
+    if (productIndex === -1) {
+        return [...products, product];
+    }
+
+    if (product.units === 0) {
+        return products.slice(0, productIndex).concat(products.slice(productIndex + 1));
+    }
+
+    return products.slice(0, productIndex).concat([product], products.slice(productIndex + 1));
 };

@@ -19,6 +19,7 @@ import ProductItem from '../components/product-item';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
 import {useStatusOrderMap} from '../utils';
+import {getCostSubtitle} from '@kiwi/utils';
 
 import type {Order as OrderModel, OrderStatus, Product} from '@kiwi/models';
 import PaymentFooter from '../components/payment-fields';
@@ -95,35 +96,13 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
     const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);
-    const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
     const [showAlert, setShowAlert] = React.useState(false);
     const [showChart, setShowChart] = React.useState(false);
-    const updateOrderProduct = (product: Product) => {
-        kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
-            setOrder(res);
-        });
-    };
-    const handleCancelledOrder = () => {
+    const handleCancelledOrder = React.useCallback(() => {
         kiwiApi.updateStatusOrder(order?._id || '').then((res) => {
             setOrder(res);
         });
-    };
-    const handleUpdateOrderProduct = (product: Product) => {
-        let updatedProduct;
-        if (product.units < (product.items?.length || 0)) {
-            updatedProduct = {
-                ...product,
-                items: product.items?.slice(0, product.units),
-            };
-        } else {
-            updatedProduct = {
-                ...product,
-                items: new Array(product.units).fill({date: null}),
-            };
-        }
-
-        updateOrderProduct(updatedProduct);
-    };
+    }, [order?._id]);
 
     React.useEffect(() => {
         if (id) {
@@ -148,21 +127,21 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                     <IonList>
                         <div className={classes.list}>
                             {order.products.map((product) => {
-                                const {name, price, img, brand} = product;
-                                const getUnits = (product: Product) => product.units ?? product.items?.length;
+                                const {name, img, brand} = product;
+                                console.log(product.units);
                                 return (
                                     <ProductItem
                                         key={product.id}
                                         img={img}
                                         title={name.replace(brand, '').trim()}
-                                        subtitle={`${getUnits(product)} ud x ${price.final}€ / ud`}
+                                        subtitle={getCostSubtitle(product)}
                                         handleClickDetail={() => setSelected(product)}
                                         disableSwipeOptions
                                         showAlertIcon={!product.available}
                                     >
                                         <div>
                                             <Typography color={palette.secondary.main} variant="caption1">
-                                                {(getUnits(product) * Number(price.final)).toFixed(2)}€
+                                                {product.cost}
                                             </Typography>
                                         </div>
                                     </ProductItem>
@@ -176,42 +155,6 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                         )}
                     </IonList>
                 )}
-
-                <IonAlert
-                    isOpen={!!productWithNote}
-                    onDidDismiss={() => {
-                        setProductWithNote(null);
-                    }}
-                    header="Nota de producto"
-                    subHeader="Usa esta nota para añadir cualquier información adicional que quieras indicarle al Shopper"
-                    inputs={[
-                        {
-                            name: 'note',
-                            type: 'text',
-                            label: 'Nota de producto',
-                            value: productWithNote?.note,
-                            placeholder: 'Ej: Coger el menos maduro posible',
-                        },
-                    ]}
-                    buttons={[
-                        {
-                            text: 'Cancelar',
-                            role: 'cancel',
-                            cssClass: 'secondary',
-                        },
-                        {
-                            text: productWithNote ? 'Modificar' : 'Añadir',
-                            handler: ({note}: {note: string}) => {
-                                if (productWithNote && note) {
-                                    updateOrderProduct({
-                                        ...productWithNote,
-                                        note,
-                                    });
-                                }
-                            },
-                        },
-                    ]}
-                />
                 <IonModal
                     isOpen={!!selected}
                     onDidPresent={() => setShowChart(true)}
@@ -224,7 +167,6 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                     {selected && (
                         <ProductDetail
                             disabled
-                            updateProduct={handleUpdateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
                             showChart={showChart}

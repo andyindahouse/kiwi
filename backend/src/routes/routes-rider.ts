@@ -34,12 +34,6 @@ router.post(
     customMdw.ensureRider,
     OrdersRiderController.updateStatus
 );
-router.put(
-    '/orders/:id/products',
-    customMdw.ensureAuthenticated,
-    customMdw.ensureRider,
-    OrdersRiderController.addProduct
-);
 router.post(
     '/orders/:orderId/products/:id',
     customMdw.ensureAuthenticated,

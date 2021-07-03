@@ -62,7 +62,11 @@ export default {
                         totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                         return {
                             ...product._doc,
-                            items: new Array(productInCart.units).fill({date: null}),
+                            items:
+                                product._doc.saleType === 'unit'
+                                    ? new Array(productInCart.units).fill({date: null})
+                                    : [{date: null}],
+                            units: productInCart.units,
                             note: productInCart.note,
                             cost: costProduct,
                         };
@@ -133,120 +137,6 @@ export default {
             );
             if (updatedOrder) {
                 res.json({data: updatedOrder});
-            } else {
-                next(new Error404('Order not found.'));
-            }
-        } catch (err) {
-            next(err);
-        }
-    },
-    addProduct: async ({user, params, body}, res, next) => {
-        try {
-            if (!body.id) {
-                next(new Error400('Falta parametro id.'));
-            } else if (!body.units) {
-                next(new Error400('Falta parametro units.'));
-            }
-            const id = new mongodb.ObjectID(params.id);
-            const order = await Order.findById(id);
-            const productsExist = order.products.find((product) => body.id === product.id);
-            if (productsExist) {
-                return next(new Error400('El producto ya existe en el pedido.'));
-            }
-            if (order) {
-                const product = await Product.eci.findOne({id: body.id});
-                if (!product) {
-                    next(new Error404('Product not found.'));
-                }
-                const products = [...order.products];
-                const costProduct = getPrice(product._doc, body.units);
-                products.push({
-                    ...product._doc,
-                    items: new Array(body.units).fill({date: null}),
-                    ...(body.note && {note: body.note}),
-                    cost: costProduct,
-                });
-                const newTotalShoppingCart = parseFloat((order.totalShoppingCart + costProduct).toFixed(2));
-                const newTotalCost = parseFloat((order.totalCost + costProduct).toFixed(2));
-                const updatedOrder = await Order.findOneAndUpdate(
-                    {
-                        _id: id,
-                        email: user.email,
-                    },
-                    {
-                        products,
-                        updatedDate: new Date(),
-                        totalShoppingCart: newTotalShoppingCart,
-                        totalCost: newTotalCost,
-                    },
-                    {
-                        new: true,
-                        upsert: false,
-                        useFindAndModify: false,
-                    }
-                );
-                if (updatedOrder) {
-                    res.json({data: updatedOrder});
-                } else {
-                    next(new Error404('Order not found.'));
-                }
-            } else {
-                next(new Error404('Order not found.'));
-            }
-        } catch (err) {
-            next(err);
-        }
-    },
-    updateProduct: async ({user, params, body}, res, next) => {
-        try {
-            const orderId = new mongodb.ObjectID(params.orderId);
-            const order = await Order.findById(orderId);
-            if (order) {
-                if (!body.items || !body.items.length) {
-                    return next(new Error400('Items cannot have length 0'));
-                }
-                const productIndex = order.products.findIndex((product) => params.id === product.id);
-                const products = [...order.products];
-                const oldCostProduct = products[productIndex].cost;
-                const newCostProduct = getPrice(products[productIndex], body.items.length);
-                products[productIndex] = {
-                    ...products[productIndex],
-                    items: body.items,
-                    note: body.note,
-                    cost: newCostProduct,
-                };
-                const newTotalShoppingCart = parseFloat(
-                    (order.totalShoppingCart - oldCostProduct + newCostProduct).toFixed(2)
-                );
-                const newTotalCost = parseFloat(
-                    (order.totalCost - order.totalShoppingCart + newTotalShoppingCart).toFixed(2)
-                );
-                if (productIndex > -1) {
-                    const updatedOrder = await Order.findOneAndUpdate(
-                        {
-                            _id: orderId,
-                            email: user.email,
-                        },
-                        {
-                            products,
-                            updatedDate: new Date(),
-                            totalShoppingCart: newTotalShoppingCart,
-                            totalCost: newTotalCost,
-                        },
-                        {
-                            new: true,
-                            upsert: false,
-                            useFindAndModify: false,
-                        }
-                    );
-                    if (updatedOrder) {
-                        res.json({data: updatedOrder});
-                    } else {
-                        next(new Error404('Order not found.'));
-                    }
-                } else {
-                    next(new Error404('Product not found.'));
-                }
             } else {
                 next(new Error404('Order not found.'));
             }

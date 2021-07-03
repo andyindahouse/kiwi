@@ -138,60 +138,6 @@ export default {
             next(err);
         }
     },
-    addProduct: async ({params, body, user}, res, next) => {
-        try {
-            if (!body.id) {
-                return next(new Error400('Falta parametro id.'));
-            } else if (!body.units) {
-                return next(new Error400('Falta parametro units.'));
-            }
-            const id = new mongodb.ObjectID(params.id);
-            const order = await Order.findById(id);
-            const productsExist = order.products.find((product) => body.id === product.id);
-            if (productsExist) {
-                return next(new Error400('El producto ya existe en el pedido.'));
-            }
-            if (order) {
-                const product = await Product.eci.findOne({id: body.id});
-                if (!product) {
-                    next(new Error404('Product not found.'));
-                }
-                const products = [...order.products];
-                const costProduct = getPrice(product._doc, body.units);
-                products.push({
-                    ...product._doc,
-                    items: new Array(body.units).fill({date: null}),
-                    ...(body.note && {note: body.note}),
-                    cost: costProduct,
-                });
-                const newTotalShoppingCart = parseFloat((order.totalShoppingCart + costProduct).toFixed(2));
-                const newTotalCost = parseFloat((order.totalCost + costProduct).toFixed(2));
-                const updatedOrder = await Order.findOneAndUpdate(
-                    {_id: id, rider: user.email},
-                    {
-                        products,
-                        updatedDate: new Date(),
-                        totalShoppingCart: newTotalShoppingCart,
-                        totalCost: newTotalCost,
-                    },
-                    {
-                        new: true,
-                        upsert: false,
-                        useFindAndModify: false,
-                    }
-                );
-                if (updatedOrder) {
-                    res.json({data: updatedOrder});
-                } else {
-                    next(new Error404('Order not found.'));
-                }
-            } else {
-                next(new Error404('Order not found.'));
-            }
-        } catch (err) {
-            next(err);
-        }
-    },
     updateProduct: async ({params, body, user}, res, next) => {
         try {
             const orderId = new mongodb.ObjectID(params.orderId);
@@ -206,24 +152,18 @@ export default {
                     ...products[productIndex],
                     ...body,
                 };
-                const newCostProduct = getPrice(newProduct, newProduct.items.length);
+                const newCostProduct = getPrice(newProduct, newProduct.units);
                 products[productIndex] = {
                     ...newProduct,
                     cost: newCostProduct,
                 };
-
                 let totalShoppingCart = 0;
-                const orderWithProducts = products.map((product, index) => {
-                    const costProduct = getPrice(product, product.items.length);
+                products.forEach((product) => {
+                    const costProduct = getPrice(product, product.units);
+
                     if (product.statusOrder !== 'not-available') {
                         totalShoppingCart = parseFloat((totalShoppingCart + costProduct).toFixed(2));
                     }
-                    return {
-                        ...product,
-                        items: new Array(order.products[index].units).fill({date: null}),
-                        note: order.products[index].note,
-                        cost: costProduct,
-                    };
                 });
                 const deliveryPrice = getDeliveryPrice();
                 const totalCost = parseFloat(

@@ -33,6 +33,8 @@ const useStyles = createUseStyles(({palette}) => ({
         color: 'white',
         fontSize: 12,
         fontWeight: 500,
+        padding: '0px 4px',
+        textAlign: 'center',
     },
     icon: {
         width: 32,
@@ -69,25 +71,25 @@ const useStyles = createUseStyles(({palette}) => ({
     },
 }));
 
-interface Props {
-    product: Product;
-    handleClickDetail: () => void;
+type UnitsButtonProps = {
+    isUnitSaleType: boolean;
+    initialUnits: number;
     updateUnits: (units: number) => void;
-}
+};
 
-const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
-    const {name, brand, price, img, units: initialUnits, specialOffer, specialOfferValue, discount} = product;
-    const classes = useStyles();
-    const {palette} = useTheme();
+const UnitsButton = ({isUnitSaleType, initialUnits, updateUnits}: UnitsButtonProps) => {
+    const theme = useTheme();
+    const classes = useStyles({theme});
     const [units, setUnits] = React.useState(initialUnits);
     const [openUnits, setOpenUnits] = React.useState(false);
     const [showSpinner, setShowSpinner] = React.useState(false);
     const timerTimeOutRef = React.useRef<number | null>(null);
     const spinnerTimeOutRef = React.useRef<number | null>(null);
+    const unit = isUnitSaleType ? 1 : 100;
 
     React.useEffect(() => {
-        setUnits(product.units);
-    }, [product.units]);
+        setUnits(initialUnits);
+    }, [initialUnits]);
 
     React.useEffect(() => {
         if (openUnits) {
@@ -96,14 +98,11 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
             timerTimeOutRef.current && clearTimeout(timerTimeOutRef.current);
 
             spinnerTimeOutRef.current = window.setTimeout(() => {
-                console.log('units', units);
                 setShowSpinner(true);
             }, 3000);
 
             timerTimeOutRef.current = window.setTimeout(() => {
-                if (units !== 0) {
-                    updateUnits(units);
-                }
+                updateUnits(units);
                 setShowSpinner(false);
                 setOpenUnits(false);
             }, 5000);
@@ -116,49 +115,79 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
     }, [openUnits, units, updateUnits]);
 
     return (
-        <div className={classes.container}>
-            <div
-                className={classes.units}
-                style={{
-                    left: openUnits ? '0' : 'unset',
-                    width: !openUnits ? 32 : 'unset',
-                    justifyContent: !openUnits ? 'center' : 'space-between',
-                }}
-            >
-                {openUnits && (
-                    <IonIcon
-                        role="button"
-                        className={classes.icon}
-                        icon={removeCircleSharp}
-                        onClick={() => {
-                            if (units > 0) {
-                                setUnits(units - 1);
-                            }
-                        }}
-                    />
-                )}
-                {(units > 0 || openUnits) &&
-                    (showSpinner ? (
-                        <IonSpinner className={classes.spinner} name="crescent" />
-                    ) : (
-                        <p
-                            className={classes.unitsText}
-                            onClick={() => {
-                                setOpenUnits(true);
-                            }}
-                        >{`${units}ud`}</p>
-                    ))}
-                {(units === 0 || openUnits) && (
-                    <IonIcon
-                        className={classes.icon}
-                        icon={addCircleSharp}
+        <div
+            className={classes.units}
+            style={{
+                left: openUnits ? '0' : 'unset',
+                width: !openUnits && units === 0 ? 32 : 'unset',
+                padding: openUnits || units === 0 ? 0 : 'unset',
+                justifyContent: !openUnits ? 'center' : 'space-between',
+            }}
+        >
+            {openUnits && (
+                <IonIcon
+                    role="button"
+                    className={classes.icon}
+                    icon={removeCircleSharp}
+                    onClick={() => {
+                        if (units > 0) {
+                            setUnits(units - unit);
+                        }
+                    }}
+                />
+            )}
+            {(units > 0 || openUnits) &&
+                (showSpinner ? (
+                    <IonSpinner className={classes.spinner} name="crescent" />
+                ) : (
+                    <p
+                        className={classes.unitsText}
                         onClick={() => {
                             setOpenUnits(true);
-                            setUnits(units + 1);
                         }}
-                    />
-                )}
-            </div>
+                    >{`${units} ${isUnitSaleType ? 'ud' : 'gr'}`}</p>
+                ))}
+            {(units === 0 || openUnits) && (
+                <IonIcon
+                    className={classes.icon}
+                    icon={addCircleSharp}
+                    onClick={() => {
+                        setOpenUnits(true);
+                        setUnits(units + unit);
+                    }}
+                />
+            )}
+        </div>
+    );
+};
+
+interface Props {
+    product: Product;
+    handleClickDetail: () => void;
+    updateUnits: (units: number) => void;
+}
+
+const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
+    const {name, brand, price, img, units, specialOffer, specialOfferValue, discount, saleType} = product;
+    const theme = useTheme();
+    const classes = useStyles({theme});
+    const {palette} = theme;
+    const isUnitSaleType = saleType === 'unit';
+
+    return (
+        <div className={classes.container}>
+            <UnitsButton
+                isUnitSaleType={isUnitSaleType}
+                initialUnits={units}
+                updateUnits={(newUnits) => {
+                    if (units === 0 && newUnits === 0) {
+                        return;
+                    }
+
+                    updateUnits(newUnits);
+                }}
+            />
+
             <div role="button" onClick={handleClickDetail}>
                 <div className={classes.image} style={{backgroundImage: `url(${img})`}}></div>
                 <div className={classes.content}>
@@ -167,7 +196,8 @@ const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
                         gutterBottom={4}
                         {...(discount ? {color: palette.secondary.main} : {})}
                     >
-                        {price.final}€ <Typography variant="subtitle2"> / ud</Typography>
+                        {price.final}€{' '}
+                        <Typography variant="subtitle2">{isUnitSaleType ? '/ ud' : '/ kg'}</Typography>
                     </Typography>
                     <Typography variant="body2" ellipsis lineClamp={3}>
                         {name.replace(brand, '').trim()}

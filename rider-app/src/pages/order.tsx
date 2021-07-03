@@ -84,19 +84,21 @@ const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
     const id = match.params.id;
     const [order, setOrder] = React.useState<OrderModel | null>(null);
     const [selected, setSelected] = React.useState<Product | null>(null);
-    const [productWithNote, setProductWithNote] = React.useState<Product | null>(null);
     const [tab, setTab] = React.useState<ProductOrderStatus>('pending');
     const [showAlert, setShowAlert] = React.useState(false);
-    const updateOrderProduct = (product: Product) => {
-        kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
-            setOrder(res);
-        });
-    };
-    const handleOrderCompleted = () => {
+    const updateOrderProduct = React.useCallback(
+        (product: Product) => {
+            kiwiApi.updateOrderProduct(product, order?._id || '').then((res) => {
+                setOrder(res);
+            });
+        },
+        [order?._id]
+    );
+    const handleOrderCompleted = React.useCallback(() => {
         kiwiApi.updateStatusOrder(order?._id || '', 'comming').then((res) => {
             history.replace(`/orders/delivery/${order?._id}`);
         });
-    };
+    }, [order?._id, history]);
 
     React.useEffect(() => {
         if (id) {
@@ -159,55 +161,12 @@ const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
                                         key={product.id}
                                         product={product}
                                         handleClickDetail={() => setSelected(product)}
-                                        handleAddNote={() => setProductWithNote(product)}
-                                        handleRemoveProduct={() => {}}
-                                        disabled={order.status !== 'pending'}
                                     />
                                 ))}
                         </div>
-                        {order.products.length === 0 && (
-                            <>
-                                <Typography variant="h2">Añade productos desde la tab de compra</Typography>
-                            </>
-                        )}
                     </IonList>
                 )}
 
-                <IonAlert
-                    isOpen={!!productWithNote}
-                    onDidDismiss={() => {
-                        setProductWithNote(null);
-                    }}
-                    header="Nota de producto"
-                    subHeader="Usa esta nota para añadir cualquier información adicional que quieras indicarle al Shopper"
-                    inputs={[
-                        {
-                            name: 'note',
-                            type: 'text',
-                            label: 'Nota de producto',
-                            value: productWithNote?.note,
-                            placeholder: 'Ej: Coger el menos maduro posible',
-                        },
-                    ]}
-                    buttons={[
-                        {
-                            text: 'Cancelar',
-                            role: 'cancel',
-                            cssClass: 'secondary',
-                        },
-                        {
-                            text: productWithNote ? 'Modificar' : 'Añadir',
-                            handler: ({note}: {note: string}) => {
-                                if (productWithNote && note) {
-                                    updateOrderProduct({
-                                        ...productWithNote,
-                                        note,
-                                    });
-                                }
-                            },
-                        },
-                    ]}
-                />
                 <IonModal isOpen={!!selected}>
                     {selected && (
                         <ProductDetail

@@ -23,6 +23,11 @@ export interface Product {
     readonly statusOrder?: 'pending' | 'saved' | 'not-available';
     readonly units: number;
     readonly url: string;
+    readonly hasPreparations?: false;
+    readonly isCooled?: false;
+    readonly isGlutenFree?: false;
+    readonly isLactoseFree?: false;
+    readonly saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
 }
 
 export interface ShoppingCart {

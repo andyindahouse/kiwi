@@ -1,7 +1,7 @@
 import {Product, ShoppingCart} from '@kiwi/models';
+import {getCost} from '@kiwi/utils';
+import {DELIVER_FEE, SHOPPER_FEE} from '../constants';
 
-const DELIVER_FEE = 3;
-const SHOPPER_FEE = 4;
 export const INITITAL_SHOPPING_CART: ShoppingCart = {
     products: [],
     deliverFee: DELIVER_FEE,
@@ -26,7 +26,15 @@ export const setPersistedShoppingCartProducts = ({products}: {products: Readonly
     const totalShoppingCart = Number(
         products
             .reduce((acum, current) => {
-                return acum + Number(current.price.final) * current.units;
+                const finalPrice = Number(current.price.final);
+
+                if (current.saleType === 'unit') {
+                    return acum + finalPrice * current.units;
+                } else {
+                    const priceFor100gr = finalPrice / 10;
+
+                    return acum + priceFor100gr * (current.units / 100);
+                }
             }, 0)
             .toFixed(2)
     );
@@ -35,7 +43,12 @@ export const setPersistedShoppingCartProducts = ({products}: {products: Readonly
     localStorage.setItem(
         SHOPPING_CART_KEY,
         JSON.stringify({
-            products,
+            products: products.map((product) => {
+                return {
+                    ...product,
+                    cost: getCost(product),
+                };
+            }),
             deliverFee: DELIVER_FEE,
             finalDeliverFee: DELIVER_FEE,
             shopperFee: SHOPPER_FEE,
