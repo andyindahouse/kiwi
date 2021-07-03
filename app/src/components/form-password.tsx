@@ -16,7 +16,12 @@ type Props = {controlRef: (handleSubmit: any) => void; showHeader?: boolean; sho
 const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
-    const {handleSubmit, errors, watch, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        watch,
+        control,
+    } = useForm({
         shouldFocusError: true,
     });
 
@@ -41,15 +46,8 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                             rules={{
                                 required: true,
                             }}
-                            render={({onChange, onBlur, value, name, ref}) => (
-                                <IonInput
-                                    type="password"
-                                    onIonChange={onChange}
-                                    name={name}
-                                    ref={ref}
-                                    onBlur={onBlur}
-                                    value={value}
-                                />
+                            render={({field}) => (
+                                <IonInput {...field} onIonChange={field.onChange} type="password" />
                             )}
                         />
                         {errors.oldPassword?.type === 'required' && (
@@ -69,15 +67,8 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                type="password"
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} type="password" />
                         )}
                     />
                     {errors.password?.type === 'required' && (
@@ -100,15 +91,8 @@ const FormPassword = ({controlRef, showHeader, showOldPasswordField}: Props) => 
                             required: true,
                             validate: (value) => value === watch('password'),
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
-                            <IonInput
-                                type="password"
-                                onIonChange={onChange}
-                                name={name}
-                                ref={ref}
-                                onBlur={onBlur}
-                                value={value}
-                            />
+                        render={({field}) => (
+                            <IonInput {...field} onIonChange={field.onChange} type="password" />
                         )}
                     />
 

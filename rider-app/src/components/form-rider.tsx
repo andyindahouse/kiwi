@@ -49,7 +49,11 @@ type Props = {
 const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
-    const {handleSubmit, errors, control} = useForm({
+    const {
+        handleSubmit,
+        formState: {errors},
+        control,
+    } = useForm({
         shouldFocusError: true,
         defaultValues,
     });
@@ -76,15 +80,12 @@ const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonSelect
-                                name={name}
-                                value={value}
-                                onBlur={onBlur}
-                                onIonChange={onChange}
+                                {...field}
+                                onIonChange={field.onChange}
                                 okText="Ok"
                                 cancelText="Cancelar"
-                                ref={ref}
                             >
                                 {cities.map((e: {value: string; label: string}) => (
                                     <IonSelectOption key={e.value} value={e.value}>
@@ -108,15 +109,12 @@ const FormRider = ({controlRef, defaultValues, showHeader}: Props) => {
                         rules={{
                             required: true,
                         }}
-                        render={({onChange, onBlur, value, name, ref}) => (
+                        render={({field}) => (
                             <IonSelect
-                                name={name}
-                                value={value}
-                                onBlur={onBlur}
-                                onIonChange={onChange}
+                                {...field}
+                                onIonChange={field.onChange}
                                 okText="Ok"
                                 cancelText="Cancelar"
-                                ref={ref}
                             >
                                 {vehicles.map((e: {value: string; label: string}) => (
                                     <IonSelectOption key={e.value} value={e.value}>

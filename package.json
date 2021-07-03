@@ -19,17 +19,6 @@
         "url": "https://github.com/andyindahouse/kiwi/issues"
     },
     "homepage": "https://github.com/andyindahouse/kiwi#readme",
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.{js,ts,tsx,css,json,md,yaml,yml}": [
-            "prettier --write",
-            "git add"
-        ]
-    },
     "workspaces": [
         "backend",
         "app",
@@ -38,15 +27,13 @@
         "packages/*"
     ],
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^4.28.0",
-        "@typescript-eslint/parser": "^4.28.0",
+        "@typescript-eslint/eslint-plugin": "^4.28.1",
+        "@typescript-eslint/parser": "^4.28.1",
         "eslint": "^7.29.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.23.4",
         "eslint-plugin-react": "^7.24.0",
         "eslint-plugin-react-hooks": "^4.2.0",
-        "husky": "^4.3.8",
-        "lint-staged": "^10.5.4",
-        "prettier": "^2.3.1"
+        "prettier": "^2.3.2"
     }
 }

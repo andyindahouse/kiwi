@@ -1,6 +1,12 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "noImplicitAny": false
-    }
+        "target": "ES2016",
+        "noImplicitAny": false,
+        "noEmit": false,
+        "sourceMap": true,
+        "outDir": "build",
+        "module": "CommonJS"
+    },
+    "include": ["src"]
 }

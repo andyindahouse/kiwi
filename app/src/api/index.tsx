@@ -6,6 +6,7 @@ import {
     PantryProduct,
     PantryProductStatus,
     Product,
+    RegisterUser,
     ShoppingCart,
     User,
 } from '@kiwi/models';
@@ -14,15 +15,23 @@ import {USE_STUBS} from './dev-config';
 
 const PAGE_SIZE = 20;
 
-const call =
-    process.env.NODE_ENV === 'development' && USE_STUBS
-        ? callStub
-        : getApiCall('https://kiwiapp.es:3001', () => localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE));
+const getCaller = () => {
+    const isDev = process.env.NODE_ENV === 'development';
+    if (isDev && USE_STUBS) {
+        return callStub;
+    }
+
+    return getApiCall(isDev ? 'http://localhost:3000' : 'https://kiwiapp.es:3001', () =>
+        localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE)
+    );
+};
+
+const call = getCaller();
 
 const kiwiApi = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>
         call({url: '/login', body}, false),
-    registerUser: (body: User & {password: string}): Promise<User> => call({url: '/register', body}, false),
+    registerUser: (body: RegisterUser): Promise<User> => call({url: '/register', body}, false),
     emailTaken: (email: string): Promise<{isTaken: boolean}> =>
         call({url: `/emailTaken?email=${email}`}, false),
     getUser: (): Promise<User> => call({url: '/me'}),

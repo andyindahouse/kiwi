@@ -1,110 +1,121 @@
 export type PaginatedResponse<T> = {
-    content: T;
-    pageNumber: number;
-    pageSize: number;
-    totalSize: number;
+    readonly content: T;
+    readonly pageNumber: number;
+    readonly pageSize: number;
+    readonly totalSize: number;
 };
 
-export type User = {
-    deliveryAddress: string;
-    deliveryHour: string;
-    deliveryPostalCode: string;
-    deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
-    email: string;
-    firstName: string;
-    phone: string;
+type CommonUserProps = {
+    readonly deliveryAddress: string;
+    readonly deliveryCity: string;
+    readonly deliveryHour: string;
+    readonly deliveryPostalCode: string;
+    readonly deliveryVehicle: string;
+    readonly deliveryWeekDay: '0' | '1' | '2' | '3' | '4' | '5' | '6';
+    readonly email: string;
+    readonly firstName: string;
+    readonly lastName: string;
+    readonly phone: string;
 };
 
-export type RegisterUser = User & {password: string; rePassword: string};
+export type User = CommonUserProps & {
+    readonly active: boolean;
+    readonly rider: boolean;
+};
+
+export type RegisterUser = CommonUserProps & {
+    readonly password: string;
+    readonly rePassword: string;
+};
 
 export interface Nutriments {
-    carbohydrates100g: number;
-    energyKcal100g: number;
-    fat100g: number;
-    nutritionDataPer: number;
-    proteins100g: number;
-    salt100g: number;
-    saturedFat100g: number;
-    sugar100g: number;
+    readonly carbohydrates100g: number;
+    readonly energyKcal100g: number;
+    readonly fat100g: number;
+    readonly nutritionDataPer: number;
+    readonly proteins100g: number;
+    readonly salt100g: number;
+    readonly saturedFat100g: number;
+    readonly sugar100g: number;
 }
 
 export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
 
 export interface Product {
-    _id: string;
-    available: boolean;
-    brand: string;
-    category: ReadonlyArray<string>;
-    cost?: number;
-    currency: string;
-    discount: boolean;
-    ean?: string;
-    hasPreparations: boolean;
-    id: string;
-    img: string;
-    isCooled: boolean;
-    isGlutenFree: boolean;
-    isLactoseFree: boolean;
-    items?: ReadonlyArray<string>;
-    name: string;
-    note?: string;
-    novaGroups: '1' | '2' | '3' | '4';
-    nutriments?: Nutriments;
-    nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
-    price: {original?: string; final: string};
-    quantity: number;
-    saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
-    specialOffer?: SpecialOffers;
-    specialOfferValue?: [string, string];
-    status: string;
-    units: number;
-    updateDate: string;
-    url: string;
+    readonly _id: string;
+    readonly available: boolean;
+    readonly brand: string;
+    readonly category: ReadonlyArray<string>;
+    readonly cost?: number;
+    readonly currency: string;
+    readonly discount: boolean;
+    readonly ean?: string;
+    readonly hasPreparations: boolean;
+    readonly id: string;
+    readonly img: string;
+    readonly isCooled: boolean;
+    readonly isGlutenFree: boolean;
+    readonly isLactoseFree: boolean;
+    readonly items?: ReadonlyArray<string>;
+    readonly name: string;
+    readonly note?: string;
+    readonly novaGroups: '1' | '2' | '3' | '4';
+    readonly nutriments?: Nutriments;
+    readonly nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
+    readonly price: {readonly original?: string; readonly final: string};
+    readonly quantity: number;
+    readonly saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
+    readonly specialOffer?: SpecialOffers;
+    readonly specialOfferValue?: [string, string];
+    readonly status: string;
+    readonly units: number;
+    readonly updateDate: string;
+    readonly url: string;
 }
 
 export interface ShoppingCart {
-    deliverFee: number;
-    deliveryDiscount: number;
-    finalDeliverFee: number;
-    finalShopperFee: number;
-    products: ReadonlyArray<Product>;
-    shopperFee: number;
-    totalCost: number;
-    totalShoppingCart: number;
+    readonly deliverFee: number;
+    readonly deliveryDiscount: number;
+    readonly finalDeliverFee: number;
+    readonly finalShopperFee: number;
+    readonly products: ReadonlyArray<Product>;
+    readonly shopperFee: number;
+    readonly totalCost: number;
+    readonly totalShoppingCart: number;
 }
 
 export type OrderStatus = 'pending' | 'cancelled' | 'in-progress' | 'comming' | 'finalized' | 'issue';
 
 export interface Order {
-    _id: string;
-    createdDate: string;
-    deliverFee: number;
-    deliveryAdrres: string;
-    deliveryDate: string;
-    deliveryDiscount: number;
-    deliveryHour: string;
-    email: string;
-    finalDeliverFee: number;
-    finalShopperFee: number;
-    note: string;
-    products: ReadonlyArray<Product>;
-    replaceProducts: false;
-    shopperFee: number;
-    status: OrderStatus;
-    totalCost: number;
-    totalShoppingCart: number;
+    readonly _id: string;
+    readonly createdDate: string;
+    readonly deliverFee: number;
+    readonly deliveryAdrres: string;
+    readonly deliveryDate: string;
+    readonly deliveryDiscount: number;
+    readonly deliveryHour: string;
+    readonly email: string;
+    readonly finalDeliverFee: number;
+    readonly finalShopperFee: number;
+    readonly note: string;
+    readonly products: ReadonlyArray<Product>;
+    readonly replaceProducts: false;
+    readonly shopperFee: number;
+    readonly status: OrderStatus;
+    readonly totalCost: number;
+    readonly totalShoppingCart: number;
 }
 
 export type PantryProductStatus = 'pending' | 'cooled' | 'frozen' | 'storaged' | 'others' | 'consumed';
 
 export interface PantryProduct {
-    _id: string;
-    buyedDate: string;
-    consumedDate: string;
-    date: string;
-    email: string;
-    id: string;
-    img: string;
-    inStorage: PantryProductStatus;
-    name: string;
+    readonly _id: string;
+    readonly buyedDate: string;
+    readonly consumedDate: string;
+    readonly date: string;
+    readonly email: string;
+    readonly id: string;
+    readonly img: string;
+    readonly inStorage: PantryProductStatus;
+    readonly name: string;
 }
