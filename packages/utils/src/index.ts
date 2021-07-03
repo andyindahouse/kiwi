@@ -13,4 +13,3 @@ export const getCostSubtitle = (product: Product) => {
      ${product.units} gr (${product.price.final}€ / kg)
     `;
 };
-

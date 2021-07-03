@@ -41,10 +41,6 @@ import {setPersistedShoppingCartProducts} from '../utils/unauthenticated-persist
 import {updateProducts} from '../utils';
 import {getCostSubtitle} from '@kiwi/utils';
 
-
-
-
-
 const useStyles = createUseStyles(({palette}) => ({
     list: {
         display: 'grid',

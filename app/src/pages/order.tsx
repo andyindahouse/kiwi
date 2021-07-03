@@ -128,7 +128,7 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                         <div className={classes.list}>
                             {order.products.map((product) => {
                                 const {name, img, brand} = product;
-                                console.log(product.units)
+                                console.log(product.units);
                                 return (
                                     <ProductItem
                                         key={product.id}

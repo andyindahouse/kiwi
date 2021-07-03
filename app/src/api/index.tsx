@@ -61,8 +61,7 @@ const kiwiApi = {
     }): Promise<Order> => call({url: '/checkout', body, customMethod: 'PUT'}),
     getOrders: ({pageNumber}: {pageNumber: number}): Promise<PaginatedResponse<ReadonlyArray<Order>>> =>
         call({url: `/orders?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`}),
-    getOrder: ({id}: {id: string}): Promise<Order> =>
-        call({url: `/orders/${id}`}),
+    getOrder: ({id}: {id: string}): Promise<Order> => call({url: `/orders/${id}`}),
     updateStatusOrder: (id: string): Promise<Order> =>
         call({url: `/orders/${id}/status`, body: {status: 'cancelled'}}),
     deleteOrderProduct: (product: Product, id: string): Promise<Order> =>

@@ -69,7 +69,8 @@ const useStyles = createUseStyles(({palette}) => ({
     },
 }));
 
-const getUnitsLabel  = (itemsLength: number) => itemsLength === 1 ? `${itemsLength} unidad` : `${itemsLength} unidades`;
+const getUnitsLabel = (itemsLength: number) =>
+    itemsLength === 1 ? `${itemsLength} unidad` : `${itemsLength} unidades`;
 
 const Units = ({
     units,
@@ -209,36 +210,34 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
 
                     <IonItem>
                         <div>
-                            <Typography>{isUnitSaleType ? 'Unidades a coger:' : 'Cantidad a coger:'}</Typography>
+                            <Typography>
+                                {isUnitSaleType ? 'Unidades a coger:' : 'Cantidad a coger:'}
+                            </Typography>
                             <Typography variant="h5" gutterBottom={8} color={palette.secondary.main}>
-                            {isUnitSaleType ? getUnitsLabel(items.length) : `${product.units} gr`}                                
+                                {isUnitSaleType ? getUnitsLabel(items.length) : `${product.units} gr`}
                             </Typography>
-                            {isUnitSaleType && (<> 
+                            {isUnitSaleType && (
+                                <>
+                                    {/* Prettier doesn't work*/}
 
-
-
-
-                            {/* Prettier doesn't work*/}
-
-
-
-                            
-                            
-                            <Typography gutterBottom={8} variant="subtitle2">
-                                Si no están disponibles las unidades requeridas marcar la cantidad cogida
-                            </Typography>
-                            <Units
-                                label={['ud recogida', 'ud recogidas']}
-                                units={units.length}
-                                maxUnits={items.length}
-                                handleOnChange={(ud) => {
-                                    if (ud > units.length) {
-                                        setUnits([...units, {date: null}]);
-                                    } else {
-                                        setUnits(units.slice(0, ud));
-                                    }
-                                }}
-                            /></>)}
+                                    <Typography gutterBottom={8} variant="subtitle2">
+                                        Si no están disponibles las unidades requeridas marcar la cantidad
+                                        cogida
+                                    </Typography>
+                                    <Units
+                                        label={['ud recogida', 'ud recogidas']}
+                                        units={units.length}
+                                        maxUnits={items.length}
+                                        handleOnChange={(ud) => {
+                                            if (ud > units.length) {
+                                                setUnits([...units, {date: null}]);
+                                            } else {
+                                                setUnits(units.slice(0, ud));
+                                            }
+                                        }}
+                                    />
+                                </>
+                            )}
                         </div>
                     </IonItem>
                     {units.map((e, index) => (
@@ -323,7 +322,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
                                         updateProduct({
                                             ...product,
                                             items: units,
-                                            units: product.saleType  === 'unit' ? units.length : product.units,                                            
+                                            units: product.saleType === 'unit' ? units.length : product.units,
                                             price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,
                                         });
