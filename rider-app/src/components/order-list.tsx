@@ -2,7 +2,7 @@ import React from 'react';
 import {Typography, InfiniteScroll, createUseStyles} from '@kiwi/ui';
 import {IonRefresher, IonRefresherContent, IonList} from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
-import {Order} from '@kiwi/models/rider';
+import {Order} from '@kiwi/models';
 import OrderCard from '../components/order-card';
 import {chevronDownCircleOutline} from 'ionicons/icons';
 

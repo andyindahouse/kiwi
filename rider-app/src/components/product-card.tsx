@@ -2,7 +2,7 @@ import {addCircleSharp, removeCircleSharp} from 'ionicons/icons';
 import * as React from 'react';
 import {Typography, createUseStyles} from '@kiwi/ui';
 import {IonIcon, IonSpinner} from '@ionic/react';
-import {Product} from '@kiwi/models/rider';
+import {Product} from '@kiwi/models';
 
 const useStyles = createUseStyles(({palette}) => ({
     container: {

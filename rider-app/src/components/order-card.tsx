@@ -1,6 +1,6 @@
 import React from 'react';
 import {Typography, createUseStyles} from '@kiwi/ui';
-import {Order as OrderModel, Product} from '@kiwi/models/rider';
+import {Order as OrderModel, Product} from '@kiwi/models';
 import {IonButton} from '@ionic/react';
 import {useStatusOrderMap} from '../utils';
 import {getFormatDate, getFormatTime} from '../utils/format-date';

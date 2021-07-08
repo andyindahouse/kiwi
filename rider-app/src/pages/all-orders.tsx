@@ -2,7 +2,7 @@ import React from 'react';
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {RefresherEventDetail} from '@ionic/core';
 import kiwiApi from '../api';
-import {Order as OrderModel} from '@kiwi/models/rider';
+import {Order as OrderModel} from '@kiwi/models';
 import OrderList from '../components/order-list';
 import {useHistory} from 'react-router';
 

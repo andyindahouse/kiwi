@@ -5,6 +5,5 @@
         "lib": ["DOM", "ESNext"],
         "declaration": true,
         "noEmit": false
-    },
-    "include": ["src"]
+    }
 }

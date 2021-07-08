@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Typography, createUseStyles} from '@kiwi/ui';
 import {IonItem} from '@ionic/react';
-import {Product} from '@kiwi/models/rider';
+import {Product} from '@kiwi/models';
 import {getCostSubtitle} from '@kiwi/utils';
 
 const useStyles = createUseStyles(() => ({
