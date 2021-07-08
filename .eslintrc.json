@@ -7,6 +7,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
         "plugin:react/recommended",
@@ -33,7 +34,11 @@
     },
     "rules": {
         "react-hooks/exhaustive-deps": "error",
-        "no-unused-vars": 0, // False negatives with arguments on type definitions that are really used. We will rely on the strict mode of TypeScript
+        "no-unused-vars": "off",
+        "arrow-body-style": ["error", "as-needed"],
+        "@typescript-eslint/no-unused-vars": ["error"],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "no-restricted-imports": [
             "error",
             {

@@ -1,14 +1,11 @@
 import Order from '../models/order';
-import ShoppingCart from '../models/shoppingCart';
-import Product from '../models/product';
 import Pantry from '../models/pantry';
 import {Error400, Error404} from './errorTypes';
 import mongodb from 'mongodb';
-import {FEES} from '../config';
 import {getDeliveryPrice, getPrice} from './utils';
 
 export default {
-    getAllAvailables: async ({query, user}, res, next) => {
+    getAllAvailables: async ({query}, res, next) => {
         try {
             const pageNumber = parseInt(query.pageNumber || 0);
             const pageSize = parseInt(query.pageSize || 20);
@@ -63,7 +60,7 @@ export default {
             next(err);
         }
     },
-    getById: async ({params, user}, res, next) => {
+    getById: async ({params}, res, next) => {
         if (!params.id) {
             return next(new Error400('Falta parametro id.'));
         }
@@ -79,7 +76,7 @@ export default {
             next(err);
         }
     },
-    assign: async ({params, body, user}, res, next) => {
+    assign: async ({params, user}, res, next) => {
         try {
             if (!params.id) {
                 return next(new Error400('Falta parametro id.'));
@@ -204,7 +201,7 @@ export default {
             next(err);
         }
     },
-    deleteProduct: async ({params, body, user}, res, next) => {
+    deleteProduct: async ({params, user}, res, next) => {
         try {
             const orderId = new mongodb.ObjectID(params.orderId);
             const order = await Order.findById(orderId);
@@ -248,7 +245,7 @@ export default {
             next(err);
         }
     },
-    finalizeOrder: async ({params, body, user}, res, next) => {
+    finalizeOrder: async ({params, user}, res, next) => {
         try {
             const id = new mongodb.ObjectID(params.id);
             const order = await Order.findById(id);

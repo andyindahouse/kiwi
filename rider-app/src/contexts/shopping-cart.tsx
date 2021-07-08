@@ -25,7 +25,7 @@ const initialState = {
 
 const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<Actions>}>({
     ...initialState,
-    dispatch: (action: Actions) => null,
+    dispatch: () => null,
 });
 
 function reducer(state: ShoppingCart, action: Actions) {

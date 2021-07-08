@@ -144,7 +144,7 @@ export default {
             next(err);
         }
     },
-    deleteProduct: async ({user, params, body}, res, next) => {
+    deleteProduct: async ({user, params}, res, next) => {
         try {
             const orderId = new mongodb.ObjectID(params.orderId);
             const order = await Order.findById(orderId);

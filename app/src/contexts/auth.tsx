@@ -13,30 +13,28 @@ type Auth = {
 
 const AuthContext = React.createContext<Auth>({
     user: null,
-    setUser: (user: User) => {},
-    logout: () => {},
-    login: (data: {email: string; password: string}) => Promise.resolve(null),
+    setUser: () => undefined,
+    logout: () => undefined,
+    login: () => Promise.resolve(null),
 });
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [user, setUser] = React.useState<User | null>(null);
     const [isLoading, setLoading] = React.useState(true);
-    const login = ({email, password}: {email: string; password: string}) => {
-        return kiwiApi.login({email, password}).then(({token}) => {
+    const login = ({email, password}: {email: string; password: string}) =>
+        kiwiApi.login({email, password}).then(({token}) => {
             localStorage.setItem(TOKEN_KEY_LOCAL_STORAGE, token);
             return getUser();
         });
-    };
     const logout = () => {
         localStorage.removeItem(TOKEN_KEY_LOCAL_STORAGE);
         setUser(null);
     };
-    const getUser = () => {
-        return kiwiApi.getUser().then((user: User) => {
+    const getUser = () =>
+        kiwiApi.getUser().then((user: User) => {
             setUser(user);
             return user;
         });
-    };
 
     React.useEffect(() => {
         const token = localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE);

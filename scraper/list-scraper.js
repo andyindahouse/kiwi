@@ -88,9 +88,7 @@ const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 10
     try {
         let previousHeight;
         while (items < itemTargetCount) {
-            items = await page.evaluate(() => {
-                return [...document.querySelectorAll('.grid-item')].length;
-            });
+            items = await page.evaluate(() => [...document.querySelectorAll('.grid-item')].length);
             if (items < itemTargetCount) {
                 previousHeight = await page.evaluate('document.body.scrollHeight');
                 await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');

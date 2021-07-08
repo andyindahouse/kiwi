@@ -51,30 +51,28 @@ const useStyles = createUseStyles(({palette}) => ({
     },
 }));
 
-export const ProductListItemSkeleton = ({rows}: {rows: number}) => {
-    return (
-        <IonList>
-            {Array.from(Array(rows).keys()).map((e) => (
-                <IonItem key={e}>
-                    <IonThumbnail slot="start">
-                        <IonSkeletonText animated />
-                    </IonThumbnail>
-                    <IonLabel>
-                        <h3>
-                            <IonSkeletonText animated style={{width: '50%'}} />
-                        </h3>
-                        <p>
-                            <IonSkeletonText animated style={{width: '80%'}} />
-                        </p>
-                        <p>
-                            <IonSkeletonText animated style={{width: '60%'}} />
-                        </p>
-                    </IonLabel>
-                </IonItem>
-            ))}
-        </IonList>
-    );
-};
+export const ProductListItemSkeleton = ({rows}: {rows: number}) => (
+    <IonList>
+        {Array.from(Array(rows).keys()).map((e) => (
+            <IonItem key={e}>
+                <IonThumbnail slot="start">
+                    <IonSkeletonText animated />
+                </IonThumbnail>
+                <IonLabel>
+                    <h3>
+                        <IonSkeletonText animated style={{width: '50%'}} />
+                    </h3>
+                    <p>
+                        <IonSkeletonText animated style={{width: '80%'}} />
+                    </p>
+                    <p>
+                        <IonSkeletonText animated style={{width: '60%'}} />
+                    </p>
+                </IonLabel>
+            </IonItem>
+        ))}
+    </IonList>
+);
 
 type Props = {
     img: string;

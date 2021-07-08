@@ -183,7 +183,7 @@ const Order = ({match}: RouteComponentProps<{id: string}>) => {
                             text: 'Cancelar',
                             role: 'cancel',
                             cssClass: 'secondary',
-                            handler: (blah) => {},
+                            handler: () => undefined,
                         },
                         {
                             text: 'Aceptar',

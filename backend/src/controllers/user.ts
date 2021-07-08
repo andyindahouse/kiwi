@@ -80,6 +80,7 @@ export const login: RequestHandler<any, {data: {token: string}}, {email: string}
             email: user.email,
         };
         const token =
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore TS2769: No overload matches this call (...) 'algorithm' does not exist in type 'SignCallback'
             jwt.sign(JSON.stringify(payload), PASSPORT_CONFIG.JWT_SECRET, {
                 algorithm: PASSPORT_CONFIG.JWT_ALGORITHM,
@@ -117,8 +118,7 @@ export const isPostalCodeAllowed: RequestHandler<any, {data: {isAllowed: boolean
 
 export const getDeliveryCities: RequestHandler<any, {data: {deliveryCities: string[]}}> = async (
     req,
-    res,
-    next
+    res
 ) => {
     res.json({
         data: {

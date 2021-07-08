@@ -190,7 +190,7 @@ const ShoppingCart = () => {
                 deliveryHour,
                 replaceProducts,
             })
-            .then((res) => {
+            .then(() => {
                 setShowModal(false);
                 dispatch({
                     type: EMPTY_SHOPPING_CART,
@@ -225,7 +225,7 @@ const ShoppingCart = () => {
                     <IonList ref={listRef}>
                         <div className={classes.list}>
                             {products.map((product, index) => {
-                                const {name, price, img} = product;
+                                const {name, img} = product;
 
                                 return (
                                     <ProductItem
@@ -494,7 +494,7 @@ const ShoppingCart = () => {
                                         text: 'Cancelar',
                                         role: 'cancel',
                                         cssClass: 'secondary',
-                                        handler: (blah) => {},
+                                        handler: () => undefined,
                                     },
                                     {
                                         text: 'Aceptar',
