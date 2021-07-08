@@ -18,7 +18,7 @@ import {
 import {addCircleOutline, removeCircleOutline, syncOutline} from 'ionicons/icons';
 import * as React from 'react';
 import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
-import {Product, ProductOrderStatus} from '@kiwi/models/rider';
+import {Product, ProductOrderStatus} from '@kiwi/models';
 
 const useStyles = createUseStyles(({palette}) => ({
     container: {

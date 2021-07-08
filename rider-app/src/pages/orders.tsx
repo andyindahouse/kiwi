@@ -14,7 +14,7 @@ import {
     IonList,
 } from '@ionic/react';
 import kiwiApi from '../api';
-import {Order, Order as OrderModel, OrderStatus} from '@kiwi/models/rider';
+import {Order, OrderStatus} from '@kiwi/models';
 import {RouteComponentProps} from 'react-router';
 import OrderCard from '../components/order-card';
 
@@ -56,7 +56,7 @@ const Orders = ({history, location: {search}}: RouteComponentProps) => {
         pageNumber: 0,
         status: segmentMap[segment],
     });
-    const [orders, setOrders] = React.useState<ReadonlyArray<OrderModel> | null>(null);
+    const [orders, setOrders] = React.useState<ReadonlyArray<Order> | null>(null);
     const [isLoading, setLoading] = React.useState(false);
     const [totalSize, setTotalSize] = React.useState<number | null>(null);
     const [disableInfiniteScroll, setDisableInfiniteScroll] = React.useState(false);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Product, ShoppingCart} from '@kiwi/models/rider';
+import {Product, ShoppingCart} from '@kiwi/models';
 
 export const UPDATE_SHOPPING_CART_PRODUCT = 'UPDATE_SHOPPING_CART_PRODUCT';
 export type UpdateShoppingCartProduct = {
@@ -15,12 +15,15 @@ export type SyncShoppingCart = {
 
 type Actions = UpdateShoppingCartProduct | SyncShoppingCart;
 
-const initialState = {
+const initialState: ShoppingCart = {
     products: [],
     deliverFee: 0,
     shopperFee: 0,
     totalShoppingCart: 0,
     totalCost: 0,
+    deliveryDiscount: 0,
+    finalDeliverFee: 0,
+    finalShopperFee: 0,
 };
 
 const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<Actions>}>({

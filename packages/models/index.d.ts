@@ -1,3 +1,5 @@
+export type ProductOrderStatus = 'pending' | 'saved' | 'not-available';
+
 export type PaginatedResponse<T> = {
     readonly content: T;
     readonly pageNumber: number;
@@ -48,6 +50,7 @@ export interface Product {
     readonly category: ReadonlyArray<string>;
     readonly cost?: number;
     readonly currency: string;
+    readonly daysAfterOpened?: number;
     readonly discount: boolean;
     readonly ean?: string;
     readonly hasPreparations: boolean;
@@ -56,7 +59,7 @@ export interface Product {
     readonly isCooled: boolean;
     readonly isGlutenFree: boolean;
     readonly isLactoseFree: boolean;
-    readonly items?: ReadonlyArray<string>;
+    readonly items?: ReadonlyArray<{readonly date: string | null}>;
     readonly name: string;
     readonly note?: string;
     readonly novaGroups: '1' | '2' | '3' | '4';
@@ -68,6 +71,7 @@ export interface Product {
     readonly specialOffer?: SpecialOffers;
     readonly specialOfferValue?: [string, string];
     readonly status: string;
+    readonly statusOrder?: 'pending' | 'saved' | 'not-available';
     readonly units: number;
     readonly updateDate: string;
     readonly url: string;
@@ -90,16 +94,19 @@ export interface Order {
     readonly _id: string;
     readonly createdDate: string;
     readonly deliverFee: number;
-    readonly deliveryAdrres: string;
+    readonly deliveryAddress: string;
     readonly deliveryDate: string;
     readonly deliveryDiscount: number;
     readonly deliveryHour: string;
     readonly email: string;
     readonly finalDeliverFee: number;
     readonly finalShopperFee: number;
+    readonly firstName: string;
+    readonly lastName: string;
     readonly note: string;
+    readonly phone: string;
     readonly products: ReadonlyArray<Product>;
-    readonly replaceProducts: false;
+    readonly replaceProducts: boolean;
     readonly shopperFee: number;
     readonly status: OrderStatus;
     readonly totalCost: number;

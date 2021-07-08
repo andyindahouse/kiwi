@@ -23,7 +23,7 @@ import ProductItem from '../components/product-item';
 import kiwiApi from '../api';
 import {RouteComponentProps} from 'react-router-dom';
 
-import type {Order as OrderModel, Product, ProductOrderStatus} from '@kiwi/models/rider';
+import type {Order as OrderModel, Product, ProductOrderStatus} from '@kiwi/models';
 import {chevronForwardOutline} from 'ionicons/icons';
 
 const useStyles = createUseStyles(({palette}) => ({
