@@ -23,9 +23,9 @@ export default {
             };
             try {
                 const totalSize = await Pantry.find(findPantryProducts).countDocuments();
-                const match = Object.keys(findPantryProducts).map((key) => {
-                    return {[key]: findPantryProducts[key]};
-                });
+                const match = Object.keys(findPantryProducts).map((key) => ({
+                    [key]: findPantryProducts[key],
+                }));
 
                 const result = await Pantry.aggregate([
                     {$match: {$and: match}},

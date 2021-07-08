@@ -38,7 +38,7 @@ export const initialState = {
 
 const ShoppingContext = React.createContext<ShoppingCart & {dispatch: React.Dispatch<Actions>}>({
     ...initialState,
-    dispatch: (action: Actions) => null,
+    dispatch: () => null,
 });
 
 function reducer(state: ShoppingCart, action: Actions) {
@@ -88,8 +88,8 @@ function reducer(state: ShoppingCart, action: Actions) {
     }
 }
 
-const mergeProducts = (data: ShoppingCart, localData: ShoppingCart): ReadonlyArray<Product> => {
-    return data.products
+const mergeProducts = (data: ShoppingCart, localData: ShoppingCart): ReadonlyArray<Product> =>
+    data.products
         .map((product) => {
             const localProduct = localData.products.find((e) => e.id === product.id);
 
@@ -105,7 +105,6 @@ const mergeProducts = (data: ShoppingCart, localData: ShoppingCart): ReadonlyArr
         .concat(
             localData.products.filter((localProduct) => !data.products.find((e) => e.id === localProduct.id))
         );
-};
 
 export const ShoppingProvider = ({children}: {children: React.ReactNode}) => {
     const [shoppingCart, dispatch] = React.useReducer((state: ShoppingCart, action: Actions) => {

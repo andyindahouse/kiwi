@@ -41,7 +41,7 @@ const Delivery = () => {
     const [showAlert, setShowAlert] = React.useState(false);
     const handleFinalized = () => {
         if (id) {
-            kiwiApi.finalizeOrder(id).then((res) => {
+            kiwiApi.finalizeOrder(id).then(() => {
                 if (order) {
                     history.replace(`/feedback?earns=${order.deliverFee + order.shopperFee}`);
                 }
@@ -125,7 +125,7 @@ const Delivery = () => {
                             text: 'Cancelar',
                             role: 'cancel',
                             cssClass: 'secondary',
-                            handler: (blah) => {},
+                            handler: () => undefined,
                         },
                         {
                             text: 'Aceptar',

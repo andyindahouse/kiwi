@@ -44,9 +44,7 @@ const segmentMap: Record<string, ReadonlyArray<OrderStatus>> = {
 
 type Segment = 'active' | 'toStart' | 'history';
 
-const getParam = (search: string, param: string) => {
-    return new URLSearchParams(search).get(param) as Segment;
-};
+const getParam = (search: string, param: string) => new URLSearchParams(search).get(param) as Segment;
 
 const Orders = ({history, location: {search}}: RouteComponentProps) => {
     const classes = useStyles();

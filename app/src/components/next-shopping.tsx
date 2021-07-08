@@ -4,9 +4,7 @@ import {IonIcon, IonList} from '@ionic/react';
 import {cartOutline} from 'ionicons/icons';
 import ProductItem from '../components/product-item';
 import {useShoppingCart} from '../contexts/shopping-cart';
-import {Product} from '@kiwi/models';
 import {Link} from 'react-router-dom';
-import {useAuth} from '../contexts/auth';
 import {getCostSubtitle} from '@kiwi/utils';
 
 const useStyles = createUseStyles(({palette}) => ({
@@ -47,7 +45,6 @@ const NextShopping = () => {
     const classes = useStyles();
     const {palette} = useTheme();
     const {products} = useShoppingCart();
-    const {user} = useAuth();
 
     return (
         <div className={classes.container}>
@@ -64,8 +61,7 @@ const NextShopping = () => {
                 <div className={classes.list}>
                     <IonList>
                         {products.slice(0, 5).map((product) => {
-                            const {name, price, img} = product;
-                            const getUnits = (product: Product) => product.units ?? product.items?.length;
+                            const {name, img} = product;
                             return (
                                 <ProductItem
                                     key={product.id}

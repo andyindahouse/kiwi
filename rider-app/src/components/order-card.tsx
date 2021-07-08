@@ -73,9 +73,8 @@ const useStyles = createUseStyles(({palette}) => ({
     },
 }));
 
-const getTotalItems = (products: ReadonlyArray<Product>) => {
-    return products.reduce((value, current) => value + (current.items?.length || 0), 0);
-};
+const getTotalItems = (products: ReadonlyArray<Product>) =>
+    products.reduce((value, current) => value + (current.items?.length || 0), 0);
 
 type Props = {
     order: OrderModel;

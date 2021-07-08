@@ -1,26 +1,6 @@
 import * as React from 'react';
 import kiwiApi from '../api';
-import {Plugins, Capacitor} from '@capacitor/core';
 import {PantryProduct} from '@kiwi/models';
-import {useIonViewDidEnter} from '@ionic/react';
-
-const setLocalNotifications = async (pantryProducts: ReadonlyArray<PantryProduct>) => {
-    if (Capacitor.isNative && (await Plugins.LocalNotifications.areEnabled())) {
-        await Plugins.LocalNotifications.requestPermission();
-        Plugins.LocalNotifications.schedule({
-            notifications: [
-                {
-                    id: 1,
-                    title: 'Title',
-                    body: 'Body',
-                    schedule: {at: new Date(Date.now() + 1000 * 20)},
-                },
-            ],
-        });
-    } else {
-        console.log(`INFO: local notifications can't setted`);
-    }
-};
 
 type State = {
     products: ReadonlyArray<PantryProduct>;

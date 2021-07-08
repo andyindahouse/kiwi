@@ -76,7 +76,7 @@ interface Props {
 }
 
 const ProductCard = ({product, handleClickDetail, updateUnits}: Props) => {
-    const {name, price, img, id, ean, discount, units: initialUnits} = product;
+    const {name, price, img, units: initialUnits} = product;
     const classes = useStyles();
     const [units, setUnits] = React.useState(initialUnits);
     const [openUnits, setOpenUnits] = React.useState(false);

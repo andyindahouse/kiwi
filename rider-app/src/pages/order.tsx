@@ -95,7 +95,7 @@ const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
         [order?._id]
     );
     const handleOrderCompleted = React.useCallback(() => {
-        kiwiApi.updateStatusOrder(order?._id || '', 'comming').then((res) => {
+        kiwiApi.updateStatusOrder(order?._id || '', 'comming').then(() => {
             history.replace(`/orders/delivery/${order?._id}`);
         });
     }, [order?._id, history]);
@@ -170,7 +170,6 @@ const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
                 <IonModal isOpen={!!selected}>
                     {selected && (
                         <ProductDetail
-                            disabled={order?.status !== 'pending'}
                             updateProduct={updateOrderProduct}
                             closeModal={() => setSelected(null)}
                             product={selected}
@@ -189,7 +188,7 @@ const Order = ({history, match}: RouteComponentProps<{id: string}>) => {
                             text: 'Cancelar',
                             role: 'cancel',
                             cssClass: 'secondary',
-                            handler: (blah) => {},
+                            handler: () => undefined,
                         },
                         {
                             text: 'Aceptar',

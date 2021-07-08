@@ -147,11 +147,10 @@ type Props = {
     product: Product;
     updateProduct: (product: Product) => void;
     closeModal: () => void;
-    disabled?: boolean;
     replaceProduct?: boolean;
 };
 
-const ProductDetail = ({product, closeModal, updateProduct, disabled = false, replaceProduct}: Props) => {
+const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Props) => {
     const classes = useStyles();
     const {palette} = useTheme();
     const {name, price, img, brand, note, items = []} = product;
@@ -294,7 +293,7 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, re
                             text: 'Cancelar',
                             role: 'cancel',
                             cssClass: 'secondary',
-                            handler: () => {},
+                            handler: () => undefined,
                         },
                         {
                             text: 'Aceptar',

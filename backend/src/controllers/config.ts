@@ -5,16 +5,15 @@ export default {
     config: async (req, res, next) => {
         try {
             const config = await Config.findOne();
-            if (config) {
-                const {_id, ...configData} = config._doc;
-                res.json({
-                    data: {
-                        ...configData,
-                    },
-                });
-            } else {
-                next(new Error404('Config not found.'));
+            if (!config) {
+                return next(new Error404('Config not found.'));
             }
+
+            res.json({
+                data: {
+                    deliveryDays: config.deliveryDays,
+                },
+            });
         } catch (err) {
             next(err);
         }

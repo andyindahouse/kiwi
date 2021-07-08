@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Typography, createUseStyles} from '@kiwi/ui';
-import {documentTextOutline, trashOutline} from 'ionicons/icons';
-import {IonIcon, IonItemSliding, IonItem, IonItemOptions, IonItemOption} from '@ionic/react';
+import {IonItem} from '@ionic/react';
 import {Product} from '@kiwi/models/rider';
 import {getCostSubtitle} from '@kiwi/utils';
 
@@ -22,8 +21,6 @@ type Props = {
     product: Product;
     handleClickDetail: () => void;
 };
-
-const getUnits = (product: Product) => product.units ?? product.items?.length;
 
 const ProductItem = ({product, handleClickDetail}: Props) => {
     const {name, price, img} = product;

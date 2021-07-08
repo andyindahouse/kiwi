@@ -269,9 +269,8 @@ const NutriScoreBar = ({value}: {value: 'a' | 'b' | 'c' | 'd' | 'e'}) => {
     );
 };
 
-const getDiscountPercentage = (original: string, final: string) => {
-    return Math.abs((Number(final) / Number(original)) * 100 - 100).toFixed(2);
-};
+const getDiscountPercentage = (original: string, final: string) =>
+    Math.abs((Number(final) / Number(original)) * 100 - 100).toFixed(2);
 
 interface Props {
     product: Product;

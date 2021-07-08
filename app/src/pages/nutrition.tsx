@@ -1,36 +1,26 @@
 import * as React from 'react';
-import {Box, Fragment, createUseStyles} from '@kiwi/ui';
+import {Box, Fragment} from '@kiwi/ui';
 import {restaurantOutline} from 'ionicons/icons';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 
-const useStyles = createUseStyles(() => ({
-    test: {
-        color: 'red',
-    },
-}));
-
-const Nutrition: React.FC = () => {
-    const classes = useStyles();
-
-    return (
-        <IonPage>
-            <IonHeader>
+const Nutrition: React.FC = () => (
+    <IonPage>
+        <IonHeader>
+            <IonToolbar>
+                <IonTitle>Nutrición</IonTitle>
+            </IonToolbar>
+        </IonHeader>
+        <IonContent>
+            <IonHeader collapse="condense">
                 <IonToolbar>
-                    <IonTitle>Nutrición</IonTitle>
+                    <IonTitle size="large">Nutrición</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent>
-                <IonHeader collapse="condense">
-                    <IonToolbar>
-                        <IonTitle size="large">Nutrición</IonTitle>
-                    </IonToolbar>
-                </IonHeader>
-                <Box>
-                    <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/" />
-                </Box>
-            </IonContent>
-        </IonPage>
-    );
-};
+            <Box>
+                <Fragment icon={restaurantOutline} text="Ir a tu despensa" link="/" />
+            </Box>
+        </IonContent>
+    </IonPage>
+);
 
 export default Nutrition;

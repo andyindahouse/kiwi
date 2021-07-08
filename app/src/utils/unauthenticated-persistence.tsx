@@ -43,12 +43,10 @@ export const setPersistedShoppingCartProducts = ({products}: {products: Readonly
     localStorage.setItem(
         SHOPPING_CART_KEY,
         JSON.stringify({
-            products: products.map((product) => {
-                return {
-                    ...product,
-                    cost: getCost(product),
-                };
-            }),
+            products: products.map((product) => ({
+                ...product,
+                cost: getCost(product),
+            })),
             deliverFee: DELIVER_FEE,
             finalDeliverFee: DELIVER_FEE,
             shopperFee: SHOPPER_FEE,

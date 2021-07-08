@@ -135,11 +135,7 @@ const FoodToExpire = () => {
                 perishable: true,
             })
             .then((res) => {
-                refreshLocalNotifications(
-                    res.content.filter((e) => {
-                        return !isPast(new Date(e.date));
-                    })
-                );
+                refreshLocalNotifications(res.content.filter((e) => !isPast(new Date(e.date))));
                 setPantryProducts({
                     data: res.content,
                     isLoading: false,

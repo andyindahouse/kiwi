@@ -36,7 +36,7 @@ export default {
         else next();
     },
 
-    notFoundHandler: (req, res, next) => {
+    notFoundHandler: (req, res) => {
         res.status(404).json({error: 'Endpoint not found'});
     },
 };

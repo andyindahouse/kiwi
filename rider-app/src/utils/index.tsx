@@ -2,8 +2,8 @@ import {Product} from '@kiwi/models/rider';
 import {useTheme} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
 
-export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) => {
-    return products.map((product: Product) => {
+export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) =>
+    products.map((product: Product) => {
         const shoppingCartProduct = shoppingCart.find((e) => e.id === product.id);
 
         return {
@@ -11,7 +11,6 @@ export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart
             units: shoppingCartProduct?.units || 0,
         };
     });
-};
 
 export const useStatusOrderMap = () => {
     const {palette} = useTheme();
