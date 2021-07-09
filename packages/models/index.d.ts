@@ -48,7 +48,7 @@ export interface Product {
     readonly available: boolean;
     readonly brand: string;
     readonly category: ReadonlyArray<string>;
-    readonly cost?: number;
+    readonly cost: number;
     readonly currency: string;
     readonly daysAfterOpened?: number;
     readonly discount: boolean;
@@ -59,7 +59,7 @@ export interface Product {
     readonly isCooled: boolean;
     readonly isGlutenFree: boolean;
     readonly isLactoseFree: boolean;
-    readonly items?: ReadonlyArray<{readonly date: string | null}>;
+    readonly items?: ReadonlyArray<{readonly date: string | null; readonly price: string | null}>;
     readonly name: string;
     readonly note?: string;
     readonly novaGroups: '1' | '2' | '3' | '4';
