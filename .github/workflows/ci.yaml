@@ -17,6 +17,8 @@ jobs:
               run: yarn workspace rider-app ts-check
             - name: TypeScript (Backend)
               run: yarn workspace backend ts-check
+            - name: TypeScript (Scraper)
+              run: yarn workspace scraper ts-check
             - name: Prettier
               run: yarn prettier-check
             - name: Lint

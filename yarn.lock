@@ -15074,6 +15074,7 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "scraper@workspace:scraper"
   dependencies:
+    "@kiwi/models": "workspace:*"
     axios: ^0.21.1
     mongodb: ^3.6.10
     puppeteer: ^8.0.0
