@@ -3,33 +3,64 @@ import mongodb from 'mongodb';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import * as config from './config.js';
 
+/**
+ * @typedef {import('puppeteer').Page} Page
+ *
+ * @typedef {import('@kiwi/models').Product} Product
+ *
+ * @typedef {import('@kiwi/models').SpecialOffers} SpecialOffers
+ *
+ * @typedef {import('@kiwi/models').SaleType} SaleType
+ */
+
 puppeteer.use(StealthPlugin());
 
+/**
+ * @param {Page} page
+ */
 const getTotalProducts = async (page) => {
     const title = await page.evaluate(() => document.title);
     console.log(title);
-    const products = title.split('(')[1].substring(0, title.split('(')[1].length - 1);
-    return products;
+    return Number(title.split('(')[1].substring(0, title.split('(')[1].length - 1));
 };
 
-const getProducts = async (page) => {
-    const data = await page.evaluate(() => {
+/**
+ * @param {Page} page
+ * @returns {Promise<Product[]>}
+ */
+const getProducts = (page) =>
+    page.evaluate(() => {
+        /**
+         *
+         * @param {string | null | undefined} specialOffer
+         * @returns {{specialOffer: SpecialOffers, specialOfferValue: [string, string]} | void}
+         */
         const getDiscountType = (specialOffer) => {
+            if (!specialOffer) {
+                return;
+            }
+
             if (/(\d+).* unidad al (\d+).* de descuento/.test(specialOffer)) {
-                const [, valueOne, valueTwo] = /(\d+).* unidad al (\d+).* de descuento/.exec(specialOffer);
+                const [, valueOne, valueTwo] =
+                    /(\d+).* unidad al (\d+).* de descuento/.exec(specialOffer) ?? [];
                 return {
                     specialOffer: 'offerDiscount',
                     specialOfferValue: [valueOne, valueTwo],
                 };
             }
             if (/Lleva (\d+) y paga (\d+)/.test(specialOffer)) {
-                const [, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer);
+                const [, valueOne, valueTwo] = /Lleva (\d+) y paga (\d+)/.exec(specialOffer) ?? [];
                 return {
                     specialOffer: 'quantityDiscount',
                     specialOfferValue: [valueOne, valueTwo],
                 };
             }
         };
+
+        /**
+         * @param {string | null} productSaleType
+         * @returns {SaleType}
+         */
         const getProductSaleType = (productSaleType) => {
             switch (productSaleType) {
                 // only sold by weigth (Example: 300gr steak)
@@ -49,46 +80,58 @@ const getProducts = async (page) => {
                     return 'unit';
             }
         };
-        return [...document.querySelectorAll('.grid-item')]
-            .filter((elem) => !!elem)
+
+        return Array.from(document.querySelectorAll('.grid-item'))
             .map((elem) => {
                 const jsonData = elem.getAttribute('data-json');
                 // const productDefaultListOption = elem.getAttribute('data-product-default_list_options');
+                if (!jsonData) {
+                    return null;
+                }
+
+                const img = elem.querySelector(' * > img')?.getAttribute('src');
+                if (!img) {
+                    return null;
+                }
+
+                const url = elem.querySelector('a')?.getAttribute('href');
+                if (!url) {
+                    return null;
+                }
+
                 const productSaleType = elem.getAttribute('data-product-sale_type');
                 const hasPreparations = !!elem.getAttribute('data-product-preparations');
                 const isCooled = !!elem.querySelector('span[title="Producto refrigerado"]');
                 const isGlutenFree = !!elem.querySelector('span[title="Producto sin gluten"]');
                 const isLactoseFree = !!elem.querySelector('span[title="Producto sin lactosa"]');
-                const offerData = !!elem.querySelector('.offer-description');
+                const offerData = elem.querySelector('.offer-description')?.textContent;
 
-                if (jsonData) {
-                    return {
-                        ...JSON.parse(elem.getAttribute('data-json')),
-                        img: 'https:' + elem.querySelector(' * > img').getAttribute('src'),
-                        url: elem.querySelector('a').getAttribute('href'),
-                        ...(offerData
-                            ? {...getDiscountType(offerData.textContent)}
-                            : {specialOffer: null, specialOfferValue: null}),
-                        saleType: getProductSaleType(productSaleType),
-                        hasPreparations,
-                        isCooled,
-                        isGlutenFree,
-                        isLactoseFree,
-                    };
-                }
-                return null;
+                return {
+                    ...JSON.parse(jsonData),
+                    img: `https:${img}`,
+                    url,
+                    ...getDiscountType(offerData),
+                    saleType: getProductSaleType(productSaleType),
+                    hasPreparations,
+                    isCooled,
+                    isGlutenFree,
+                    isLactoseFree,
+                };
             })
             .filter(Boolean);
     });
-    return data;
-};
 
+/**
+ * @param {Page} page
+ * @param {number} itemTargetCount
+ * @param {number} scrollDelay
+ */
 const scrapeInfiniteScrollItems = async (page, itemTargetCount, scrollDelay = 1000) => {
     let items = 0;
     try {
         let previousHeight;
         while (items < itemTargetCount) {
-            items = await page.evaluate(() => [...document.querySelectorAll('.grid-item')].length);
+            items = await page.evaluate(() => document.querySelectorAll('.grid-item').length);
             if (items < itemTargetCount) {
                 previousHeight = await page.evaluate('document.body.scrollHeight');
                 await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
@@ -108,11 +151,12 @@ const initScrapper = async () => {
     console.time('Scraping time');
     let urls = config.scrapingUrls;
     if (process.argv.length === 3) {
-        urls = [urls.find((url) => url.name === process.argv[2])];
-        if (!urls) {
+        const url = urls.find((url) => url.name === process.argv[2]);
+        if (!url) {
             console.log(`Section don't exist`);
             process.exit(404);
         }
+        urls = [url];
     }
     const browser = await puppeteer.launch(config.pupetterOptions);
     const page = await browser.newPage();
@@ -151,7 +195,7 @@ const initScrapper = async () => {
                 numberPage += 1;
             }
 
-            const prods = await scrapeInfiniteScrollItems(page, parseInt(products));
+            const prods = await scrapeInfiniteScrollItems(page, products);
             console.log('scraped', prods.length);
             console.log('Inserting items...');
             client = await mongodb.MongoClient.connect(config.configMongo.url, {

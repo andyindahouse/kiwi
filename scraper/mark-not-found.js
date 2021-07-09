@@ -17,10 +17,21 @@ import * as config from './config.js';
                 .db(config.configMongo.db)
                 .collection(config.collectionProducts[config.indexCollection].collection);
             var tzoffset =
-                new Date(process.argv[2], process.argv[3] - 1, process.argv[4], 0, 0).getTimezoneOffset() *
-                60000;
+                new Date(
+                    Number(process.argv[2]),
+                    Number(process.argv[3]) - 1,
+                    Number(process.argv[4]),
+                    0,
+                    0
+                ).getTimezoneOffset() * 60000;
             var date = new Date(
-                new Date(process.argv[2], process.argv[3] - 1, process.argv[4], 0, 0) - tzoffset
+                new Date(
+                    Number(process.argv[2]),
+                    Number(process.argv[3]) - 1,
+                    Number(process.argv[4]),
+                    0,
+                    0
+                ).getTime() - tzoffset
             );
             console.log(date);
             const result = await collection.updateMany(

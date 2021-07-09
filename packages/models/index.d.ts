@@ -42,6 +42,7 @@ export interface Nutriments {
 }
 
 export type SpecialOffers = 'offerDiscount' | 'quantityDiscount';
+export type SaleType = 'weight' | 'weight_and_unit' | 'unit' | 'piece';
 
 export interface Product {
     readonly _id: string;
@@ -67,7 +68,7 @@ export interface Product {
     readonly nutriscoreGrade: 'a' | 'b' | 'c' | 'd' | 'e';
     readonly price: {readonly original?: string; readonly final: string};
     readonly quantity: number;
-    readonly saleType: 'weight' | 'weight_and_unit' | 'unit' | 'piece';
+    readonly saleType: SaleType;
     readonly specialOffer?: SpecialOffers;
     readonly specialOfferValue?: [string, string];
     readonly status: string;

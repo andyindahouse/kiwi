@@ -17,6 +17,7 @@
         "puppeteer-extra-plugin-stealth": "^2.7.8"
     },
     "devDependencies": {
+        "@kiwi/models": "workspace:*",
         "typescript": "^4.3.5"
     }
 }

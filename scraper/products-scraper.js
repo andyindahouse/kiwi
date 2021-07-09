@@ -71,6 +71,8 @@ const getOpenFoodDataByEan = async (ean) => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore Property 'collection' does not exist on type '{ name: string; url: string; api: string; collection: string; }[]'.ts(2339)
         const collection = await client.db(config.configMongo.db).collection(config.scrapingUrls.collection);
 
         const cursor = collection.find({ean: {$exists: false}}).addCursorFlag('noCursorTimeout', true);
