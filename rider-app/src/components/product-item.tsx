@@ -23,7 +23,7 @@ type Props = {
 };
 
 const ProductItem = ({product, handleClickDetail}: Props) => {
-    const {name, price, img} = product;
+    const {name, cost, img} = product;
     const classes = useStyles();
     return (
         <IonItem onClick={handleClickDetail}>
@@ -35,7 +35,7 @@ const ProductItem = ({product, handleClickDetail}: Props) => {
                     </Typography>
                     <Typography variant="subtitle2">{getCostSubtitle(product)}</Typography>
                 </div>
-                <Typography variant="h5">{price.final}€</Typography>
+                <Typography variant="h5">{cost}€</Typography>
             </div>
         </IonItem>
     );

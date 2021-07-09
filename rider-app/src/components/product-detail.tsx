@@ -15,7 +15,7 @@ import {
     IonItemDivider,
     IonAlert,
 } from '@ionic/react';
-import {addCircleOutline, removeCircleOutline, syncOutline} from 'ionicons/icons';
+import {addCircleOutline, removeCircleOutline, syncOutline, addOutline, removeOutline} from 'ionicons/icons';
 import * as React from 'react';
 import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {Product, ProductOrderStatus} from '@kiwi/models';
@@ -155,9 +155,11 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
     const {palette} = useTheme();
     const {name, price, img, brand, note, items = []} = product;
     const [currentPrice, setCurrentPrice] = React.useState<number | null>();
-    const [units, setUnits] = React.useState<ReadonlyArray<{date: string | null}>>(items);
+    const [units, setUnits] =
+        React.useState<ReadonlyArray<{date: string | null; price: string | null}>>(items);
     const [showAlert, setShowAlert] = React.useState(false);
     const isUnitSaleType = product.saleType === 'unit';
+    const [addDifferentPrices, setAddDifferentPrices] = React.useState(product.items?.every((e) => e.price));
 
     return (
         <>
@@ -173,7 +175,7 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                 <div className={classes.container}>
                     <div className={classes.image} style={{backgroundImage: `url(${img})`}}>
                         <Typography variant="h2" className={classes.price}>
-                            {price.final}€
+                            {price.final}€ / ud.
                         </Typography>
                     </div>
                     <Typography variant="subtitle1" gutterBottom={8}>
@@ -194,6 +196,8 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                     )}
                 </div>
                 <IonList>
+                    <IonItemDivider />
+
                     <IonItem lines="none">
                         <IonLabel>Precio marcado:</IonLabel>
                         <IonInput
@@ -203,8 +207,65 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                             onIonChange={(e) => {
                                 e && setCurrentPrice(Number(e.detail.value));
                             }}
+                            disabled={addDifferentPrices}
                         />
                     </IonItem>
+                    {isUnitSaleType && (
+                        <IonItem
+                            lines="none"
+                            onClick={() => {
+                                setAddDifferentPrices(!addDifferentPrices);
+                            }}
+                        >
+                            {addDifferentPrices ? (
+                                <IonIcon
+                                    style={{color: palette.secondary.main}}
+                                    size="large"
+                                    icon={removeOutline}
+                                    role="button"
+                                />
+                            ) : (
+                                <IonIcon
+                                    style={{color: palette.secondary.main}}
+                                    size="large"
+                                    icon={addOutline}
+                                    role="button"
+                                />
+                            )}
+                            {addDifferentPrices ? (
+                                <IonLabel>Usar el mismo precio</IonLabel>
+                            ) : (
+                                <IonLabel>Añadir diferentes precios por ud.</IonLabel>
+                            )}
+                        </IonItem>
+                    )}
+                    {isUnitSaleType &&
+                        addDifferentPrices &&
+                        units.map((e, index) => (
+                            <IonItem key={index} lines={index === units.length - 1 ? 'none' : 'inset'}>
+                                <IonLabel>Precio unidad {index + 1}: </IonLabel>
+                                <IonInput
+                                    type="number"
+                                    value={e.price}
+                                    onIonChange={(e) => {
+                                        if (e.detail.value) {
+                                            setUnits(
+                                                units.map((unit, idx) => {
+                                                    if (index === idx) {
+                                                        return {
+                                                            date: unit.date,
+                                                            price: e.detail.value || price.final,
+                                                        };
+                                                    } else {
+                                                        return {date: unit.date, price: unit.price};
+                                                    }
+                                                })
+                                            );
+                                        }
+                                    }}
+                                />
+                            </IonItem>
+                        ))}
                     <IonItemDivider />
 
                     <IonItem>
@@ -217,19 +278,17 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                             </Typography>
                             {isUnitSaleType && (
                                 <>
-                                    {/* Prettier doesn't work*/}
-
                                     <Typography gutterBottom={8} variant="subtitle2">
                                         Si no están disponibles las unidades requeridas marcar la cantidad
                                         cogida
                                     </Typography>
                                     <Units
-                                        label={['ud recogida', 'ud recogidas']}
+                                        label={['ud. cogida', 'ud. cogidas']}
                                         units={units.length}
                                         maxUnits={items.length}
                                         handleOnChange={(ud) => {
                                             if (ud > units.length) {
-                                                setUnits([...units, {date: null}]);
+                                                setUnits([...units, {date: null, price: price.final}]);
                                             } else {
                                                 setUnits(units.slice(0, ud));
                                             }
@@ -253,9 +312,9 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                                         const newValue = e.detail.value?.split('T')[0];
                                         const auxUnits = units.map((unit, idx) => {
                                             if (index === idx || !unit.date) {
-                                                return {date: newValue};
+                                                return {date: newValue, price: unit.price};
                                             } else {
-                                                return {date: unit.date};
+                                                return {date: unit.date, price: unit.price};
                                             }
                                         });
                                         setUnits(auxUnits);
@@ -320,7 +379,10 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                                     if (product.statusOrder) {
                                         updateProduct({
                                             ...product,
-                                            items: units,
+                                            items: units.map((e) => ({
+                                                ...e,
+                                                price: addDifferentPrices ? e.price : null,
+                                            })),
                                             units: product.saleType === 'unit' ? units.length : product.units,
                                             price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,

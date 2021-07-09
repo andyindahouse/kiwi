@@ -9,7 +9,15 @@ export type PaginatedResponse<T> = {
     totalSize: number;
 };
 
-const call = getApiCall('http://51.210.87.239:3000', () => localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE));
+const getCaller = () => {
+    const isDev = process.env.NODE_ENV === 'development';
+
+    return getApiCall(isDev ? 'http://localhost:3000' : 'https://kiwiapp.es:3001', () =>
+        localStorage.getItem(TOKEN_KEY_LOCAL_STORAGE)
+    );
+};
+
+const call = getCaller();
 
 const api = {
     login: (body: {email: string; password: string}): Promise<{token: string}> =>

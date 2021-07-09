@@ -22,8 +22,8 @@ export const PASSPORT_CONFIG = {
 };
 
 export const FEES = {
-    deliverFee: 3,
-    shopperFee: 4,
+    deliverFee: 4,
+    shopperFee: 5,
     discount: 0.5,
 };
 
