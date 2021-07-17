@@ -1,5 +1,6 @@
 import React from 'react';
-import {Box, InfiniteScroll, Fragment, createUseStyles} from '@kiwi/ui';
+import {InfiniteScroll, Fragment} from '@kiwi/ionic';
+import {Box, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,
