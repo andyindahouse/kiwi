@@ -1,7 +1,7 @@
 import {Product, SpecialOffers} from '@kiwi/models';
 import {useTheme} from '@kiwi/ui';
 import {checkmarkDoneOutline, cartOutline, bicycleOutline, homeOutline} from 'ionicons/icons';
-import {differenceInDays, isSameDay, isTomorrow} from 'date-fns';
+import {differenceInDays, isSameDay, isTomorrow, differenceInMonths, differenceInYears} from 'date-fns';
 
 export const extendRawProducts = (products: ReadonlyArray<Product>, shoppingCart: ReadonlyArray<Product>) =>
     products.map((product: Product) => {
@@ -126,6 +126,20 @@ export const useGetExpiryObj = () => {
             return {
                 color: palette.warning.dark,
                 label: `${daysDiff} días`,
+            };
+        }
+        if (daysDiff >= 31 && daysDiff < 365) {
+            const monthsDiff = differenceInMonths(expiryDate, currentDate);
+            return {
+                color: palette.primary.dark,
+                label: monthsDiff == 1 ? `${monthsDiff} mes` : `${monthsDiff} meses`,
+            };
+        }
+        if (daysDiff >= 365) {
+            const yearsDiff = differenceInYears(expiryDate, currentDate);
+            return {
+                color: palette.primary.dark,
+                label: yearsDiff == 1 ? `${yearsDiff} año` : `${yearsDiff} años`,
             };
         }
 
