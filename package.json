@@ -7,7 +7,7 @@
         "prettier-check": "prettier -l \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
         "prettier-fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.css\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
         "lint": "eslint --ext .js,.ts,.tsx .",
-        "build-packages": "yarn workspace @kiwi/models build && yarn workspace @kiwi/api build && yarn workspace @kiwi/ui build && yarn workspace @kiwi/utils build"
+        "build": "yarn workspaces foreach -pt run build"
     },
     "repository": {
         "type": "git",

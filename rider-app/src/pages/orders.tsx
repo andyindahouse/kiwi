@@ -1,5 +1,6 @@
 import React from 'react';
-import {Typography, InfiniteScroll, createUseStyles} from '@kiwi/ui';
+import {InfiniteScroll} from '@kiwi/ionic';
+import {Typography, createUseStyles} from '@kiwi/ui';
 import {
     IonContent,
     IonHeader,

@@ -1,5 +1,5 @@
 {
-    "name": "@kiwi/ui",
+    "name": "@kiwi/ionic",
     "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc --outDir dist"
@@ -7,6 +7,10 @@
     "devDependencies": {
         "rimraf": "^3.0.2",
         "typescript": "4.3.5"
+    },
+    "dependencies": {
+        "@ionic/react": "*",
+        "@kiwi/ui": "workspace:*"
     },
     "peerDependencies": {
         "classnames": "*",

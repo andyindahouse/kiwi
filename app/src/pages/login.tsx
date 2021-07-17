@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, createUseStyles, Box, useTheme} from '@kiwi/ui';
+import {Typography, createUseStyles, Box, KiwiLogo, useTheme} from '@kiwi/ui';
 import {
     IonButton,
     IonContent,
@@ -17,7 +17,6 @@ import {
 import Register from './register';
 import {useAuth} from '../contexts/auth';
 import {useForm, Controller} from 'react-hook-form';
-import KiwiLogo from '../components/logo';
 
 const useStyles = createUseStyles(() => ({
     container: {

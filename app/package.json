@@ -9,6 +9,7 @@
         "@ionic/react": "^5.6.11",
         "@ionic/react-router": "^5.6.11",
         "@kiwi/api": "workspace:*",
+        "@kiwi/ionic": "workspace:*",
         "@kiwi/models": "workspace:*",
         "@kiwi/ui": "workspace:*",
         "@kiwi/utils": "workspace:*",

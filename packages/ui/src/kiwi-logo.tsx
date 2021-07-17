@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const KiwiLogo = () => (
+export const KiwiLogo = () => (
     <svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
         <g stroke="null" id="XMLID_1326_">
             <circle stroke="null" id="XMLID_1327_" cx="64" cy="64" r="57.66684" fill="#402604" />
@@ -32,5 +32,3 @@ const KiwiLogo = () => (
         </g>
     </svg>
 );
-
-export default KiwiLogo;

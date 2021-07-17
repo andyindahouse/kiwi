@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Box, Fragment} from '@kiwi/ui';
+import {Fragment} from '@kiwi/ionic';
+import {Box} from '@kiwi/ui';
 import {restaurantOutline} from 'ionicons/icons';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 
