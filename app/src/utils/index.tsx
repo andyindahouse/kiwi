@@ -127,20 +127,20 @@ export const useGetExpiryObj = () => {
                 color: palette.warning.dark,
                 label: `${daysDiff} días`,
             };
-        } 
+        }
         if (daysDiff >= 31 && daysDiff < 365) {
-            const monthsDiff = differenceInMonths(expiryDate,currentDate);
+            const monthsDiff = differenceInMonths(expiryDate, currentDate);
             return {
                 color: palette.primary.dark,
                 label: monthsDiff == 1 ? `${monthsDiff} mes` : `${monthsDiff} meses`,
-            }
+            };
         }
         if (daysDiff >= 365) {
             const yearsDiff = differenceInYears(expiryDate, currentDate);
             return {
                 color: palette.primary.dark,
-                label: yearsDiff == 1 ? `${yearsDiff} año` :  `${yearsDiff} años`,
-            }
+                label: yearsDiff == 1 ? `${yearsDiff} año` : `${yearsDiff} años`,
+            };
         }
 
         return {
