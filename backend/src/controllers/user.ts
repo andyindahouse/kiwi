@@ -61,7 +61,7 @@ export const login: RequestHandler<any, {data: {token: string}}, {email: string}
         return next(new Error401('Username or password not correct.'));
     }
 
-    if (isRider(req.baseUrl) !== user.rider) {
+    if (isRider(req.baseUrl) !== (user.rider ?? false)) {
         return next(new Error401('Username or password not correct.'));
     }
 
