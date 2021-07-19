@@ -64,7 +64,10 @@ export default {
                             ...product._doc,
                             items:
                                 product._doc.saleType === 'unit'
-                                    ? new Array(productInCart.units).fill({date: null, price: costProduct})
+                                    ? new Array(productInCart.units).fill({
+                                          date: null,
+                                          price: Number(product._doc.price.final),
+                                      })
                                     : [{date: null, price: null}],
                             units: productInCart.units,
                             note: productInCart.note,

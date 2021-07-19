@@ -10,12 +10,11 @@ import {
     IonDatetime,
     IonItem,
     IonLabel,
-    IonInput,
     IonList,
     IonItemDivider,
     IonAlert,
 } from '@ionic/react';
-import {addCircleOutline, removeCircleOutline, syncOutline, addOutline, removeOutline} from 'ionicons/icons';
+import {addCircleOutline, removeCircleOutline, syncOutline, pricetag} from 'ionicons/icons';
 import * as React from 'react';
 import {Typography, createUseStyles, useTheme} from '@kiwi/ui';
 import {Product, ProductOrderStatus} from '@kiwi/models';
@@ -56,7 +55,11 @@ const useStyles = createUseStyles(({palette}) => ({
             textTransform: 'uppercase',
         },
     },
-    replaceSection: {
+    infoSection: {
+        display: 'grid',
+        gridGap: 16,
+    },
+    infoItem: {
         display: 'grid',
         gridTemplateColumns: 'auto 1fr',
         gridGap: 8,
@@ -154,12 +157,10 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
     const classes = useStyles();
     const {palette} = useTheme();
     const {name, price, img, brand, note, items = []} = product;
-    const [currentPrice, setCurrentPrice] = React.useState<number | null>();
     const [units, setUnits] =
-        React.useState<ReadonlyArray<{date: string | null; price: string | null}>>(items);
+        React.useState<ReadonlyArray<{readonly date: string | null; readonly price: string | null}>>(items);
     const [showAlert, setShowAlert] = React.useState(false);
     const isUnitSaleType = product.saleType === 'unit';
-    const [addDifferentPrices, setAddDifferentPrices] = React.useState(product.items?.every((e) => e.price));
 
     return (
         <>
@@ -185,87 +186,28 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                         {name.replace(brand, '').trim()}
                     </Typography>
                     {note && <Typography>Nota del cliente: {note}</Typography>}
-                    {replaceProduct && (
-                        <div className={classes.replaceSection}>
-                            <IonIcon className={classes.icon} size="large" icon={syncOutline} />
-                            <Typography variant="body2">
-                                Puedes reemplazar este producto por uno equivalente, solo si te has asegurado
-                                que no está disponible
-                            </Typography>
-                        </div>
-                    )}
+                    <div className={classes.infoSection}>
+                        {replaceProduct && (
+                            <div className={classes.infoItem}>
+                                <IonIcon className={classes.icon} size="large" icon={syncOutline} />
+                                <Typography variant="body2">
+                                    Puedes reemplazar este producto por uno equivalente, solo si te has
+                                    asegurado que no está disponible
+                                </Typography>
+                            </div>
+                        )}
+                        {(product.price.original ||
+                            (!!product.specialOffer &&
+                                !!product.specialOfferValue &&
+                                Number(product.specialOfferValue[0]) <= product.units)) && (
+                            <div className={classes.infoItem}>
+                                <IonIcon className={classes.icon} size="large" icon={pricetag} />
+                                <Typography variant="body2">Este producto lleva un descuento</Typography>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <IonList>
-                    <IonItemDivider />
-
-                    <IonItem lines="none">
-                        <IonLabel>Precio marcado:</IonLabel>
-                        <IonInput
-                            type="number"
-                            value={currentPrice}
-                            placeholder={`${price.final}€ (actualizar)`}
-                            onIonChange={(e) => {
-                                e && setCurrentPrice(Number(e.detail.value));
-                            }}
-                            disabled={addDifferentPrices}
-                        />
-                    </IonItem>
-                    {isUnitSaleType && (
-                        <IonItem
-                            lines="none"
-                            onClick={() => {
-                                setAddDifferentPrices(!addDifferentPrices);
-                            }}
-                        >
-                            {addDifferentPrices ? (
-                                <IonIcon
-                                    style={{color: palette.secondary.main}}
-                                    size="large"
-                                    icon={removeOutline}
-                                    role="button"
-                                />
-                            ) : (
-                                <IonIcon
-                                    style={{color: palette.secondary.main}}
-                                    size="large"
-                                    icon={addOutline}
-                                    role="button"
-                                />
-                            )}
-                            {addDifferentPrices ? (
-                                <IonLabel>Usar el mismo precio</IonLabel>
-                            ) : (
-                                <IonLabel>Añadir diferentes precios por ud.</IonLabel>
-                            )}
-                        </IonItem>
-                    )}
-                    {isUnitSaleType &&
-                        addDifferentPrices &&
-                        units.map((e, index) => (
-                            <IonItem key={index} lines={index === units.length - 1 ? 'none' : 'inset'}>
-                                <IonLabel>Precio unidad {index + 1}: </IonLabel>
-                                <IonInput
-                                    type="number"
-                                    value={e.price}
-                                    onIonChange={(e) => {
-                                        if (e.detail.value) {
-                                            setUnits(
-                                                units.map((unit, idx) => {
-                                                    if (index === idx) {
-                                                        return {
-                                                            date: unit.date,
-                                                            price: e.detail.value || price.final,
-                                                        };
-                                                    } else {
-                                                        return {date: unit.date, price: unit.price};
-                                                    }
-                                                })
-                                            );
-                                        }
-                                    }}
-                                />
-                            </IonItem>
-                        ))}
                     <IonItemDivider />
 
                     <IonItem>
@@ -379,12 +321,8 @@ const ProductDetail = ({product, closeModal, updateProduct, replaceProduct}: Pro
                                     if (product.statusOrder) {
                                         updateProduct({
                                             ...product,
-                                            items: units.map((e) => ({
-                                                ...e,
-                                                price: addDifferentPrices ? e.price : null,
-                                            })),
+                                            items: units,
                                             units: product.saleType === 'unit' ? units.length : product.units,
-                                            price: {final: currentPrice ? String(currentPrice) : price.final},
                                             statusOrder: mapNextState[product.statusOrder].nextStatus,
                                         });
                                         closeModal();
