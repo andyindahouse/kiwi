@@ -272,6 +272,16 @@ const NutriScoreBar = ({value}: {value: 'a' | 'b' | 'c' | 'd' | 'e'}) => {
 const getDiscountPercentage = (original: string, final: string) =>
     Math.abs((Number(final) / Number(original)) * 100 - 100).toFixed(2);
 
+const getLabelCta = (initialUnits: number, units: number, defaultUnit: number, isUnitSaleType: boolean) => {
+    if (initialUnits === 0) {
+        return `Añadir ${units === 0 ? defaultUnit : units} ${isUnitSaleType ? 'unidades' : 'gramos'}`;
+    } else if (units !== 0) {
+        return `Actualizar ${isUnitSaleType ? 'unidades' : 'gramos'} (${units})`;
+    } else {
+        return 'Borrar producto';
+    }
+};
+
 interface Props {
     product: Product;
     updateProduct?: (product: Product) => void;
@@ -299,9 +309,9 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
         updateDate,
         saleType,
     } = product;
-    const [units, setUnits] = React.useState(initialUnits ? initialUnits : 1);
     const isUnitSaleType = saleType === 'unit';
     const unit = isUnitSaleType ? 1 : 100;
+    const [units, setUnits] = React.useState(initialUnits ? initialUnits : 0);
 
     return (
         <>
@@ -462,18 +472,13 @@ const ProductDetail = ({product, closeModal, updateProduct, disabled = false, sh
                                 onClick={() => {
                                     updateProduct({
                                         ...product,
-                                        units,
+                                        // in case we're in default state, we should add initial values
+                                        units: initialUnits === 0 && units === 0 ? unit : units,
                                     });
                                     closeModal();
                                 }}
                             >
-                                {initialUnits === 0
-                                    ? units === 0
-                                        ? 'Añadir unidad'
-                                        : `Añadir ${units} unidades`
-                                    : units === 0
-                                    ? 'Borrar producto'
-                                    : `Actualizar ${isUnitSaleType ? 'unidades' : 'gramos'} (${units})`}
+                                {getLabelCta(initialUnits, units, unit, isUnitSaleType)}
                             </IonButton>
                             <IonIcon
                                 size="large"

@@ -138,14 +138,9 @@ const ProductList = ({
             >
                 {selected && (
                     <ProductDetail
-                        updateProduct={
-                            (product: Product) =>
-                                updateShoppingCart(updateProducts(product, shoppingCartProducts))
-                            // updateShoppingCart({
-                            //     type: UPDATE_SHOPPING_CART_PRODUCT,
-                            //     product,
-                            // })
-                        }
+                        updateProduct={(product: Product) => {
+                            updateShoppingCart(updateProducts(product, shoppingCartProducts));
+                        }}
                         closeModal={() => setSelected(null)}
                         product={selected}
                         showChart={showChart}

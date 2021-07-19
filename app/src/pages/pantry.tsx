@@ -135,6 +135,7 @@ const ProductList = ({
                     consumedDate: consumedDate,
                 });
                 const product = await getProduct(data.id);
+                const isUnitSaleType = product.saleType === 'unit';
                 const productIndex = shoppingCartProducts.findIndex((e) => e.id === product.id);
                 const shoppingCart = await kiwiApi.setShoppingCart({
                     products:
@@ -143,7 +144,7 @@ const ProductList = ({
                                   ...shoppingCartProducts,
                                   {
                                       ...product,
-                                      units: 1,
+                                      units: isUnitSaleType ? 1 : 100,
                                   },
                               ]
                             : [
@@ -151,7 +152,9 @@ const ProductList = ({
                                   {
                                       ...{
                                           ...shoppingCartProducts[productIndex],
-                                          units: shoppingCartProducts[productIndex].units + 1,
+                                          units:
+                                              shoppingCartProducts[productIndex].units +
+                                              (isUnitSaleType ? 1 : 100),
                                       },
                                   },
                                   ...shoppingCartProducts.slice(productIndex + 1),
@@ -166,7 +169,7 @@ const ProductList = ({
                 console.log(err);
             }
         },
-        [shoppingCartProducts, dispatch, updatePantryProduct, getProduct]
+        [updatePantryProduct, getProduct, shoppingCartProducts, dispatch]
     );
 
     if (isLoading) {
